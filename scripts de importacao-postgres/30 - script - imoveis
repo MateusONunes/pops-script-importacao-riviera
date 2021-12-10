@@ -44,29 +44,20 @@ update dbo.prop_proprietarios pu
           where 0 = 0 
             and pll.id is null
        );
-       
-update dbo.prop_proprietarios pu 
-   set pops_statusimp = 'Nome(prop_proprietarios.Prop_dlNomeLote) vazio'
- where pu.prop_nucodigo  in (
-         select p.prop_nucodigo
-           from dbo.prop_proprietarios p 
-          where coalesce(trim(Prop_dlNome), '') = '' 
-       )
-   AND pops_statusimp IS NULL;
-      
+     
 update dbo.prop_proprietarios pu 
    set pops_statusimp = 'OK'
  where pops_statusimp IS NULL;
       
 
 
-############################################################################################################
+-------------------------------------------------------------------------------------------------------------------------
+--Insert
   
 delete from property_land;
 
 insert into property_land (active,state,create_uid,write_uid,write_date,create_date,id,"name",owner_id,module_id,block_id,lot_id,type_id, usage_id, stage_id, exclusive_area, pavement_qty)
-select 
-       true active,
+select true active,
        'done' state,
        1 create_uid,
        1 write_uid,
@@ -74,10 +65,12 @@ select
        current_timestamp create_date,
        p.prop_nucodigo id,
        p.mod_cdmodulo ||  p.qua_cdquadra || ' ' ||  p.prop_dclote_corrigido "name",
-       (select max(p2.prop_nucodigo)
-         from dbo.prop_proprietarios p2
-       where p2.prop_dlnome = p.prop_dlnome 
-       ) owner_id,  
+       case when coalesce(trim(Prop_dlNome), '') = '' then rp.id else
+        (select max(p2.prop_nucodigo)
+           from dbo.prop_proprietarios p2
+          where p2.prop_dlnome = p.prop_dlnome)
+       end
+       owner_id,  
        plm.id module_id,
        plb.id block_id,
        pll.id lot_id,
@@ -98,40 +91,8 @@ select
          left join property_land_type plt ON (plt.code = tob.tipo_cdtipoobra_ODOO)
          left join dbo.zon_zoneamento zz on (zz.zon_cdzoneamento = i.zon_cdzoneamento)
          left join property_land_usage plu on (plu.code = REPLACE(replace(zz.zon_cdzoneamento, 'TC', 'T'), 'TP', 'T'))
-         left join property_land_stage sls ON sls.code = tob.tipo_cdtipoobra_ODOO_STAGE
+         left join property_land_stage sls ON sls.code = tob.tipo_cdtipoobra_ODOO_STAGE,
+         (select rp.id from res_partner rp where rp."name" = '*Não Implementado') rp
  where p.pops_statusimp = 'OK'
 --   and p.prop_dlnome like '%MYAMOTO%'
-
- 
-
-
-/*
-
-Name                                 |Value                  |
--------------------------------------+-----------------------+
-name                                 |11C 12                 |
-address                              |                       |
-number                               |                       |
-zip                                  |                       |
-pavement_qty                         |2.0                    |
-
-*/  
-  
-############################################################################################################
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-VALIDAÇÃO FINAL COM O 
 
