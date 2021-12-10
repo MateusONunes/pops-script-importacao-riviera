@@ -1,0 +1,88 @@
+delete from res_partner where id > 6 or id < 0;
+
+insert into res_partner(
+company_id,create_date,lang,active,customer,supplier,employee,"type",is_company,color,partner_share,create_uid,write_uid,write_date,message_bounce,invoice_warn,ind_ie_dest,commercial_partner_id,id,"name",display_name,commercial_company_name,street,zip,city,state_id,country_id,mobile,cnpj_cpf,rg,email,"comment"
+
+)
+       
+select 
+       1 company_id,
+       current_timestamp create_date,
+       'pt_BR' lang,
+       true active,
+       true customer,
+       false supplier,
+       false employee,
+       'contact' "type",
+       false is_company,
+       0 color,
+       true partner_share,
+       1 create_uid,
+       1 write_uid,
+       current_timestamp write_date,
+       0 message_bounce,
+       'no-message' invoice_warn,
+       1 ind_ie_dest,
+       --
+       p3.PROP_nuCodigo commercial_partner_id,
+       case when p3.PROP_nuCodigo <= 6 then PROP_nuCodigo * -1 else PROP_nuCodigo end id,
+		trim(p3.Prop_dlNome) "name",
+		trim(p3.Prop_dlNome) display_name,
+		trim(p3.Prop_dlNome) commercial_company_name,
+		trim(p3.Prop_dlEndereco) || ' ' || p3.Prop_dlBairro street,
+		p3.Prop_dcCep zip,
+		trim(p3.Prop_dlCidade) city,
+		rcs.id state_id,
+		rc.ID country_id,
+		p3.Prop_dcTelefoneCelular mobile,
+		p3.Prop_dcCpf cnpj_cpf,
+		p3.Prop_dcRG rg,
+        p3.Prop_dlEnderecoEletronico email,
+		'Código Unificado: ' || coalesce(cast(p3.Prop_nuCodigoUnificado as varchar(10)), '')  || chr(13) || chr(10) ||
+		'Telefone Residencial: ' || coalesce(p3.Prop_dcTelefoneRes, '') || chr(13) || chr(10) ||
+		'Nome para carta: ' || coalesce(replace(p3.Prop_dlNomeCarta, 'NULL', ''), '') || chr(13) || chr(10) ||
+		'Endereço carta: ' || coalesce(p3.Prop_dlEnderecoCarta, '')  || chr(13) || chr(10) ||
+		'Bairro carta: ' || coalesce(p3.Prop_dlBairroCarta, '')  || chr(13) || chr(10) ||
+		'Cidade carta: ' || coalesce(p3.Prop_dlCidadeCarta, '')  || chr(13) || chr(10) ||
+		'Estado carta: ' || coalesce(p3.Prop_dcEstadoCarta, '')  || chr(13) || chr(10) ||
+		'CEP carta: ' || coalesce(p3.Prop_dcCepCarta, '')  || chr(13) || chr(10) ||
+		'País carta: ' || coalesce(pp_carta.PAI_dlPais, '')  || chr(13) || chr(10) ||
+		'Telefone Comercial: ' || coalesce(p3.Prop_dcTelefoneCom, '')  || chr(13) || chr(10) ||
+		'Telefone Riviera: ' || coalesce(p3.Prop_dcTelefoneRiviera, '')  || chr(13) || chr(10) ||
+		'CGC: ' || coalesce(p3.Prop_dcCgC, '')  || chr(13) || chr(10) ||
+		'Data Nascimento: ' || coalesce(p3.Prop_dtNascimento, '')  || chr(13) || chr(10) ||
+		'dl Contato : ' || coalesce(p3.Prop_dlContato, '')  || chr(13) || chr(10) ||
+		'Telefone res. carta: ' || coalesce(p3.Prop_dcTelefoneResCarta, '')  || chr(13) || chr(10) ||
+		'Telefone com. carta: ' || coalesce(p3.Prop_dcTelefoneComCarta, '')  || chr(13) || chr(10) ||
+		'Telefone cel. carta: ' || coalesce(p3.Prop_dcTelefoneCelularCarta, '')  || chr(13) || chr(10) ||
+		'Telefone riviera carta: ' || coalesce(p3.Prop_dcTelefoneRivieraCarta, '')  || chr(13) || chr(10) ||
+		'e-mail carta: ' || coalesce(p3.Prop_dlEnderecoEletronicoCarta, '')  || chr(13) || chr(10) ||
+		'Envia Hipo: ' || coalesce(p3.Prop_stEnviaHipo, '')  || chr(13) || chr(10) ||
+		'Módulo relat: ' || coalesce(cast(p3.MOD_cdModuloRelat as varchar(10)), '')  || chr(13) || chr(10) ||
+		'Quadra Relat: ' || coalesce(p3.QUA_cdQuadraRelat, '')  || chr(13) || chr(10) ||
+		'Lote Relat: ' || coalesce(p3.PROP_dcLoteRelat, '')  || chr(13) || chr(10) ||
+		'Endereço Riviera: ' || coalesce(p3.Prop_dlEnderecoRiviera, '')  || chr(13) || chr(10) ||
+		'Nome Jornal: ' || coalesce(p3.Prop_dlNomeJornal, '')  || chr(13) || chr(10) ||
+		'Endereço Jornal: ' || coalesce(p3.Prop_dlEnderecoJornal, '')  || chr(13) || chr(10) ||
+		'Bairro Jornal: ' || coalesce(p3.Prop_dlBairroJornal, '')  || chr(13) || chr(10) ||
+		'Cidade Jornal: ' || coalesce(p3.Prop_dlCidadeJornal, '')  || chr(13) || chr(10) ||
+		'UF Jornal: ' || coalesce(p3.Prop_dcUfJornal, '')  || chr(13) || chr(10) ||
+		'CEP Jornal: ' || coalesce(p3.Prop_dcCepJornal, '')  || chr(13) || chr(10) "comment"
+  from (select (SELECT max(p2.PROP_nuCodigo) 
+		          from dbo.proprietarios p2 
+		         where Prop_dlNome is not null
+		           and p2.Prop_dlNome = p.Prop_dlNome
+		       ) maxCodigo
+		  from dbo.proprietarios p 
+		 where coalesce(trim(Prop_dlNome), '') <> ''
+		 group by Prop_dlNome
+       ) tmp,
+       dbo.proprietarios p3 left join dbo.PAI_PAIS pp on (pp.PAI_cdPais = p3.PAI_cdPais)
+         left join dbo.PAI_PAIS pp_carta on (pp_carta.PAI_cdPais = p3.PAI_cdPaisCarta)       
+         left join res_country_state rcs on (rcs.country_id = 31 and rcs.code = p3.Prop_dcEstado)
+         left join res_country rc on (uPPER(rc."name") = replace(upper(trim(pp.PAI_dlPais)), 'BRASIL', 'BRAZIL'))
+where p3.PROP_nuCodigo = tmp.maxCodigo 
+order by p3.PROP_nuCodigo
+
+
+

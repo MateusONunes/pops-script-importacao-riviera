@@ -1,0 +1,5 @@
+CREATE INDEX if not exists prop_proprietarios_prop_nucodigo_idx ON dbo.prop_proprietarios (prop_nucodigo);
+
+CREATE INDEX if not exists prop_proprietarios_Prop_dlNome_idx ON dbo.prop_proprietarios (Prop_dlNome);
+
+CREATE INDEX if not exists pais_cdpais_idx ON dbo.pai_pais(pai_cdpais );

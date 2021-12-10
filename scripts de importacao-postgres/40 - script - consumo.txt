@@ -1,0 +1,20 @@
+delete from property_water_consumption;
+
+insert into property_water_consumption (create_uid,write_uid,create_date,write_date,id,land_id, "date",last_read,current_read,consumption,total,state)
+select 1 create_uid,
+       1 write_uid,
+       current_timestamp create_date,
+       current_timestamp write_date,
+        idconsumo id, 
+        c.prop_nucodigo land_id,
+        c.cons_dtreferencia "date",
+        c.cons_nuleituraanterior last_read,
+        c.cons_nuleituraatual current_read,
+        c.cons_nuconsumoreal consumption,
+        0 total,
+        'processed' state
+   from nucleo.cons_consumoaguageral c left join dbo.prop_proprietarios p  on p.prop_nucodigo = c.prop_nucodigo
+          left join property_land l on l.id = c.prop_nucodigo 
+ where l.id is not null;
+ 
+ 

@@ -1,0 +1,16 @@
+--deletar dados do odoo
+
+delete from mail_activity where user_id >= 6;
+delete from res_users where id >= 6;
+
+
+delete from account_invoice;
+
+delete from account_partial_reconcile;
+
+delete from account_move_line;
+
+delete from account_payment_line;
+
+delete from res_partner where id > 6;
+

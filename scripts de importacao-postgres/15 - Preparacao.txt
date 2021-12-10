@@ -1,0 +1,33 @@
+DELETE FROM property_land_module plm 
+where plm.code in ('001', '002', '010', '011', '023', '024');
+  
+delete from property_land_block plb where id >= 614;
+  
+DELETE from property_land_type t WHERE ID IN (15, 16);
+  
+UPDATE property_land_block SET CODE = TRIM(CODE);
+
+ALTER TABLE DBO.tipo_tipoobra ADD IF NOT EXISTS tipo_cdtipoobra_ODOO VARCHAR;
+
+UPDATE DBO.tipo_tipoobra
+   SET tipo_cdtipoobra_ODOO = 
+         CASE WHEN tipo_cdtipoobra = 'CM'  THEN 'CM'
+              WHEN tipo_cdtipoobra = 'CO'  THEN 'C'
+              WHEN tipo_cdtipoobra = 'CP'  THEN 'C'
+              WHEN tipo_cdtipoobra = 'LV'  THEN 'LV'
+              WHEN tipo_cdtipoobra = 'PC'  THEN 'P'
+              WHEN tipo_cdtipoobra = 'PO'  THEN 'P'
+              WHEN tipo_cdtipoobra = 'PP'  THEN 'P'
+              WHEN tipo_cdtipoobra = 'VO'  THEN 'V'
+              WHEN tipo_cdtipoobra = 'VP'  THEN 'V'
+          END;
+
+delete from property_land_usage where id = 9; -- Misto, não existe no sql server
+
+delete from property_land_usage where id in (12, 13);
+
+INSERT INTO property_land_usage(id, code, name) VALUES (12, 'U', 'Unificado');
+
+INSERT INTO property_land_usage(id, code, name) VALUES (13, 'T', 'Turista');
+
+DELETE FROM property_land_stage WHERE ID IN (9, 8, 10);  --DUPLICADOS

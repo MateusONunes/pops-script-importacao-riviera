@@ -1,0 +1,137 @@
+              
+ 
+ALTER TABLE dbo.proprietarios ADD if not exists max_prop_nucodigo_by_nome integer NULL;
+
+UPDATE dbo.proprietarios P 
+   SET max_prop_nucodigo_by_nome = (SELECT MAX(P2.prop_nucodigo)
+                                      FROM dbo.proprietarios P2
+                                     WHERE p2.prop_dlnome = P.prop_dlnome 
+                                   )
+where COALESCE(p.prop_dlnome, '') <> '';   
+
+ALTER TABLE dbo.prop_proprietarios ADD if not exists prop_dclote_corrigido varchar NULL;
+
+update dbo.prop_proprietarios p
+   set prop_dclote_corrigido = 
+         case when p.prop_dclote ~ '^\d+$' then -- verifica se é apenas número
+           cast(cast(p.prop_dclote as integer) as varchar)
+         else
+           p.prop_dclote
+         end;
+
+--pops_statusimp
+----------------
+alter table dbo.prop_proprietarios add if not exists pops_statusimp text;
+
+update dbo.prop_proprietarios set pops_statusimp = null;
+
+update dbo.prop_proprietarios pu 
+   set pops_statusimp = 'Lote(property_land_lot) não encontrado'
+ where pu.prop_nucodigo  in (
+         select p.prop_nucodigo
+         --      ,p.prop_dclote,
+         --       p.prop_dclote_corrigido,
+         --       p.mod_cdmodulo,
+         --       p.qua_cdquadra,
+         --       plm.id,
+         --       plm."name" ,
+         --       plb.id,
+         --       plb.info 
+           from dbo.prop_proprietarios p 
+                  left join property_land_module plm on (cast(plm.code as integer) = p.mod_cdmodulo)
+                  left join property_land_block plb on (module_id = plm.id and plb.code = p.qua_cdquadra)
+                  left join property_land_lot pll on (pll.code = p.prop_dclote_corrigido and pll.block_id = plb.id)
+          where 0 = 0 
+            and pll.id is null
+       );
+       
+update dbo.prop_proprietarios pu 
+   set pops_statusimp = 'Nome(prop_proprietarios.Prop_dlNomeLote) vazio'
+ where pu.prop_nucodigo  in (
+         select p.prop_nucodigo
+           from dbo.prop_proprietarios p 
+          where coalesce(trim(Prop_dlNome), '') = '' 
+       )
+   AND pops_statusimp IS NULL;
+      
+update dbo.prop_proprietarios pu 
+   set pops_statusimp = 'OK'
+ where pops_statusimp IS NULL;
+      
+
+
+############################################################################################################
+  
+delete from property_land;
+
+insert into property_land (active,state,create_uid,write_uid,write_date,create_date,id,"name",owner_id,module_id,block_id,lot_id,type_id, usage_id, stage_id, exclusive_area, pavement_qty)
+select 
+       true active,
+       'done' state,
+       1 create_uid,
+       1 write_uid,
+       current_timestamp write_date,
+       current_timestamp create_date,
+       p.prop_nucodigo id,
+       p.mod_cdmodulo ||  p.qua_cdquadra || ' ' ||  p.prop_dclote_corrigido "name",
+       (select max(p2.prop_nucodigo)
+         from dbo.prop_proprietarios p2
+       where p2.prop_dlnome = p.prop_dlnome 
+       ) owner_id,  
+       plm.id module_id,
+       plb.id block_id,
+       pll.id lot_id,
+       plt.id type_id,
+       plu.id usage_id,
+       sls.id stage_id,
+       CASE WHEN replace(trim(i.imo_nuareaexclusiva), ',', '.') ~ '^(-)?[0-9]+\.?([0-9]+)?$'
+            THEN replace(trim(i.imo_nuareaexclusiva), ',', '.')::double precision 
+            ELSE 0 
+       end  exclusive_area,
+       i.imo_nupavimentos pavement_qty
+  from dbo.prop_proprietarios p 
+         left join property_land_module plm on (cast(plm.code as integer) = p.mod_cdmodulo)
+         left join property_land_block plb on (module_id = plm.id and plb.code = p.qua_cdquadra)               
+         left join property_land_lot pll on (pll.code = p.prop_dclote_corrigido and pll.block_id = plb.id)
+         left join dbo.imo_imovel i on i.prop_nucodigo = p.prop_nucodigo
+         left join dbo.tipo_tipoobra tob on tob.tipo_cdtipoobra = i.tipo_cdtipoobra
+         left join property_land_type plt ON (plt.code = tob.tipo_cdtipoobra_ODOO)
+         left join dbo.zon_zoneamento zz on (zz.zon_cdzoneamento = i.zon_cdzoneamento)
+         left join property_land_usage plu on (plu.code = REPLACE(replace(zz.zon_cdzoneamento, 'TC', 'T'), 'TP', 'T'))
+         left join property_land_stage sls ON sls.code = tob.tipo_cdtipoobra_ODOO_STAGE
+ where p.pops_statusimp = 'OK'
+--   and p.prop_dlnome like '%MYAMOTO%'
+
+ 
+
+
+/*
+
+Name                                 |Value                  |
+-------------------------------------+-----------------------+
+name                                 |11C 12                 |
+address                              |                       |
+number                               |                       |
+zip                                  |                       |
+pavement_qty                         |2.0                    |
+
+*/  
+  
+############################################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+VALIDAÇÃO FINAL COM O 
+

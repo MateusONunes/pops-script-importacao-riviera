@@ -1,0 +1,2 @@
+select * from dbo.prop_proprietarios p
+where p.prop_dlnome like '%MYAMOTO%'

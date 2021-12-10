@@ -1,0 +1,47 @@
+dbo.zon_zoneamento => property_land_zone
+dbo.mod_modulo     => property_land_module  
+                   => property_land_block
+
+------------------------------------------------------------------------------------------------------------------------------------
+                   
+delete from property_land_zone;
+
+insert into property_land_zone (id,code,"name",info,create_uid,write_uid,create_date,write_date) 
+select ROW_NUMBER() over (order by 1) id,
+       zz.zon_cdzoneamento code,
+       zz.zon_dlzoneamento "name",
+       null info,
+       1 create_uid,
+       1 write_uid,
+       current_timestamp create_date,
+       current_timestamp write_date       
+  from dbo.zon_zoneamento zz;
+  
+delete from property_land_module;
+
+insert into property_land_module (id,code,"name",info,zone_id,create_uid,write_uid,create_date,write_date)
+select mod_cdmodulo id,
+       mod_cdmodulo code,
+       mod_dcmodulo "name",
+       mod_dllocalizacao info,
+     		null zone_id,
+       1 create_uid,
+       1 write_uid,
+       current_timestamp create_date,
+       current_timestamp write_date
+  from dbo.mod_modulo mm  
+ where mm.mod_dcmodulo is not null;
+ 
+ALTER TABLE dbo.proprietarios ADD if not exists max_prop_nucodigo_by_nome integer NULL;
+
+UPDATE dbo.proprietarios P 
+   SET max_prop_nucodigo_by_nome = (SELECT MAX(P2.prop_nucodigo)
+                                      FROM dbo.proprietarios P2
+                                     WHERE p2.prop_dlnome = P.prop_dlnome 
+                                   )
+where COALESCE(p.prop_dlnome, '') <> '';   
+
+
+  
+
+

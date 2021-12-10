@@ -1,0 +1,7 @@
+select 'Imóveis' modulo,
+       p.pops_statusimp situacao,
+       count(0) qtde
+  from dbo.prop_proprietarios p
+  group by p.pops_statusimp;
+  
+
