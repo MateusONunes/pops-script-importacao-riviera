@@ -31,3 +31,6 @@ INSERT INTO property_land_usage(id, code, name) VALUES (12, 'U', 'Unificado');
 INSERT INTO property_land_usage(id, code, name) VALUES (13, 'T', 'Turista');
 
 DELETE FROM property_land_stage WHERE ID IN (9, 8, 10);  --DUPLICADOS
+
+update property_land_lot set code = trim (code);
+    
