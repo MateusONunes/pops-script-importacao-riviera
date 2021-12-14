@@ -1,5 +1,15 @@
-              
- 
+---------------------
+--dbo.tipo_tipoobra.tipo_cdtipoobra_ODOO_STAGE...
+
+alter table dbo.tipo_tipoobra add IF NOT exists tipo_cdtipoobra_ODOO_STAGE varchar(10);
+
+
+update dbo.tipo_tipoobra
+   set tipo_cdtipoobra_ODOO_STAGE = case when tipo_cdtipoobra in ('CM', 'PC', 'CP', 'PP', 'VP') THEN 'OP'
+                                         when tipo_cdtipoobra in ('CO', 'PO', 'VO') THEN 'OA'
+                                         when tipo_cdtipoobra in ('LV', 'NU') THEN 'LV'
+                                    end;
+--------------------- 
 ALTER TABLE dbo.proprietarios ADD if not exists max_prop_nucodigo_by_nome integer NULL;
 
 UPDATE dbo.proprietarios P 
@@ -19,6 +29,83 @@ update dbo.prop_proprietarios p
            p.prop_dclote
          end;
 
+-------------------------------------------------------------------------------------------------------------------------
+--Resolvendo Lotes/blocks que não existem. Em outras palavras, resolvendo property_land_lot/property_land_block que não existem
+
+delete from property_land_lot where info = '**Insert Import';
+delete from property_land_block where info = '**Insert Import';
+delete from property_land_module m where m."name"  = '**Insert Import';
+
+--Resolvendo Códigos inexistentes em property_land_module...
+insert into property_land_module (id,code,"name",zone_id,info,create_uid,write_uid,write_date,create_date)
+select max_plm.id + row_number() over() id,
+       t.code,
+       '**Insert Import' "name",
+       t.zone_id,
+       '**Insert Import' info,
+       1 create_uid,
+       1 write_uid,
+       current_timestamp write_date,
+       current_timestamp create_date
+  from (select distinct 
+               p.mod_cdmodulo code,
+               plz.id zone_id
+          from dbo.prop_proprietarios p 
+                 left join property_land_module plm on (cast(plm.code as integer) = p.mod_cdmodulo)
+                 left join dbo.imo_imovel imv on imv.prop_nucodigo = p.prop_nucodigo
+                 left join dbo.zon_zoneamento zz on (zz.zon_cdzoneamento = imv.zon_cdzoneamento)
+                 left join property_land_zone plz on (plz.code = zz.zon_cdzoneamento)
+           where 0 = 0 
+             and plm.id is null
+       ) t,
+       (select max(id) id from property_land_module) max_plm;       
+
+--resolvendo módulos que não existem em property_land_block...
+insert into property_land_block (id,code,module_id,info,create_uid,write_uid,write_date,create_date)
+select max_plb.id + row_number() over() id,
+       t.code,
+       t.module_id,
+      '**Insert Import' info,
+       1 create_uid,
+       1 write_uid,
+       current_timestamp write_date,
+       current_timestamp create_date
+  from (select distinct 
+               p.qua_cdquadra code,
+               plm.id module_id
+          from dbo.prop_proprietarios p 
+                   left join property_land_module plm on (cast(plm.code as integer) = p.mod_cdmodulo)
+                   left join property_land_block plb on (module_id = plm.id and plb.code = p.qua_cdquadra)
+         where 0 = 0 
+           and plb.id is null
+       ) T,
+       (select max(id) id from property_land_block) max_plb;
+       
+--resolvendo lotes(property_land_lot) não existem...
+insert into property_land_lot(id,code,block_id,info,create_uid,write_uid,write_date,create_date)
+select plt.id + row_number() over() id,
+       t.code,
+       t.block_id,
+      '**Insert Import' info,
+       1 create_uid,
+       1 write_uid,
+       current_timestamp write_date,
+       current_timestamp create_date
+  from (select distinct 
+             p.prop_dclote_corrigido code,
+             plb.id block_id
+        from dbo.prop_proprietarios p 
+                 left join property_land_module plm on (cast(plm.code as integer) = p.mod_cdmodulo)
+                 left join property_land_block plb on (module_id = plm.id and plb.code = p.qua_cdquadra)
+                 left join property_land_lot pll on (pll.code = p.prop_dclote_corrigido and pll.block_id = plb.id)
+         where 0 = 0 
+           and pll.id is null
+       ) T,
+       (select max(id) id from property_land_lot) plt;
+       
+
+
+-------------------------------------------------------------------------------------------------------------------------
 --pops_statusimp
 ----------------
 alter table dbo.prop_proprietarios add if not exists pops_statusimp text;
@@ -48,12 +135,13 @@ update dbo.prop_proprietarios pu
 update dbo.prop_proprietarios pu 
    set pops_statusimp = 'OK'
  where pops_statusimp IS NULL;
-      
-
 
 -------------------------------------------------------------------------------------------------------------------------
---Insert
+
+
+--Insert em imóveis (property_land)
   
+delete from property_water_consumption;  
 delete from property_land;
 
 insert into property_land (active,state,create_uid,write_uid,write_date,create_date,id,"name",owner_id,module_id,block_id,lot_id,type_id, usage_id, stage_id, exclusive_area, pavement_qty)
@@ -83,16 +171,18 @@ select true active,
        end  exclusive_area,
        i.imo_nupavimentos pavement_qty
   from dbo.prop_proprietarios p 
-         left join property_land_module plm on (cast(plm.code as integer) = p.mod_cdmodulo)
+         left join dbo.imo_imovel i on i.prop_nucodigo = p.prop_nucodigo
+         left join dbo.zon_zoneamento zz on (zz.zon_cdzoneamento = i.zon_cdzoneamento)
+         left join property_land_zone plz on (plz.code = zz.zon_cdzoneamento)
+         left join property_land_module plm on (cast(plm.code as integer) = p.mod_cdmodulo and ((plm."name" <> '**Insert Import') or ((plm."name" = '**Insert Import') and (plm.zone_id = plz.id))))
          left join property_land_block plb on (module_id = plm.id and plb.code = p.qua_cdquadra)               
          left join property_land_lot pll on (pll.code = p.prop_dclote_corrigido and pll.block_id = plb.id)
-         left join dbo.imo_imovel i on i.prop_nucodigo = p.prop_nucodigo
          left join dbo.tipo_tipoobra tob on tob.tipo_cdtipoobra = i.tipo_cdtipoobra
          left join property_land_type plt ON (plt.code = tob.tipo_cdtipoobra_ODOO)
-         left join dbo.zon_zoneamento zz on (zz.zon_cdzoneamento = i.zon_cdzoneamento)
          left join property_land_usage plu on (plu.code = REPLACE(replace(zz.zon_cdzoneamento, 'TC', 'T'), 'TP', 'T'))
          left join property_land_stage sls ON sls.code = tob.tipo_cdtipoobra_ODOO_STAGE,
          (select rp.id from res_partner rp where rp."name" = '*Não Implementado') rp
  where p.pops_statusimp = 'OK'
 --   and p.prop_dlnome like '%MYAMOTO%'
+
 

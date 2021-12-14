@@ -4,4 +4,29 @@ select 'Imóveis' modulo,
   from dbo.prop_proprietarios p
   group by p.pops_statusimp;
   
+------------------------------------------------------------------------------------------------------------------------
+
+
+select tabela,
+       qtdesqlserver,
+       qtdepostgres,
+       qtdesqlserver - qtdepostgres dif
+  from (
+select 'Proprietarios' tabela,
+       (select COUNT(distinct p.prop_dlnome) FROM DBO.prop_proprietarios p) qtdeSqlServer,
+       (select COUNT(0) FROM res_partner where id not in (1, 2, 3, 4, 5, 6)) qtdePostgres
+--
+union all
+--
+select 'Imoveis' tabela,
+       (select COUNT(0) FROM DBO.prop_proprietarios) qtdeSqlServer,
+       (select COUNT(0) FROM property_land) qtdePostgres
+--       
+union all
+--
+select 'Consumo' tabela,
+       (select COUNT(0) FROM dbo.cons_consumoaguageral) qtdeSqlServer,
+       (select COUNT(0) FROM property_water_consumption) qtdePostgres
+) t
+
 

@@ -13,7 +13,7 @@ select 1 create_uid,
         c.cons_nuconsumoreal consumption,
         0 total,
         'processed' state
-   from nucleo.cons_consumoaguageral c left join dbo.prop_proprietarios p  on p.prop_nucodigo = c.prop_nucodigo
+   from dbo.cons_consumoaguageral c left join dbo.prop_proprietarios p  on p.prop_nucodigo = c.prop_nucodigo
           left join property_land l on l.id = c.prop_nucodigo 
  where l.id is not null;
  

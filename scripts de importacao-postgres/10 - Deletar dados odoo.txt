@@ -1,8 +1,10 @@
 --deletar dados do odoo
+delete from property_water_consumption;
+delete from property_water_consumption;
+delete from property_land;
 
 delete from mail_activity where user_id >= 6;
 delete from res_users where id >= 6;
-
 
 delete from account_invoice;
 
