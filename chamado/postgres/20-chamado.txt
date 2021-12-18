@@ -1,0 +1,65 @@
+delete from helpdesk_ticket;
+delete from helpdesk_ticket_type;
+
+insert into helpdesk_ticket_type(id,"name",create_uid,write_uid,write_date,create_date)
+select c.cat_cdcategoria id,
+       c.cat_dlcategoria "name",
+       1 create_uid,
+       1 write_uid,
+       current_timestamp write_date,
+       current_timestamp create_date
+  from CAP.CATEGORIA c;
+
+delete from helpdesk_ticket;
+
+insert into helpdesk_ticket(create_uid,write_uid,write_date,create_date,active,id,"number","name",description,stage_id, type_id, partner_id, partner_name, partner_email, channel_id)
+select 1 create_uid,
+       1 write_uid,
+       current_timestamp write_date,
+       current_timestamp create_date,
+       true active,
+       c.cha_cdcodigochamado id,
+       c.cha_cdcodigochamado "number",
+       CASE WHEN COALESCE(cha_dldescricao, '') = '' THEN '**Sem Descrição' else cha_dldescricao end "name",
+       c.cha_dlhistorico  description,
+       case when cs.sta_dldescricaochamadostatus = 'CONCLUÍDO' then 4 /*Done*/ else 2 /*In Progress*/ end stage_id,
+       case when coalesce(c.cat_cdcategoria, 0) = 0 then 1/*diversos*/ else c.cat_cdcategoria end type_id,
+       rp.id partner_id,
+       rp."name" partner_name,
+       rp.email partner_email,
+       case when c.cha_dcorigem = 'T' THEN 3
+            when c.cha_dcorigem = 'E' THEN 2
+            ELSE 5/*presencial*/
+       end channel_id
+  from CAP.CHAMADO c 
+         left join dbo.prop_proprietarios pp on pp.prop_nucodigo = c.prop_nucodigo 
+         left join public.res_partner rp on rp.id = pp.max_prop_nucodigo_by_nome 
+         left join cap.chamadostatus cs on cs.sta_cdcodigochamadostatus = c.sta_cdcodigochamadostatus
+ where 0 = 0 
+   and pp.prop_nucodigo is not null
+   and rp.id  is not null
+--   and c.CHA_cdCodigoChamado = 95461
+   
+   
+
+/*
+Name                      |Value                                             |
+--------------------------+--------------------------------------------------+
+message_main_attachment_id|                                                  |
+access_token              |                                                  |
+user_id                   |                                                  |
+last_stage_update         |2021-11-26 18:59:19.000                           |
+assigned_date             |                                                  |
+closed_date               |                                                  |
+unattended                |true                                              |
+company_id                |1                                                 |
+category_id               |                                                  |
+team_id                   |                                                  |
+priority                  |1                                                 |
+color                     |                                                  |
+kanban_state              |                                                  |
+sequence                  |10                                                |
+type_id                   |                                                  |   
+*/
+   
+

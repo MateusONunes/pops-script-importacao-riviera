@@ -1,0 +1,14 @@
+select c.cha_cdcodigochamado,
+       pp.prop_dlnome,
+       cs.sta_dldescricaochamadostatus,
+       case when c.cha_dcorigem = 'T' THEN 'Telefone'
+            when c.cha_dcorigem = 'E' THEN 'e-mail'
+            ELSE 'Presencial' --"P"
+       end origem,
+       C.* 
+  from CAP.CHAMADO c 
+         left join dbo.prop_proprietarios pp on pp.prop_nucodigo = c.prop_nucodigo 
+         left join cap.chamadostatus cs on cs.sta_cdcodigochamadostatus = c.sta_cdcodigochamadostatus 
+ where 0 = 0 
+   and c.CHA_cdCodigoChamado = 95461
+

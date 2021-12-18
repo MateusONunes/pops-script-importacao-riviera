@@ -1,0 +1,9 @@
+sed -i 's/cap.dbo/cap/' *.*
+sed -i 's/\[//' *.*
+sed -i 's/\]//' *.*
+
+
+
+psql -d riviera-mateus -f insert_cap.sql 
+
+

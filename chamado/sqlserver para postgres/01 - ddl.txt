@@ -1,0 +1,1055 @@
+drop schema cap cascade;
+
+create schema cap; ALTER SCHEMA cap OWNER TO postgres;
+
+
+create table cap.ACESSOS
+(
+HabilitacaoCodigo int, 
+COL_cdColaborador bigint
+);
+
+create table cap.ACESSOSTIPOS
+(
+AcessosCodigo int, 
+AcessosDescricao varchar(35)
+);
+
+create table cap.ANIMO
+(
+ANI_cdCodigoAnimo int, 
+ANI_dlDescricaoAnimo varchar(50)
+);
+
+create table cap.CAPATENDENTES
+(
+COL_cdColaborador bigint
+);
+
+create table cap.CAPCONTROL
+(
+COL_cdColaborador bigint, 
+LanUser varchar(20), 
+Admin Boolean, 
+Cons Boolean, 
+Sup Boolean, 
+Imp Boolean, 
+Relat int
+);
+
+create table cap.CapControlUserSector
+(
+COL_cdColaborador bigint, 
+SUBG_cdCodigoSubGrupo smallint
+);
+
+create table cap.CAPParametros
+(
+TerminalAtendimentoPrincipal varchar(30), 
+COL_cdColaboradorOuvidor bigint
+);
+
+create table cap.CapRepTempFelix1423
+(
+Hora varchar(5), 
+Data varchar(6), 
+Solicitante varchar(1), 
+Origem varchar(14), 
+Prop varchar(50), 
+M int, 
+Q varchar(2), 
+L varchar(3), 
+Condominio varchar(70), 
+Relato text, 
+DescricaoCompl text, 
+Relatorio text, 
+CAP int, 
+Canal varchar(10), 
+Categoria1 varchar(50), 
+Categoria2 varchar(40), 
+Categoria3 varchar(80), 
+Categoria4 varchar(80), 
+EnderecoRiviera varchar(50)
+);
+
+create table cap.CapRepTemppralvin21249
+(
+Hora varchar(5), 
+Data varchar(6), 
+Solicitante varchar(1), 
+Origem varchar(14), 
+Prop varchar(50), 
+M int, 
+Q varchar(2), 
+L varchar(3), 
+Condominio varchar(70), 
+Relato text, 
+DescricaoCompl text, 
+Relatorio text, 
+CAP int, 
+Canal varchar(10), 
+Categoria1 varchar(50), 
+Categoria2 varchar(40), 
+Categoria3 varchar(50), 
+Categoria4 varchar(50), 
+EnderecoRiviera varchar(50)
+);
+
+create table cap.CapRepTemppralvinPralvinC
+(
+Hora varchar(5), 
+Data varchar(6), 
+Solicitante varchar(1), 
+Origem varchar(14), 
+Prop varchar(50), 
+M int, 
+Q varchar(2), 
+L varchar(3), 
+Condominio varchar(70), 
+Relato text, 
+DescricaoCompl text, 
+Relatorio text, 
+CAP int, 
+Canal varchar(10), 
+Categoria1 varchar(50), 
+Categoria2 varchar(40), 
+Categoria3 varchar(50), 
+Categoria4 varchar(50)
+);
+
+create table cap.CapRepTempsylvio66
+(
+Hora varchar(5), 
+Data varchar(6), 
+Solicitante varchar(1), 
+Origem varchar(14), 
+Prop varchar(50), 
+M int, 
+Q varchar(2), 
+L varchar(3), 
+Condominio varchar(70), 
+Relato text, 
+DescricaoCompl text, 
+Relatorio text, 
+CAP int, 
+Canal varchar(10), 
+Categoria1 varchar(50), 
+Categoria2 varchar(40), 
+Categoria3 varchar(80), 
+Categoria4 varchar(80), 
+EnderecoRiviera varchar(50)
+);
+
+create table cap.CATEGORIA
+(
+CAT_cdCategoria INT, 
+CAT_cdCategoria__I INT,
+CAT_dlCategoria varchar(80), 
+DataHoraCadastro timestamp
+);
+
+create table cap.CHAMADO
+(
+CHA_cdCodigoChamado INT, 
+CHA_cdCodigoChamado__I INT, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+PROP_dcLote varchar(3), 
+PROP_nuCodigo int, 
+SUBG_cdCodigoSubGrupo smallint, 
+CHA_dtDataChamado timestamp, 
+CHA_dtHoraChamado varchar(10), 
+CHA_dtDataConclusao timestamp, 
+CHA_dtHoraConclusao varchar(10), 
+CHA_dlDescricao text, 
+CHA_dcPrioridade varchar(1), 
+USU_cdUsuarios int, 
+STA_cdCodigoChamadoStatus int, 
+CHA_cdResponsavelChamado int, 
+CHA_dlConclusaoResponsavelChamado text, 
+CHA_dtAtualizacao timestamp, 
+PRO_cdCodigoProduto int, 
+CHA_dcOrigem varchar(1), 
+TerminalConclusao varchar(20), 
+TerminalDescricao varchar(20), 
+CHA_dlDescricaoOuvidor text, 
+CAT_cdCategoria int, 
+Cha_dlHistorico text, 
+Prop_nuCodigoCadastroAberto int, 
+Prop_nuCodigoADD varchar(3), 
+PROP_idCond int
+);
+
+create table cap.CHAMADOALTERACAO
+(
+COL_cdColaboradorAlteracao bigint, 
+CHA_cdCodigoChamado int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+PROP_dcLote varchar(3), 
+PROP_nuCodigo int, 
+SUBG_cdCodigoSubGrupo smallint, 
+CHA_dtDataChamado timestamp, 
+CHA_dtHoraChamado varchar(10), 
+CHA_dtDataConclusao timestamp, 
+CHA_dtHoraConclusao varchar(10), 
+CHA_dlDescricao text, 
+CHA_dcPrioridade varchar(1), 
+USU_cdUsuarios int, 
+STA_cdCodigoChamadoStatus int, 
+CHA_cdResponsavelChamado int, 
+CHA_dlConclusaoResponsavelChamado text, 
+CHA_dtAtualizacao timestamp, 
+PRO_cdCodigoProduto int, 
+CHA_dcOrigem varchar(1), 
+TerminalConclusao varchar(20), 
+TerminalDescricao varchar(20), 
+CHA_dlDescricaoOuvidor text, 
+CAT_cdCategoria int, 
+CHA_dlHistorico text, 
+Prop_nuCodigoCadastroAberto int, 
+Prop_nuCodigoADD varchar(3), 
+PROP_idCond int, 
+Tipo varchar(1)
+);
+
+create table cap.CHAMADOANEXO
+(
+id INT, 
+id__I INT,
+CHA_cdCodigoChamado int, 
+CA_objAnexo BYTEA, 
+CA_blnFoto Boolean, 
+CA_dlArquivoNome varchar(50)
+);
+
+create table cap.CHAMADOAUDIT
+(
+CHA_cdCodigoChamado int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+PROP_dcLote varchar(3), 
+PROP_nuCodigo int, 
+CON_cdCondominos int, 
+PRO_cdCodigoProduto int, 
+GRU_cdCodigoGrupo int, 
+SUBG_cdCodigoSubGrupo smallint, 
+MANI_cdCodigoManifestacao int, 
+ANI_cdCodigoAnimo int, 
+CHA_dtDataCadastro timestamp, 
+CHA_dtHoraCadastro varchar(10), 
+CHA_dtDataChamado timestamp, 
+CHA_dtHoraChamado varchar(10), 
+CHA_dtDataPrevista timestamp, 
+CHA_dtHoraPrevista varchar(10), 
+CHA_dtDataConclusao timestamp, 
+CHA_dtHoraConclusao varchar(10), 
+CHA_dlDescricao text, 
+CHA_dcPrioridade varchar(1), 
+USU_cdUsuarios int, 
+STA_cdCodigoChamadoStatus int, 
+CHA_cdResponsavelChamado int, 
+CHA_dlConclusaoResponsavelChamado text, 
+RET_cdCodigoRetorno smallint, 
+COT_cdCodigoConclusaoTipo smallint, 
+CCT_cdCodigoChamadoContatoTipo smallint, 
+CHR_cdChamadoRetorno int, 
+CHA_dtAtualizacao timestamp, 
+CHA_dtExpirar timestamp
+);
+
+create table cap.CHAMADODETALHE
+(
+CHA_cdCodigoChamado int, 
+col_cdcolaborador bigint, 
+cha_dlHistorico text, 
+DataHora timestamp
+);
+
+create table cap.CHAMADOEXCLUIDO
+(
+COL_cdColaboradorExcluiu bigint, 
+CHA_cdCodigoChamado int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+PROP_dcLote varchar(3), 
+PROP_nuCodigo int, 
+SUBG_cdCodigoSubGrupo smallint, 
+CHA_dtDataChamado timestamp, 
+CHA_dtHoraChamado varchar(10), 
+CHA_dtDataConclusao timestamp, 
+CHA_dtHoraConclusao varchar(10), 
+CHA_dlDescricao text, 
+CHA_dcPrioridade varchar(1), 
+USU_cdUsuarios int, 
+STA_cdCodigoChamadoStatus int, 
+CHA_cdResponsavelChamado int, 
+CHA_dlConclusaoResponsavelChamado text, 
+CHA_dtAtualizacao timestamp, 
+PRO_cdCodigoProduto int, 
+CHA_dcOrigem varchar(1)
+);
+
+create table cap.ChamadoFuncionarioPopUP
+(
+DataHoraVerificacaoLocal timestamp, 
+COL_cdColaborador bigint
+);
+
+create table cap.CHAMADOFUNCIONARIOS
+(
+CHA_cdCodigoChamado int, 
+COL_cdColaborador int, 
+Observacao varchar(50), 
+PopUpRead int, 
+DataHoraAlteracao timestamp, 
+Terminal varchar(50)
+);
+
+create table cap.CHAMADOFUNCIONARIOS2
+(
+CHA_cdCodigoChamado int, 
+COL_cdColaborador int, 
+Observacao varchar(50), 
+PopUpRead int
+);
+
+create table cap.CHAMADOFUNCIONARIOSALTERACAO
+(
+COL_cdColaboradorAtualizacao bigint, 
+CHA_cdCodigoChamado int, 
+COL_cdColaborador int, 
+Observacao varchar(50), 
+PopUpRead int, 
+DataAlteracao timestamp, 
+Terminal varchar(50), 
+Tipo varchar(1), 
+DataAtualizacao timestamp
+);
+
+create table cap.CHAMADOFUNCIONARIOSEXCLUIDOS
+(
+COL_cdColaboradorExcluiu bigint, 
+CHA_cdCodigoChamado int, 
+COL_cdColaborador int, 
+Observacao varchar(50), 
+PopUpRead int
+);
+
+create table cap.CHAMADOLEITURA
+(
+CHA_cdCodigoChamado bigint, 
+COL_cdColaborador bigint, 
+Recebido Boolean, 
+Lido Boolean
+);
+
+create table cap.ChamadoOutrasOcorrenciasProprietario
+(
+origem varchar(12), 
+Protocolo int, 
+mod int, 
+QUA varchar(2), 
+LOT varchar(3), 
+DataOcorrencia timestamp, 
+descricao text, 
+codprop int
+);
+
+create table cap.CHAMADORETORNO
+(
+CHR_cdChamadoRetorno int, 
+CHA_cdCodigoChamado int, 
+CHR_dtDataChamadoRetorno timestamp, 
+CHR_dtHoraChamadoRetorno timestamp, 
+CHR_dlChamadoRetorno varchar(3000)
+);
+
+create table cap.CHAMADOSTATUS
+(
+STA_cdCodigoChamadoStatus int, 
+STA_dlDescricaoChamadoStatus varchar(30)
+);
+
+create table cap.CHAMADOSUBGRUPOS
+(
+SUBG_cdCodigoSubGrupo smallint
+);
+
+create table cap.CHAMADOTEMPORESP
+(
+A int, 
+M int, 
+D int, 
+H int, 
+Temporesp varchar(20), 
+CHA_cdCodigoChamado INT, 
+CHA_cdCodigoChamado__I INT, 
+new_CHA_cdCodigoChamado int
+);
+
+create table cap.CHAP
+(
+CHA_dtDataChamado timestamp, 
+CHA_dtDataConclusao timestamp, 
+cha_cdcodigochamado INT,
+cha_cdcodigochamado__I INT
+);
+
+create table cap.CONCLUSAOTIPO
+(
+COT_cdCodigoConclusaoTipo smallint, 
+COT_dlDescricaoConclusaoTipo varchar(50)
+);
+
+create table cap.Config
+(
+RelatorioModelo int
+);
+
+create table cap.d
+(
+COL_cdColaborador int, 
+CON_dtEntrega timestamp, 
+CON_cdEPI int, 
+CON_nuQuantidade float, 
+con_dlca varchar(5)
+);
+
+create table cap.EVENTO
+(
+FUN_cdCodigoFuncionario int, 
+EVEN_dcStatusEvento varchar(2), 
+EVEN_dtVisitaEvento timestamp, 
+EVEN_dtPrevistaEvento timestamp, 
+EVEN_dtConclusaoEvento timestamp, 
+EVEN_dlObservacaoEvento varchar(50), 
+CHA_cdCodigoChamado int, 
+EVEN_cdCodigoEvento int
+);
+
+create table cap.FAIL
+(
+cID varchar(30), 
+cValor1 varchar(320), 
+cValor2 varchar(320), 
+DataHora timestamp
+);
+
+create table cap.FOLLOWUPCOMPARTILHAMENTO
+(
+COL_cdColaboradorOrigem int, 
+COL_cdColaboradorDestino int
+);
+
+create table cap.GCAP
+(
+Categoria1 varchar(50), 
+Categoria2 varchar(40), 
+Categoria3 varchar(50), 
+Categoria4 varchar(50)
+);
+
+create table cap.Geral
+(
+cCodigo varchar(20), 
+cLabel varchar(40), 
+UsuAlttera Boolean, 
+cValor1 varchar(200), 
+cValor2 varchar(200)
+);
+
+create table cap.HABILITACOES
+(
+HAS_dlNomeUSuarioAD varchar(25), 
+HAS_dcTipoAcesso varchar(5)
+);
+
+create table cap.MAILCONFIG
+(
+mail varchar(30), 
+senha varchar(20), 
+smtp varchar(40)
+);
+
+create table cap.MANIFESTACAO
+(
+MANI_cdCodigoManifestacao int, 
+MANI_dlDescricaoManifestacao varchar(50)
+);
+
+create table cap.MENUS
+(
+ME_cdCodigoMenus smallint, 
+ME_dlNomeJanela varchar(50), 
+ME_dcTipoMenus varchar(3), 
+MEN_cdMenusNomes smallint
+);
+
+create table cap.MENUSNOMES
+(
+MEN_cdMenusNomes smallint, 
+MEN_dlMenusNomes varchar(60)
+);
+
+create table cap.PESQUISAMATRIZ
+(
+PEM_cdPesquisaMatriz int, 
+PPR_cdPesquisaPergunta int, 
+PET_cdPesquisaTitulo int, 
+PEM_dlCategoria varchar(120), 
+PEM_dcRespostaMultipla Boolean, 
+PEM_dtDataCriacaoMatriz timestamp, 
+PEM_cdOrdem int
+);
+
+create table cap.PESQUISAMATRIZDETALHE
+(
+PMD_cdPesquisaMatrizDetalhe int, 
+PEM_cdPesquisaMatriz int, 
+PRS_cdPesquisaRespostaSistema int, 
+PMD_dcParticipanteDescreveResposta Boolean, 
+PMD_dcRespostaVerdadeiraFalsa Boolean, 
+PMD_dcOcultarResposta Boolean, 
+PMD_cdOrdem int
+);
+
+create table cap.PESQUISAMATRIZDETALHEOLD
+(
+PMD_cdPesquisaMatrizDetalhe int, 
+PEM_cdPesquisaMatriz int, 
+PRS_cdPesquisaRespostaSistema int, 
+PMD_dcParticipanteDescreveResposta Boolean, 
+PMD_dcRespostaVerdadeiraFalsa Boolean, 
+PMD_dcOcultarResposta Boolean
+);
+
+create table cap.PESQUISAMATRIZOLD
+(
+PEM_cdPesquisaMatriz int, 
+PPR_cdPesquisaPergunta int, 
+PET_cdPesquisaTitulo int, 
+PEM_dlCategoria varchar(120), 
+PEM_dcRespostaMultipla Boolean, 
+PEM_dtDataCriacaoMatriz timestamp
+);
+
+create table cap.PESQUISAPERGUNTA
+(
+PPR_cdPesquisaPergunta int, 
+PPR_dlPesquisaPergunta varchar(100)
+);
+
+create table cap.PESQUISARELACIONADA
+(
+PEM_cdPesquisaMatriz int, 
+PET_cdPesquisaTitulo int, 
+PPR_cdPesquisaPerguntaRelacionada int, 
+PRS_cdPesquisaRespostaSistemaRelacionada int, 
+PRS_cdPesquisaRespostaSistemaAutoResposta int
+);
+
+create table cap.PESQUISARELACIONADAOLD
+(
+PEM_cdPesquisaMatriz int, 
+PET_cdPesquisaTitulo int, 
+PPR_cdPesquisaPerguntaRelacionada int, 
+PRS_cdPesquisaRespostaSistemaRelacionada int, 
+PRS_cdPesquisaRespostaSistemaAutoResposta int
+);
+
+create table cap.PESQUISARESPOSTASISTEMA
+(
+PRS_cdPesquisaRespostaSistema int, 
+PRS_dlPesquisaRespostaSistema varchar(100)
+);
+
+create table cap.pesquisas
+(
+PES_cdPesquisa bigint, 
+PEM_cdPesquisaMatriz int, 
+PMD_cdPesquisaMatrizDetalhe int, 
+COL_cdColaborador bigint, 
+PES_dtDataHoraInicio timestamp, 
+PES_dtDataHoraTermino timestamp, 
+PES_dlRespostaParticipante varchar(200), 
+PES_dcResposta Boolean
+);
+
+create table cap.PESQUISATITULO
+(
+PET_cdPesquisaTitulo int, 
+PET_dlPesquisaTitulo varchar(150)
+);
+
+create table cap.PRODUTO
+(
+PRO_cdCodigoProduto INT, 
+PRO_cdCodigoProduto__I INT, 
+PRO_dlDescricaoProduto varchar(80), 
+PRO_idOrdem int, 
+DataHoraCadastro timestamp
+);
+
+create table cap.PROP_ProprietariosCAP
+(
+PROP_nuCodigo INT, 
+PROP_nuCodigo__I INT, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+Prop_dlNome varchar(70), 
+Prop_dlEndereco varchar(50), 
+Prop_dlBairro varchar(25), 
+Prop_dlCidade varchar(20), 
+Prop_dcEstado varchar(2), 
+Prop_dcCep varchar(8), 
+PAI_cdPais int, 
+Prop_dlNomeCarta varchar(50), 
+Prop_dlEnderecoCarta varchar(50), 
+Prop_dlBairroCarta varchar(25), 
+Prop_dlCidadeCarta varchar(20), 
+Prop_dcEstadoCarta varchar(2), 
+Prop_dcCepCarta varchar(8), 
+PAI_cdPaisCarta int, 
+Prop_dcCpfCarta varchar(11), 
+Prop_dcCgcCarta varchar(14), 
+Prop_dcTelefoneRes varchar(16), 
+Prop_dcTelefoneCom varchar(16), 
+Prop_dcTelefoneCelular varchar(16), 
+Prop_dcTelefoneRiviera varchar(16), 
+Prop_dcCpf varchar(11), 
+Prop_dcCgC varchar(14), 
+Prop_dcRG varchar(9), 
+Prop_dtNascimento varchar(10), 
+Prop_dlContato varchar(50), 
+Prop_dlEnderecoEletronico varchar(50), 
+Prop_dcTelefoneResCarta varchar(16), 
+Prop_dcTelefoneComCarta varchar(16), 
+Prop_dcTelefoneCelularCarta varchar(16), 
+Prop_dcTelefoneRivieraCarta varchar(16), 
+Prop_dlEnderecoEletronicoCarta varchar(50), 
+Prop_stEnviaHipo varchar(1), 
+MOD_cdModuloRelat int, 
+QUA_cdQuadraRelat varchar(2), 
+PROP_dcLoteRelat varchar(3), 
+Prop_dlEnderecoRiviera varchar(50), 
+Prop_dlNomeJornal varchar(50), 
+Prop_dlEnderecoJornal varchar(50), 
+Prop_dlBairroJornal varchar(25), 
+Prop_dlCidadeJornal varchar(20), 
+Prop_dcUfJornal varchar(2), 
+Prop_dcCepJornal varchar(8), 
+Prop_nuCodigoUnificado int, 
+PROP_dlNomeZelador varchar(40), 
+PROP_stRelRiviera varchar(1), 
+PROP_Imagem varchar(10), 
+PROP_dlEmailBoleto varchar(50), 
+PROS_cdStatus int, 
+PROP_dtAlteracao timestamp, 
+PROP_nuDiaVencimentoBoleto int, 
+Prop_dcCepRiviera varchar(8), 
+IdCadBoleto int, 
+CM int, 
+AE int, 
+NaoBoleto int, 
+CHA_cdCodigoChamado int
+);
+
+create table cap.PROP_ProprietariosCAPBKP
+(
+PROP_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+Prop_dlNome varchar(70), 
+Prop_dlEndereco varchar(50), 
+Prop_dlBairro varchar(25), 
+Prop_dlCidade varchar(20), 
+Prop_dcEstado varchar(2), 
+Prop_dcCep varchar(8), 
+PAI_cdPais int, 
+Prop_dlNomeCarta varchar(50), 
+Prop_dlEnderecoCarta varchar(50), 
+Prop_dlBairroCarta varchar(25), 
+Prop_dlCidadeCarta varchar(20), 
+Prop_dcEstadoCarta varchar(2), 
+Prop_dcCepCarta varchar(8), 
+PAI_cdPaisCarta int, 
+Prop_dcCpfCarta varchar(11), 
+Prop_dcCgcCarta varchar(14), 
+Prop_dcTelefoneRes varchar(16), 
+Prop_dcTelefoneCom varchar(16), 
+Prop_dcTelefoneCelular varchar(16), 
+Prop_dcTelefoneRiviera varchar(16), 
+Prop_dcCpf varchar(11), 
+Prop_dcCgC varchar(14), 
+Prop_dcRG varchar(9), 
+Prop_dtNascimento varchar(10), 
+Prop_dlContato varchar(50), 
+Prop_dlEnderecoEletronico varchar(50), 
+Prop_dcTelefoneResCarta varchar(16), 
+Prop_dcTelefoneComCarta varchar(16), 
+Prop_dcTelefoneCelularCarta varchar(16), 
+Prop_dcTelefoneRivieraCarta varchar(16), 
+Prop_dlEnderecoEletronicoCarta varchar(50), 
+Prop_stEnviaHipo varchar(1), 
+MOD_cdModuloRelat int, 
+QUA_cdQuadraRelat varchar(2), 
+PROP_dcLoteRelat varchar(3), 
+Prop_dlEnderecoRiviera varchar(50), 
+Prop_dlNomeJornal varchar(50), 
+Prop_dlEnderecoJornal varchar(50), 
+Prop_dlBairroJornal varchar(25), 
+Prop_dlCidadeJornal varchar(20), 
+Prop_dcUfJornal varchar(2), 
+Prop_dcCepJornal varchar(8), 
+Prop_nuCodigoUnificado int, 
+PROP_dlNomeZelador varchar(40), 
+PROP_stRelRiviera varchar(1), 
+PROP_Imagem varchar(10), 
+PROP_dlEmailBoleto varchar(50), 
+PROS_cdStatus int, 
+PROP_dtAlteracao timestamp, 
+PROP_nuDiaVencimentoBoleto int, 
+Prop_dcCepRiviera varchar(8), 
+IdCadBoleto int, 
+CM int, 
+AE int, 
+NaoBoleto int, 
+CHA_cdCodigoChamado int
+);
+
+create table cap.Regras
+(
+id INT, 
+id__I INT, 
+descricao varchar(100), 
+textopadraoRelato varchar(400), 
+textopadraoRelacionamento varchar(400), 
+referencia timestamp, 
+ativo int, 
+IDPrioridadeSecundaria int, 
+RegraPadrao int
+);
+
+create table cap.RegrasDestino
+(
+id INT, 
+id__I INT, 
+idR int, 
+idDirecionamento int, 
+COL_cdColaborador bigint, 
+FUN_cdFuncao int, 
+referencia timestamp, 
+ativo int, 
+RegraPadrao int
+);
+
+create table cap.RegrasOrigem
+(
+id INT, 
+id__I INT, 
+idR int, 
+GRU_cdCodigoGrupo int, 
+SUBG_cdCodigoSubGrupo int, 
+referencia timestamp, 
+ativo int, 
+RegraPadrao int
+);
+
+create table cap.RelTemp
+(
+A int, 
+M int, 
+D int, 
+H int, 
+CHA_cdCodigoChamado INT, 
+CHA_cdCodigoChamado__I INT, 
+Temporesp varchar(20)
+);
+
+create table cap.RESTRICOESATENDENTE
+(
+USU_cdUsuarios int, 
+ME_cdCodigoMenu smallint
+);
+
+create table cap.RESTRICOESATENDENTEDETALHE
+(
+USU_cdUsuarios int, 
+SUBG_cdCodigoSubGrupo smallint, 
+GRU_cdCodigoGrupo smallint
+);
+
+create table cap.RESTRICOESTIPO
+(
+REST_cdRestricoesTipo int, 
+REST_dlRestricoesTipo varchar(20), 
+REST_blnUnicaRestricoesTipo Boolean
+);
+
+create table cap.RETORNO
+(
+RET_cdCodigoRetorno smallint, 
+RET_dlDescricaoRetorno varchar(50)
+);
+
+create table cap.SECURITYTABLES
+(
+USU_cdUsuarios int
+);
+
+create table cap.SubgruposEmailAutoChamado
+(
+SUBG_cdCodigoSubGrupo int
+);
+
+create table cap.t
+(
+CHA_cdCodigoChamado int, 
+COL_cdColaborador int, 
+obs int, 
+readp int, 
+datahoraalteracao timestamp, 
+terminal varchar(50)
+);
+
+create table cap.tmp
+(
+Protocolo int, 
+mod int, 
+qua varchar(2), 
+lot varchar(3), 
+DataOcorrencia timestamp, 
+Descricao text, 
+Status varchar(30), 
+CHA_dtDataChamado timestamp, 
+CHA_dtHoraChamado varchar(10), 
+CHA_dtDataConclusao timestamp, 
+CHA_dtHoraConclusao varchar(10), 
+CHA_dlConclusaoResponsavelChamado text, 
+SUBG_dlDescricaoSubGrupo varchar(40), 
+STA_dLDescricaoChamadoStatus varchar(30), 
+CHA_dcPrioridade varchar(1), 
+CHA_dcOrigem varchar(1), 
+pro varchar(50)
+);
+
+create table cap.TMP_TABLE_Search_Elen2013
+(
+Origem varchar(4), 
+Protocolo int, 
+MOD int, 
+QUA varchar(2), 
+LOT varchar(3), 
+DataOcorrencia timestamp, 
+Descricao text, 
+Nome varchar(70), 
+EnderecoRiviera varchar(61), 
+Endereco varchar(50), 
+Bairro varchar(25), 
+Cidade varchar(20), 
+Estado varchar(2), 
+CEP varchar(8), 
+TelRes varchar(16), 
+TelCom varchar(16), 
+TelCel varchar(16), 
+TelRiviera varchar(16), 
+Contato varchar(50), 
+EnderecoEletronico varchar(50), 
+EnderecoEletronicoContato varchar(100), 
+CHA_dtDataChamado timestamp, 
+CHA_dtHoraChamado varchar(10), 
+CHA_dtDataConclusao timestamp, 
+CHA_dtHoraConclusao varchar(10), 
+USU_cdUsuarios int, 
+CHA_cdResponsavelChamado int, 
+SUBG_dlDescricaoSubGrupo varchar(40), 
+SUBG_cdCodigoSubGrupo smallint, 
+CodProp int, 
+CHA_dcPrioridade varchar(1), 
+CHA_dcOrigem varchar(1), 
+PRO_cdCodigoProduto int, 
+CAT_cdCategoria int, 
+CHA_dlDescricaoOuvidor text, 
+setor varchar(50), 
+Mail varchar(50), 
+NomeCA varchar(70), 
+EmailCA varchar(50), 
+Telefone1CA varchar(16), 
+Telefone2CA varchar(16), 
+Prop_nuCodigoADD varchar(3), 
+IDCond bigint, 
+Status varchar(30), 
+StatusID int, 
+Movimentacao varchar(1), 
+Celular varchar(16)
+);
+
+create table cap.TMP_TABLE_Search_Feli1423
+(
+Origem varchar(4), 
+Protocolo int, 
+MOD int, 
+QUA varchar(2), 
+LOT varchar(3), 
+DataOcorrencia timestamp, 
+Descricao text, 
+Nome varchar(70), 
+EnderecoRiviera varchar(61), 
+Endereco varchar(50), 
+Bairro varchar(25), 
+Cidade varchar(20), 
+Estado varchar(2), 
+CEP varchar(8), 
+TelRes varchar(16), 
+TelCom varchar(16), 
+TelCel varchar(16), 
+TelRiviera varchar(16), 
+Contato varchar(50), 
+EnderecoEletronico varchar(50), 
+EnderecoEletronicoContato varchar(100), 
+CHA_dtDataChamado timestamp, 
+CHA_dtHoraChamado varchar(10), 
+CHA_dtDataConclusao timestamp, 
+CHA_dtHoraConclusao varchar(10), 
+USU_cdUsuarios int, 
+CHA_cdResponsavelChamado int, 
+SUBG_dlDescricaoSubGrupo varchar(40), 
+SUBG_cdCodigoSubGrupo smallint, 
+CodProp int, 
+CHA_dcPrioridade varchar(1), 
+CHA_dcOrigem varchar(1), 
+PRO_cdCodigoProduto int, 
+CAT_cdCategoria int, 
+CHA_dlDescricaoOuvidor text, 
+setor varchar(50), 
+Mail varchar(50), 
+NomeCA varchar(70), 
+EmailCA varchar(50), 
+Telefone1CA varchar(16), 
+Telefone2CA varchar(16), 
+Prop_nuCodigoADD varchar(3), 
+IDCond bigint, 
+Status varchar(30), 
+StatusID int, 
+Movimentacao varchar(1), 
+Celular varchar(16)
+);
+
+create table cap.TMP_TABLE_Search_plt20
+(
+Origem varchar(4), 
+Protocolo int, 
+MOD int, 
+QUA varchar(2), 
+LOT varchar(3), 
+DataOcorrencia timestamp, 
+Descricao text, 
+Nome varchar(70), 
+EnderecoRiviera varchar(61), 
+Endereco varchar(50), 
+Bairro varchar(25), 
+Cidade varchar(20), 
+Estado varchar(2), 
+CEP varchar(8), 
+TelRes varchar(16), 
+TelCom varchar(16), 
+TelCel varchar(16), 
+TelRiviera varchar(16), 
+Contato varchar(50), 
+EnderecoEletronico varchar(50), 
+EnderecoEletronicoContato varchar(100), 
+CHA_dtDataChamado timestamp, 
+CHA_dtHoraChamado varchar(10), 
+CHA_dtDataConclusao timestamp, 
+CHA_dtHoraConclusao varchar(10), 
+USU_cdUsuarios int, 
+CHA_cdResponsavelChamado int, 
+SUBG_dlDescricaoSubGrupo varchar(40), 
+SUBG_cdCodigoSubGrupo smallint, 
+CodProp int, 
+CHA_dcPrioridade varchar(1), 
+CHA_dcOrigem varchar(1), 
+PRO_cdCodigoProduto int, 
+CAT_cdCategoria int, 
+CHA_dlDescricaoOuvidor text, 
+setor varchar(50), 
+Mail varchar(50), 
+NomeCA varchar(70), 
+EmailCA varchar(50), 
+Telefone1CA varchar(16), 
+Telefone2CA varchar(16), 
+Prop_nuCodigoADD varchar(3), 
+IDCond bigint, 
+Status varchar(30), 
+StatusID int, 
+Movimentacao varchar(1), 
+Celular varchar(16)
+);
+
+create table cap.TMP_TABLE_Search_sylv66
+(
+Origem varchar(4), 
+Protocolo int, 
+MOD int, 
+QUA varchar(2), 
+LOT varchar(3), 
+DataOcorrencia timestamp, 
+Descricao text, 
+Nome varchar(70), 
+EnderecoRiviera varchar(61), 
+Endereco varchar(50), 
+Bairro varchar(25), 
+Cidade varchar(20), 
+Estado varchar(2), 
+CEP varchar(8), 
+TelRes varchar(16), 
+TelCom varchar(16), 
+TelCel varchar(16), 
+TelRiviera varchar(16), 
+Contato varchar(50), 
+EnderecoEletronico varchar(50), 
+EnderecoEletronicoContato varchar(100), 
+CHA_dtDataChamado timestamp, 
+CHA_dtHoraChamado varchar(10), 
+CHA_dtDataConclusao timestamp, 
+CHA_dtHoraConclusao varchar(10), 
+USU_cdUsuarios int, 
+CHA_cdResponsavelChamado int, 
+SUBG_dlDescricaoSubGrupo varchar(40), 
+SUBG_cdCodigoSubGrupo smallint, 
+CodProp int, 
+CHA_dcPrioridade varchar(1), 
+CHA_dcOrigem varchar(1), 
+PRO_cdCodigoProduto int, 
+CAT_cdCategoria int, 
+CHA_dlDescricaoOuvidor text, 
+setor varchar(50), 
+Mail varchar(50), 
+NomeCA varchar(70), 
+EmailCA varchar(50), 
+Telefone1CA varchar(16), 
+Telefone2CA varchar(16), 
+Prop_nuCodigoADD varchar(3), 
+IDCond bigint, 
+Status varchar(30), 
+StatusID int, 
+Movimentacao varchar(1), 
+Celular varchar(16)
+);
+
+create table cap.Users
+(
+UserID int, 
+Username varchar(100), 
+FirstName varchar(50), 
+LastName varchar(50), 
+IsSuperUser Boolean, 
+AffiliateId int, 
+Email varchar(256), 
+DisplayName varchar(128), 
+UpdatePassword Boolean
+);
+

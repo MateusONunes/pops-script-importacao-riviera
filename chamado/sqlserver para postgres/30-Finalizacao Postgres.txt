@@ -1,0 +1,24 @@
+UPDATE CATEGORIA SET CAT_cdCategoria = CAT_cdCategoria__I;
+UPDATE CHAMADO SET CHA_cdCodigoChamado = CHA_cdCodigoChamado__I;
+UPDATE CHAMADOANEXO SET id = id__I;
+UPDATE CHAMADOTEMPORESP SET CHA_cdCodigoChamado = CHA_cdCodigoChamado__I;
+UPDATE CHAP SET cha_cdcodigochamado = cha_cdcodigochamado__I;
+UPDATE PRODUTO SET PRO_cdCodigoProduto = PRO_cdCodigoProduto__I;
+UPDATE PROP_ProprietariosCAP SET PROP_nuCodigo = PROP_nuCodigo__I;
+UPDATE Regras SET id = id__I;
+UPDATE RegrasDestino SET id = id__I;
+UPDATE RegrasOrigem SET ID = ID__I;
+UPDATE RelTemp SET CHA_cdCodigoChamado = CHA_cdCodigoChamado__I;
+
+--ALTER TABLE CATEGORIA DROP COLUMN IF EXISTS CAT_cdCategoria__I;
+--ALTER TABLE CHAMADO DROP COLUMN IF EXISTS CHA_cdCodigoChamado__I;
+--ALTER TABLE CHAMADOANEXO DROP COLUMN IF EXISTS id__I;
+--ALTER TABLE CHAMADOTEMPORESP DROP COLUMN IF EXISTS CHA_cdCodigoChamado__I;
+--ALTER TABLE CHAP DROP COLUMN IF EXISTS cha_cdcodigochamado__I;
+--ALTER TABLE PRODUTO DROP COLUMN IF EXISTS PRO_cdCodigoProduto__I;
+--ALTER TABLE PROP_ProprietariosCAP DROP COLUMN IF EXISTS PROP_nuCodigo__I;
+--ALTER TABLE Regras DROP COLUMN IF EXISTS id__I;
+--ALTER TABLE RegrasDestino DROP COLUMN IF EXISTS id__I;
+--ALTER TABLE RegrasOrigem DROP COLUMN IF EXISTS ID__I;
+--ALTER TABLE RelTemp DROP COLUMN IF EXISTS CHA_cdCodigoChamado__I;
+

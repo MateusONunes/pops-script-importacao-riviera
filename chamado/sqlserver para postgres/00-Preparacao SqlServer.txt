@@ -1,0 +1,26 @@
+
+ALTER TABLE cap.dbo.CATEGORIA ADD CAT_cdCategoria__I INT NULL;
+ALTER TABLE cap.dbo.CHAMADO ADD CHA_cdCodigoChamado__I INT NULL;
+ALTER TABLE cap.dbo.CHAMADOANEXO ADD id__I INT NULL;
+ALTER TABLE cap.dbo.CHAMADOTEMPORESP ADD CHA_cdCodigoChamado__I INT NULL;
+ALTER TABLE cap.dbo.CHAP ADD cha_cdcodigochamado__I INT NULL;
+ALTER TABLE cap.dbo.PRODUTO ADD PRO_cdCodigoProduto__I INT NULL;
+ALTER TABLE cap.dbo.PROP_ProprietariosCAP ADD PROP_nuCodigo__I INT NULL;
+ALTER TABLE cap.dbo.Regras ADD id__I INT NULL;
+ALTER TABLE cap.dbo.RegrasDestino ADD id__I INT NULL;
+ALTER TABLE cap.dbo.RegrasOrigem ADD ID__I INT NULL;
+ALTER TABLE cap.dbo.RelTemp ADD CHA_cdCodigoChamado__I INT NULL;
+
+
+
+UPDATE CATEGORIA SET CAT_cdCategoria__I = CAT_cdCategoria; 
+UPDATE CHAMADO SET CHA_cdCodigoChamado__I = CHA_cdCodigoChamado; 
+UPDATE CHAMADOANEXO SET id__I = id; 
+UPDATE CHAMADOTEMPORESP SET CHA_cdCodigoChamado__I = CHA_cdCodigoChamado; 
+UPDATE CHAP SET cha_cdcodigochamado__I = cha_cdcodigochamado; 
+UPDATE PRODUTO SET PRO_cdCodigoProduto__I = PRO_cdCodigoProduto; 
+UPDATE PROP_ProprietariosCAP SET PROP_nuCodigo__I = PROP_nuCodigo; 
+UPDATE Regras SET id__I = id; 
+UPDATE RegrasDestino SET id__I = id; 
+UPDATE RegrasOrigem SET ID__I = ID; 
+UPDATE RelTemp SET CHA_cdCodigoChamado__I = CHA_cdCodigoChamado; 

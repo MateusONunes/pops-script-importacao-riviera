@@ -1,0 +1,15 @@
+
+ALTER TABLE dbo.prop_proprietarios ADD if not exists max_prop_nucodigo_by_nome integer NULL;
+
+UPDATE dbo.prop_proprietarios P 
+   SET max_prop_nucodigo_by_nome = (SELECT MAX(P2.prop_nucodigo)
+                                      FROM dbo.prop_proprietarios P2
+                                     WHERE p2.prop_dlnome = P.prop_dlnome 
+                                   )
+where COALESCE(p.prop_dlnome, '') <> '';   
+
+DELETE FROM public.helpdesk_ticket_channel htc WHERE ID = 5;
+
+INSERT INTO public.helpdesk_ticket_channel (id,"name",active,company_id,create_uid,create_date,write_uid,write_date)
+VALUES (5, 'Presencial', true, 1, 1, current_timestamp, 1, current_timestamp);
+

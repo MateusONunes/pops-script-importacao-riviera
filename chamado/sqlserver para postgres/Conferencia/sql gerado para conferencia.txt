@@ -1,0 +1,87 @@
+
+select t.tabela,
+       t.qtdeSqlServer,
+       T.qtdePostgres,
+       t.dif
+  from (
+  select t.tabela,
+         T.qtdeSqlServer,
+         T.qtdePostgres,
+         T.qtdeSqlServer - T.qtdePostgres dif
+    from (
+SELECT 'ACESSOS' tabela, 0 qtdeSqlServer, (select count(0) FROM cap.ACESSOS) qtdePostgres
+UNION ALL SELECT 'ACESSOSTIPOS' tabela, 3 qtdeSqlServer, (select count(0) FROM cap.ACESSOSTIPOS) qtdePostgres
+UNION ALL SELECT 'ANIMO' tabela, 14 qtdeSqlServer, (select count(0) FROM cap.ANIMO) qtdePostgres
+UNION ALL SELECT 'CAPATENDENTES' tabela, 10 qtdeSqlServer, (select count(0) FROM cap.CAPATENDENTES) qtdePostgres
+UNION ALL SELECT 'CAPCONTROL' tabela, 48 qtdeSqlServer, (select count(0) FROM cap.CAPCONTROL) qtdePostgres
+UNION ALL SELECT 'CapControlUserSector' tabela, 1 qtdeSqlServer, (select count(0) FROM cap.CapControlUserSector) qtdePostgres
+UNION ALL SELECT 'CAPParametros' tabela, 1 qtdeSqlServer, (select count(0) FROM cap.CAPParametros) qtdePostgres
+UNION ALL SELECT 'CapRepTempFelix1423' tabela, 80 qtdeSqlServer, (select count(0) FROM cap.CapRepTempFelix1423) qtdePostgres
+UNION ALL SELECT 'CapRepTemppralvin21249' tabela, 3 qtdeSqlServer, (select count(0) FROM cap.CapRepTemppralvin21249) qtdePostgres
+UNION ALL SELECT 'CapRepTemppralvinPralvinC' tabela, 157 qtdeSqlServer, (select count(0) FROM cap.CapRepTemppralvinPralvinC) qtdePostgres
+UNION ALL SELECT 'CapRepTempsylvio66' tabela, 78 qtdeSqlServer, (select count(0) FROM cap.CapRepTempsylvio66) qtdePostgres
+UNION ALL SELECT 'CATEGORIA' tabela, 371 qtdeSqlServer, (select count(0) FROM cap.CATEGORIA) qtdePostgres
+UNION ALL SELECT 'CHAMADO' tabela, 95040 qtdeSqlServer, (select count(0) FROM cap.CHAMADO) qtdePostgres
+UNION ALL SELECT 'CHAMADOALTERACAO' tabela, 1151 qtdeSqlServer, (select count(0) FROM cap.CHAMADOALTERACAO) qtdePostgres
+UNION ALL SELECT 'CHAMADOANEXO' tabela, 0 qtdeSqlServer, (select count(0) FROM cap.CHAMADOANEXO) qtdePostgres
+UNION ALL SELECT 'CHAMADOAUDIT' tabela, 0 qtdeSqlServer, (select count(0) FROM cap.CHAMADOAUDIT) qtdePostgres
+UNION ALL SELECT 'CHAMADODETALHE' tabela, 40420 qtdeSqlServer, (select count(0) FROM cap.CHAMADODETALHE) qtdePostgres
+UNION ALL SELECT 'CHAMADOEXCLUIDO' tabela, 13 qtdeSqlServer, (select count(0) FROM cap.CHAMADOEXCLUIDO) qtdePostgres
+UNION ALL SELECT 'ChamadoFuncionarioPopUP' tabela, 1 qtdeSqlServer, (select count(0) FROM cap.ChamadoFuncionarioPopUP) qtdePostgres
+UNION ALL SELECT 'CHAMADOFUNCIONARIOS' tabela, 97429 qtdeSqlServer, (select count(0) FROM cap.CHAMADOFUNCIONARIOS) qtdePostgres
+UNION ALL SELECT 'CHAMADOFUNCIONARIOS2' tabela, 119 qtdeSqlServer, (select count(0) FROM cap.CHAMADOFUNCIONARIOS2) qtdePostgres
+UNION ALL SELECT 'CHAMADOFUNCIONARIOSALTERACAO' tabela, 2439 qtdeSqlServer, (select count(0) FROM cap.CHAMADOFUNCIONARIOSALTERACAO) qtdePostgres
+UNION ALL SELECT 'CHAMADOFUNCIONARIOSEXCLUIDOS' tabela, 627 qtdeSqlServer, (select count(0) FROM cap.CHAMADOFUNCIONARIOSEXCLUIDOS) qtdePostgres
+UNION ALL SELECT 'CHAMADOLEITURA' tabela, 1 qtdeSqlServer, (select count(0) FROM cap.CHAMADOLEITURA) qtdePostgres
+UNION ALL SELECT 'ChamadoOutrasOcorrenciasProprietario' tabela, 4987 qtdeSqlServer, (select count(0) FROM cap.ChamadoOutrasOcorrenciasProprietario) qtdePostgres
+UNION ALL SELECT 'CHAMADORETORNO' tabela, 0 qtdeSqlServer, (select count(0) FROM cap.CHAMADORETORNO) qtdePostgres
+UNION ALL SELECT 'CHAMADOSTATUS' tabela, 2 qtdeSqlServer, (select count(0) FROM cap.CHAMADOSTATUS) qtdePostgres
+UNION ALL SELECT 'CHAMADOSUBGRUPOS' tabela, 47 qtdeSqlServer, (select count(0) FROM cap.CHAMADOSUBGRUPOS) qtdePostgres
+UNION ALL SELECT 'CHAMADOTEMPORESP' tabela, 69228 qtdeSqlServer, (select count(0) FROM cap.CHAMADOTEMPORESP) qtdePostgres
+UNION ALL SELECT 'CHAP' tabela, 176 qtdeSqlServer, (select count(0) FROM cap.CHAP) qtdePostgres
+UNION ALL SELECT 'CONCLUSAOTIPO' tabela, 0 qtdeSqlServer, (select count(0) FROM cap.CONCLUSAOTIPO) qtdePostgres
+UNION ALL SELECT 'Config' tabela, 1 qtdeSqlServer, (select count(0) FROM cap.Config) qtdePostgres
+UNION ALL SELECT 'd' tabela, 471 qtdeSqlServer, (select count(0) FROM cap.d) qtdePostgres
+UNION ALL SELECT 'EVENTO' tabela, 0 qtdeSqlServer, (select count(0) FROM cap.EVENTO) qtdePostgres
+UNION ALL SELECT 'FAIL' tabela, 627 qtdeSqlServer, (select count(0) FROM cap.FAIL) qtdePostgres
+UNION ALL SELECT 'FOLLOWUPCOMPARTILHAMENTO' tabela, 38 qtdeSqlServer, (select count(0) FROM cap.FOLLOWUPCOMPARTILHAMENTO) qtdePostgres
+UNION ALL SELECT 'GCAP' tabela, 306 qtdeSqlServer, (select count(0) FROM cap.GCAP) qtdePostgres
+UNION ALL SELECT 'Geral' tabela, 3 qtdeSqlServer, (select count(0) FROM cap.Geral) qtdePostgres
+UNION ALL SELECT 'HABILITACOES' tabela, 0 qtdeSqlServer, (select count(0) FROM cap.HABILITACOES) qtdePostgres
+UNION ALL SELECT 'MAILCONFIG' tabela, 1 qtdeSqlServer, (select count(0) FROM cap.MAILCONFIG) qtdePostgres
+UNION ALL SELECT 'MANIFESTACAO' tabela, 210 qtdeSqlServer, (select count(0) FROM cap.MANIFESTACAO) qtdePostgres
+UNION ALL SELECT 'MENUS' tabela, 208 qtdeSqlServer, (select count(0) FROM cap.MENUS) qtdePostgres
+UNION ALL SELECT 'MENUSNOMES' tabela, 134 qtdeSqlServer, (select count(0) FROM cap.MENUSNOMES) qtdePostgres
+UNION ALL SELECT 'PESQUISAMATRIZ' tabela, 58 qtdeSqlServer, (select count(0) FROM cap.PESQUISAMATRIZ) qtdePostgres
+UNION ALL SELECT 'PESQUISAMATRIZDETALHE' tabela, 274 qtdeSqlServer, (select count(0) FROM cap.PESQUISAMATRIZDETALHE) qtdePostgres
+UNION ALL SELECT 'PESQUISAMATRIZDETALHEOLD' tabela, 272 qtdeSqlServer, (select count(0) FROM cap.PESQUISAMATRIZDETALHEOLD) qtdePostgres
+UNION ALL SELECT 'PESQUISAMATRIZOLD' tabela, 58 qtdeSqlServer, (select count(0) FROM cap.PESQUISAMATRIZOLD) qtdePostgres
+UNION ALL SELECT 'PESQUISAPERGUNTA' tabela, 83 qtdeSqlServer, (select count(0) FROM cap.PESQUISAPERGUNTA) qtdePostgres
+UNION ALL SELECT 'PESQUISARELACIONADA' tabela, 16 qtdeSqlServer, (select count(0) FROM cap.PESQUISARELACIONADA) qtdePostgres
+UNION ALL SELECT 'PESQUISARELACIONADAOLD' tabela, 18 qtdeSqlServer, (select count(0) FROM cap.PESQUISARELACIONADAOLD) qtdePostgres
+UNION ALL SELECT 'PESQUISARESPOSTASISTEMA' tabela, 209 qtdeSqlServer, (select count(0) FROM cap.PESQUISARESPOSTASISTEMA) qtdePostgres
+UNION ALL SELECT 'pesquisas' tabela, 218 qtdeSqlServer, (select count(0) FROM cap.pesquisas) qtdePostgres
+UNION ALL SELECT 'PESQUISATITULO' tabela, 2 qtdeSqlServer, (select count(0) FROM cap.PESQUISATITULO) qtdePostgres
+UNION ALL SELECT 'PRODUTO' tabela, 185 qtdeSqlServer, (select count(0) FROM cap.PRODUTO) qtdePostgres
+UNION ALL SELECT 'PROP_ProprietariosCAP' tabela, 5 qtdeSqlServer, (select count(0) FROM cap.PROP_ProprietariosCAP) qtdePostgres
+UNION ALL SELECT 'PROP_ProprietariosCAPBKP' tabela, 1762 qtdeSqlServer, (select count(0) FROM cap.PROP_ProprietariosCAPBKP) qtdePostgres
+UNION ALL SELECT 'Regras' tabela, 27 qtdeSqlServer, (select count(0) FROM cap.Regras) qtdePostgres
+UNION ALL SELECT 'RegrasDestino' tabela, 211 qtdeSqlServer, (select count(0) FROM cap.RegrasDestino) qtdePostgres
+UNION ALL SELECT 'RegrasOrigem' tabela, 168 qtdeSqlServer, (select count(0) FROM cap.RegrasOrigem) qtdePostgres
+UNION ALL SELECT 'RelTemp' tabela, 70507 qtdeSqlServer, (select count(0) FROM cap.RelTemp) qtdePostgres
+UNION ALL SELECT 'RESTRICOESATENDENTE' tabela, 4373 qtdeSqlServer, (select count(0) FROM cap.RESTRICOESATENDENTE) qtdePostgres
+UNION ALL SELECT 'RESTRICOESATENDENTEDETALHE' tabela, 704 qtdeSqlServer, (select count(0) FROM cap.RESTRICOESATENDENTEDETALHE) qtdePostgres
+UNION ALL SELECT 'RESTRICOESTIPO' tabela, 8 qtdeSqlServer, (select count(0) FROM cap.RESTRICOESTIPO) qtdePostgres
+UNION ALL SELECT 'RETORNO' tabela, 3 qtdeSqlServer, (select count(0) FROM cap.RETORNO) qtdePostgres
+UNION ALL SELECT 'SECURITYTABLES' tabela, 0 qtdeSqlServer, (select count(0) FROM cap.SECURITYTABLES) qtdePostgres
+UNION ALL SELECT 'SubgruposEmailAutoChamado' tabela, 2 qtdeSqlServer, (select count(0) FROM cap.SubgruposEmailAutoChamado) qtdePostgres
+UNION ALL SELECT 't' tabela, 434 qtdeSqlServer, (select count(0) FROM cap.t) qtdePostgres
+UNION ALL SELECT 'tmp' tabela, 4827 qtdeSqlServer, (select count(0) FROM cap.tmp) qtdePostgres
+UNION ALL SELECT 'TMP_TABLE_Search_Elen2013' tabela, 21 qtdeSqlServer, (select count(0) FROM cap.TMP_TABLE_Search_Elen2013) qtdePostgres
+UNION ALL SELECT 'TMP_TABLE_Search_Feli1423' tabela, 7 qtdeSqlServer, (select count(0) FROM cap.TMP_TABLE_Search_Feli1423) qtdePostgres
+UNION ALL SELECT 'TMP_TABLE_Search_plt20' tabela, 65 qtdeSqlServer, (select count(0) FROM cap.TMP_TABLE_Search_plt20) qtdePostgres
+UNION ALL SELECT 'TMP_TABLE_Search_sylv66' tabela, 91 qtdeSqlServer, (select count(0) FROM cap.TMP_TABLE_Search_sylv66) qtdePostgres
+UNION ALL SELECT 'Users' tabela, 2 qtdeSqlServer, (select count(0) FROM cap.Users) qtdePostgres
+    ) t
+  ) t
+  where dif <> 0  

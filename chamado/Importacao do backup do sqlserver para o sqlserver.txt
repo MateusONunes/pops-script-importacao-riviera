@@ -1,0 +1,10 @@
+--restore database https://www.youtube.com/watch?v=9fkrcoXNvG0
+--::BANCO CAP
+RESTORE FILELISTONLY FROM DISK = N'/home/mateus/_des/mateus/flutter/popsolutions/riviera/bancos base/sqlserver/chamado/Cap.bak'
+RESTORE DATABASE cap
+FROM DISK = N'/home/mateus/_des/mateus/flutter/popsolutions/riviera/bancos base/sqlserver/chamado/Cap.bak'
+WITH MOVE 'CAP' TO '/var/opt/mssql/data/cap.mdf',
+MOVE 'CAP_log' TO '/var/opt/mssql/data/cap_0.ldf'
+GO
+
+
