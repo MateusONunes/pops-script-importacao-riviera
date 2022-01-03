@@ -1,0 +1,3371 @@
+drop schema if exists dbo cascade;
+drop schema if exists guest cascade;
+drop schema if exists Nucleo cascade;
+
+create schema dbo; ALTER SCHEMA public OWNER TO postgres;
+create schema guest; ALTER SCHEMA public OWNER TO postgres;
+create schema Nucleo; ALTER SCHEMA public OWNER TO postgres;
+
+
+create table dbo.ACOR_Acordo
+(
+Prop_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+ACOR_dtAcordo timestamp, 
+ACOR_dtVencimento timestamp, 
+ACOR_dtPagamento timestamp, 
+ACOR_dtBaixa timestamp, 
+ACOR_vlParcela Numeric(8,2), 
+ACOR_vlRecebido Numeric(8,2), 
+ACOR_nuParcela int, 
+ACOR_vlHonorario Numeric(8,2), 
+ACOR_vlCustas Numeric(8,2), 
+ACOR_dlObservacao text, 
+ACOR_dlInformacao text, 
+COL_cdColaborador bigint
+);
+create table dbo.ALTERAPROPRIETARIO
+(
+PROP_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(3), 
+PROP_dcLote varchar(3), 
+ALT_PropdlNome varchar(50), 
+ALT_PropdlEndereco varchar(50), 
+ALT_PropdlBairro varchar(25), 
+ALT_PropdlCidade varchar(20), 
+ALT_PropdcEstado varchar(2), 
+ALT_PropdcCep varchar(8), 
+ALT_PAIcdPais int, 
+ALT_PropdlNomeCarta varchar(50), 
+ALT_PropdlEnderecoCarta varchar(50), 
+ALT_PropdlBairroCarta varchar(25), 
+ALT_PropdlCidadeCarta varchar(20), 
+ALT_PropdcEstadoCarta varchar(2), 
+ALT_PropdcCepCarta varchar(8), 
+ALT_PAIcdPaisCarta int, 
+ALT_PropdcTelefoneRes varchar(16), 
+ALT_PropdcTelefoneCom varchar(16), 
+ALT_PropdcTelefoneCelular varchar(16), 
+ALT_PropdcTelefoneRiviera varchar(16), 
+ALT_PropdcCpf varchar(11), 
+ALT_PropdcCGC varchar(14), 
+ALT_PropdcRG varchar(9), 
+ALT_PropdtNascimento timestamp, 
+ALT_PropdlContato varchar(50), 
+ALT_PropdlEnderecoEletronico varchar(50), 
+ALT_PropdcTelefoneResCarta varchar(16), 
+ALT_PropdcTelefoneComCarta varchar(16), 
+ALT_PropdcTelefoneCelularCarta varchar(16), 
+ALT_PropdcTelefoneRivieraCarta varchar(16), 
+ALT_PropdlEnderecoEletronicoCarta varchar(50), 
+ALT_PropdlEnderecoRiviera varchar(50), 
+ALT_dlSolicitante varchar(20), 
+ALT_dtAlteracaoSolicitante timestamp, 
+ALT_dlDCR varchar(20), 
+ALT_dtAlteracaoDCR timestamp, 
+ALT_stAlterar varchar(1)
+);
+create table dbo.apaa
+(
+Observacao varchar(250), 
+ReferenciaCM varchar(7), 
+ReferenciaAE varchar(7), 
+ContribuicaoEmissao Numeric(8,2), 
+ContribuicaoEnviado Numeric(8,2), 
+AguaEmissao Numeric(8,2), 
+AguaEnviado Numeric(8,2), 
+LoteNaoImplantadoEnviado Numeric(8
+,2), 
+TotalEmissao Numeric(8,2), 
+TotalEnviado Numeric(8,2), 
+UmDebitoEmissao Numeric(8,2), 
+UmDebitoEnviado Numeric(8,2), 
+DoisDebitosEmissao Numeric(8,2), 
+DoisDebitosEnviado Numeric(8,2), 
+TotalDebitoEnviado Numeric(8,2), 
+TotalGeral Numeric(8,2), 
+Inpc varchar(10), 
+Base varchar(30), 
+Divulgado timestamp, 
+IndexadorAtualizacao varchar(15), 
+IndexadorGeracao varchar(15), 
+DataVencimento timestamp, 
+Metros3 int, 
+TotalBoletos int, 
+TotalGolfEmitido Numeric(8,2), 
+TotalGolfEnviado Numeric(8,2), 
+UmDebitoAVEmissao Numeric(8,2), 
+UmDebitoAVAtualizado Numeric(8,2), 
+DoisDebitosAVEmissao Numeric(8,2), 
+DoisDebitosAVAtualizado Numeric(8,2), 
+TotalDebitoAVAtualizado Numeric(8,2), 
+TotalDebitoAVEmissao Numeric(8,2), 
+CMNaoEmitidoEmbargo Numeric(8,2), 
+TAXAcapEmis Numeric(8,2), 
+TAXAcapEnv Numeric(8,2), 
+TotalLotesEmbargo int, 
+ValorUfespEpoca Numeric(8,2), 
+CMMinima Numeric(8,2)
+);
+create table dbo.ArquivoBancoCNAB_MensagensRetornoBanco
+(
+Codigo varchar(2), 
+Descricao varchar(600), 
+Posicao varchar(9)
+);
+create table dbo.ArquivoBancoCNABDesc
+(
+CODRET float, 
+DESCR varchar(250), 
+Tipo varchar(1)
+);
+create table dbo.ArquivoBancoCNABEnviados
+(
+NomeArquivo varchar(20), 
+SequencialBanco int, 
+DataHoraSistema timestamp, 
+DatahoraEnvio timestamp, 
+CodigoBoleto bigint
+);
+create table dbo.ArquivoBancoCNABEspelho
+(
+COL_cdColaborador bigint, 
+Conteudo varchar(400), 
+NomeArquivo varchar(20), 
+CaminhoArquivo varchar(290), 
+Tipo varchar(1), 
+DataHoraSistema timestamp, 
+NossoNumero varchar(12), 
+CodigoBoleto bigint, 
+Ordem SERIAL, 
+CodProp bigint
+);
+create table dbo.ArquivoBancoCNABEspelhoBackup
+(
+COL_cdColaborador bigint, 
+Conteudo varchar(400), 
+NomeArquivo varchar(20), 
+CaminhoArquivo varchar(290), 
+Tipo varchar(1), 
+DataHoraSistema timestamp, 
+NossoNumero varchar(12), 
+CodigoBoleto bigint, 
+Ordem bigint
+);
+create table dbo.ArquivoBancoCNABReenviados
+(
+CodigoBoleto bigint, 
+Contador int, 
+NomeArquivo varchar(20)
+);
+create table dbo.ArquivoBancoCNABSelecionados
+(
+datahorasistema timestamp
+);
+create table dbo.ArquivoRemessaSequenciasLivres
+(
+Sequencia int
+);
+create table dbo.ArquivoRetornoRegistrosNaoIdentificados
+(
+PROP_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(3), 
+PROP_dcLote varchar(3), 
+Data timestamp, 
+DataMovimentacao timestamp, 
+Valor Numeric(8,2), 
+DataBaixa timestamp, 
+DataHoraSistema timestamp, 
+Observacao varchar(200)
+);
+create table dbo.AUD_Auditoria
+(
+AUD_dtOperacao timestamp, 
+PROP_nuCodigo int, 
+USU_nuRegistro int, 
+AUD_dlAcao varchar(20), 
+AUD_dlTabela varchar(20), 
+AUD_dlFormulario varchar(35), 
+AUD_dlObservacao varchar(100), 
+xteste timestamp
+);
+create table dbo.AVI_Aviso
+(
+PROP_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+PROP_dcLote varchar(3), 
+AVI_dtAviso timestamp
+);
+create table dbo.BAI_Baixa
+(
+Prop_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+BAI_dtVencimento timestamp, 
+BAI_dtPagamento timestamp, 
+BAI_dtBaixa date, 
+BAI_vlEmitido Numeric(8,2), 
+BAI_vlCorrecaoMonetaria Numeric(8,2), 
+BAI_vlJuros Numeric(8,2), 
+BAI_vlMulta Numeric(8,2), 
+BAI_vlRecebido Numeric(8,2), 
+BAI_dcBanco varchar(5), 
+BAI_dcAgencia varchar(5), 
+BAI_dcCheque varchar(6), 
+BAI_nuRecibo int, 
+BAI_dcTipo varchar(3), 
+BAI_dlObservacao varchar(200), 
+BAI_nuRegistro int, 
+BAI_dtMovimentacao timestamp, 
+BAI_dtOperacao timestamp, 
+BAI_dtCalculoAtualizacao timestamp, 
+BAI_vlEspecie Numeric(8,2), 
+BAI_dcContaCorrente varchar(10), 
+Sequencia bigint, 
+BAI_vlBanco Numeric(8,2), 
+BAI_dlDetalhe BYTEA, 
+BAI_idBaixa SERIAL, 
+DataHoraAtualizacao timestamp, 
+BAI_dtAtualizacaoValores date, 
+BAI_dtRecibo date, 
+COL_cdColaborador bigint
+);
+create table dbo.BAI_BaixaAjuste
+(
+Prop_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+BAI_dtVencimento timestamp, 
+BAI_dtPagamento timestamp, 
+BAI_dtBaixa date, 
+BAI_vlEmitido Numeric(8,2), 
+BAI_vlCorrecaoMonetaria Numeric(8,2), 
+BAI_vlJuros Numeric(8,2), 
+BAI_vlMulta Numeric(8,2), 
+BAI_vlRecebido Numeric(8,2), 
+BAI_dcBanco varchar(5), 
+BAI_dcAgencia varchar(5), 
+BAI_dcCheque varchar(6), 
+BAI_nuRecibo int, 
+BAI_dcTipo varchar(3), 
+BAI_dlObservacao varchar(200), 
+BAI_nuRegistro int, 
+BAI_dtMovimentacao timestamp, 
+BAI_dtOperacao timestamp, 
+BAI_dtCalculoAtualizacao timestamp, 
+BAI_vlEspecie Numeric(8,2), 
+BAI_dcContaCorrente varchar(10), 
+Sequencia bigint, 
+BAI_vlBanco Numeric(8,2), 
+BAI_dlDetalhe BYTEA, 
+BAI_idBaixa SERIAL, 
+DataHoraAtualizacao timestamp, 
+BAI_dtAtualizacaoValores date, 
+BAI_dtRecibo date, 
+COL_cdColaborador bigint
+);
+create table dbo.BaixaAutomaticaTemporaria
+(
+Sta varchar(5), 
+ValorPago Numeric(8,2), 
+ValorDevido Numeric(8,2), 
+ValorBoleto Numeric(8,2), 
+ValorBaixado Numeric(8,2), 
+CodBoleto bigint, 
+CodProp int, 
+Nome varchar(80), 
+TipoPagto varchar(23), 
+DataPagto varchar(10), 
+DataVencimento varchar(10), 
+Observacao varchar(1800), 
+DataHoraSistema timestamp, 
+COL_cdColaborador bigint, 
+DataMovimentacao date
+);
+create table dbo.BaixaMemorando
+(
+codigoBoleto bigint, 
+Assunto varchar(350), 
+DescricaoMemo text, 
+COL_cdColaborador bigint, 
+DataMemorando date
+);
+create table dbo.BaixaTemporaria
+(
+IdEspecificoCobranca bigint, 
+CodigoCobranca int, 
+COL_cdColaborador int, 
+RegistroBaixa timestamp, 
+Id_baixa bigint
+);
+create table dbo.BAIXATIPO
+(
+BAIT_cdCodigo SERIAL, 
+BAIT_dlDescricao varchar(49)
+);
+create table dbo.BOL_BOLETONOVO
+(
+Prop_nuCodigo varchar(4), 
+MOD_cdModulo varchar(2), 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+Prop_dlNome varchar(100), 
+Prop_dlEndereco varchar(50), 
+Prop_dlBairro varchar(25), 
+Prop_dlCidade varchar(20), 
+Prop_dcEstado varchar(2), 
+Prop_dcCep varchar(8), 
+PROP_dcCpf varchar(14), 
+COB_dtVencimento timestamp, 
+BOL_dlContribuicaoMensal1 varchar(20), 
+BOL_vlContribuicaoMensal1 Numeric(8,2), 
+BOL_dlAguaEsgoto1 varchar(20), 
+BOL_vlAguaEsgoto1 Numeric(8,2), 
+BOL_vlValorAtualizado1 Numeric(8,2), 
+BOL_dlTaxaDesconto1 text, 
+BOL_vlTaxaDesconto1 Numeric(8,2), 
+BOL_dtVencimento2 timestamp, 
+BOL_dlContribuicaoMensal2 varchar(20), 
+BOL_vlContribuicaoMensal2 Numeric(8,2), 
+BOL_dlAguaEsgoto2 varchar(20), 
+BOL_vlAguaEsgoto2 Numeric(8,2), 
+BOL_vlValorAtualizado2 Numeric(8,2), 
+BOL_dlTaxaDesconto2 text, 
+BOL_vlTaxaDesconto2 Numeric(8,2), 
+BOL_dtVencimento3 timestamp, 
+BOL_dlContribuicaoMensal3 varchar(20), 
+BOL_vlContribuicaoMensal3 Numeric(8,2), 
+BOL_dlAguaEsgoto3 varchar(20), 
+BOL_vlAguaEsgoto3 Numeric(8,2), 
+BOL_dlTaxaDesconto3 text, 
+BOL_vlTaxaDesconto3 Numeric(8,2), 
+BOL_dlDesconto varchar(50), 
+BOL_vldesconto Numeric(8,2), 
+BOL_vlValorAtualizado3 Numeric(8,2), 
+BOL_vlDocumento Numeric(8,2), 
+BOL_dlLinhaDigitavel varchar(54), 
+BOL_dlCodigoBarras varchar(24), 
+BOL_dtProcessamento timestamp, 
+BOL_dlContato varchar(50), 
+BOL_stEnvia varchar(1), 
+BOL_dtVencimento timestamp, 
+BOL_dlObservacao varchar(80), 
+BOL_nuregistro int, 
+BOL_stImprimir varchar(1)
+);
+create table dbo.Boleto
+(
+Codigo bigint, 
+DataVencimento timestamp, 
+ValorTotal varchar(19), 
+Modulo varchar(2), 
+Quadra varchar(2), 
+Lote varchar(3), 
+Nome varchar(60), 
+PROP_nucodigo int, 
+TipoObra varchar(25), 
+NossoNumero varchar(12), 
+CodigoCedente varchar(20), 
+MesReferencia varchar(20), 
+DataLeitura varchar(12), 
+LeituraAnterior int, 
+LeituraAtual int, 
+HistConsAtualM3 int, 
+HistConsMediaM3 int, 
+DataProximaLeitura varchar(12), 
+NumeroEconomiasPredio varchar(10), 
+HistConsDescricaoRef1 varchar(20), 
+HistConsDescricaoRef2 varchar(20), 
+HistConsDescricaoRef3 varchar(20), 
+HistConsDescricaoRef4 varchar(20), 
+HistConsDescricaoRef5 varchar(20), 
+HistConsDescricaoRef6 varchar(20), 
+HistConsDescricaoRef7 varchar(20), 
+HistConsDescricaoRef8 varchar(20), 
+HistConsDescricaoRef9 varchar(20), 
+HistConsDescricaoRef10 varchar(20), 
+HistConsDescricaoRef11 varchar(20), 
+HistConsDescricaoRef12 varchar(20), 
+HistConsValorRef1 int, 
+HistConsValorRef2 int, 
+HistConsValorRef3 int, 
+HistConsValorRef4 int, 
+HistConsValorRef5 int, 
+HistConsValorRef6 int, 
+HistConsValorRef7 int, 
+HistConsValorRef8 int, 
+HistConsValorRef9 int, 
+HistConsValorRef10 int, 
+HistConsValorRef11 int, 
+HistConsValorRef12 int, 
+HistConsTotalM3 int, 
+DescricaoFaturamento text, 
+DescricaoFaturamentoValores text, 
+MensagemTextoCorpoBoleto text, 
+
+MensagemTextoCapa text, 
+PeriodoQualidadeAgua varchar(35), 
+PhMedias varchar(10), 
+PhValorLimite varchar(10), 
+CorMedias varchar(10), 
+CorValorLimite varchar(10), 
+TurbidezMedias varchar(10), 
+TurbidezValorLimite varchar(10), 
+CloroResidualMedias varchar(10), 
+CloroResidualValorLimite varchar(10), 
+FluoretosMedias varchar(10), 
+FluoretosValorLimite varchar(10), 
+EcoliMedias varchar(10), 
+EcoliValorLimite varchar(10), 
+LinhaDigitavel varchar(65), 
+DescontoAbatimento varchar(19), 
+OutrasDeducoes varchar(19), 
+MultaMora varchar(19), 
+OutrosAcrescimentos varchar(19), 
+ValorCobrado varchar(19), 
+Cedente varchar(100), 
+CNPJ varchar(50), 
+DataDocumentoi varchar(12), 
+NumeroDocumento varchar(40), 
+EspecieDoc varchar(10), 
+Aceite varchar(10), 
+UsoBanco varchar(10), 
+Carteira varchar(5), 
+Especie varchar(10), 
+Quantidade varchar(10), 
+Valor varchar(19), 
+Instrucoes1 text, 
+Instrucoes2 text, 
+MensagemTextoDebitoAutomatico text, 
+Endereco varchar(150), 
+CEP varchar(9), 
+CodigoBarras varchar(65), 
+EnderecoCedente varchar(150), 
+CEPCedente varchar(15), 
+MensagemTextoFrenteBoleto text, 
+TipoBoleto varchar(100), 
+FixarDataGeracao Boolean, 
+DataProcessamento timestamp, 
+DataProcessamentoOLD varchar(10), 
+COL_cdColaborador bigint, 
+BoletoMensal Boolean, 
+DataEntregaCorreio timestamp, 
+MarcadoBaixa Boolean, 
+MensagemTextoCorpoBoletoAdicional text, 
+CPFCNPJPROP varchar(19)
+);
+create table dbo.BOLETOCONFIG
+(
+mail varchar(30), 
+senha varchar(20), 
+smtp varchar(40), 
+DataLeituraProxima varchar(10), 
+DataLeituraAnterior varchar(10), 
+bcc varchar(75), 
+userSec varchar(33), 
+passSec varchar(33), 
+smtpSec varchar(33), 
+pdfSenhaOpcao Boolean, 
+htmlmailmodel text, 
+htmlmail text, 
+charhtmlreplace varchar(3), 
+MailHostFiles varchar(15), 
+MailIdProp varchar(15), 
+MailVencimento varchar(15), 
+MailHostFilesValue varchar(250), 
+MailCodigoBarras varchar(180), 
+MailValorTotal varchar(20), 
+EmailDev varchar(100), 
+FormatoEnvio int
+);
+create table dbo.BoletoControle
+(
+InicioCobranca Boolean
+);
+create table dbo.BoletoDataLeituraPrevisao
+(
+DataLeituraAgua timestamp, 
+DataVencimento timestamp
+);
+create table dbo.BOLETODETALHE
+(
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+PROP_dcLote varchar(3), 
+PROP_nuCodigo int, 
+COB_dtVencimento timestamp, 
+Descricao varchar(50), 
+Ordem int, 
+Valor Numeric(8,2), 
+BoletoMensal Boolean, 
+DataVencimentoBoleto timestamp, 
+Codigo bigint, 
+MarcadoBaixa Boolean, 
+CodigoCobranca bigint, 
+NossoNumero varchar(12)
+);
+create table dbo.BoletoGrupo
+(
+PROP_nuCodigo int, 
+PROP_nuCodigoFilho int
+);
+create table dbo.BOLETOIMPRESSAO
+(
+Codigo bigint, 
+COL_cdColaborador bigint, 
+Quantidade int, 
+DataUltimaImpressao timestamp
+);
+create table dbo.BoletoLog
+(
+COL_cdColaborador bigint, 
+DataGeracao timestamp, 
+DataVencimento timestamp, 
+BoletoGeracaoMensal Boolean, 
+BoletoManipulado Boolean
+);
+create table dbo.BoletoMensagemPadrao
+(
+Codigo int, 
+Descricao text, 
+MSGBoleto varchar(1)
+);
+create table dbo.BoletoParametro
+(
+PROP_nuCodigo int, 
+MOD_cdMOdulo int, 
+QUA_cdQuadra varchar(2), 
+PROP_dcLote varchar(3), 
+DiaVencimento varchar(2), 
+CobrancaSeparadaAguaCM Boolean, 
+EmitirCobranca Boolean, 
+MensagemCapa text, 
+MensagemInternaPrincipal text, 
+MensagemInternaDescricaoFaturamento text, 
+LoteNaoImplantado Boolean, 
+LimitarVencimentosEm int, 
+EmitirCobrancaGolfClub Boolean, 
+LoteEmbargado Boolean, 
+Prop_nuCodigoPrincipalNIMP int, 
+NumeroMesEmissaoQuitacaoAnualDebitos int
+);
+create table dbo.BoletoPDFMensalHistorico
+(
+Evento timestamp, 
+DataVencimento timestamp, 
+Historico varchar(400), 
+ID SERIAL
+);
+create table dbo.BOLETOREGISTRADO
+(
+Codigo bigint, 
+COL_cdColaborador bigint, 
+DataRegistro timestamp
+);
+create table dbo.BoletosEmail
+(
+Prop_nucodigo int, 
+DataCadastro timestamp, 
+COL_cdColaborador bigint
+);
+create table dbo.BoletosEmailDetalhe
+(
+PROP_nucodigo int, 
+DataEnvio timestamp, 
+Codigo bigint, 
+COL_cdColaborador bigint, 
+Mail1 varchar(60), 
+Mail2 varchar(60), 
+BoletoMensalAuto int
+);
+create table dbo.BoletosMensais
+(
+PROP_nuCodigoUnificado int, 
+CodigoBoleto bigint, 
+DataVencimentoBase date, 
+ArquivoLocal varchar(380)
+);
+create table dbo.BolTrat
+(
+PROP_nucodigo int, 
+DataEnvio timestamp, 
+Codigo bigint, 
+COL_cdColaborador bigint, 
+Mail1 varchar(60), 
+Mail2 varchar(60)
+);
+create table dbo.btemp
+(
+v Numeric(8,2)
+);
+create table dbo.BX
+(
+CodProp int
+);
+create table dbo.CA
+(
+Prop_nuCodigoUnificado int
+);
+create table dbo.CadastroETA
+(
+TIPO_cdTipoObra varchar(2), 
+LigacaoExistente int, 
+EconomiaExistente int, 
+Hidrometros int
+);
+create table dbo.CampoGolfe
+(
+Prop_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+DataCalculo timestamp, 
+DataVencimento timestamp, 
+DataPagamento timestamp, 
+MesReferencia int, 
+AnoReferencia int, 
+DataBaixa date, 
+ValorEmitido Numeric(8,2), 
+CorrecaoMonetaria Numeric(8,2), 
+Juros Numeric(8,2), 
+Multa Numeric(8,2), 
+Permanencia Numeric(8,2), 
+ValorAtualizado Numeric(8,2), 
+ValorRecebido Numeric(8,2), 
+TIP_nuTipoCobranca int, 
+PROP_nuCodigoUnificado int, 
+Observacao varchar(3), 
+TipoBaixa varchar(3), 
+BAIT_cdCodigo int, 
+BAI_idBaixa bigint, 
+IDCampoGolfe SERIAL, 
+DataHoraCriacao timestamp
+);
+create table dbo.CampoGolfeAP
+(
+Prop_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+DataCalculo timestamp, 
+DataVencimento timestamp, 
+DataPagamento timestamp, 
+MesReferencia int, 
+AnoReferencia int, 
+DataBaixa date, 
+ValorEmitido Numeric(8,2), 
+CorrecaoMonetaria Numeric(8,2), 
+Juros Numeric(8,2), 
+Multa Numeric(8,2), 
+Permanencia Numeric(8,2), 
+ValorAtualizado Numeric(8,2), 
+ValorRecebido Numeric(8,2), 
+TIP_nuTipoCobranca int, 
+PROP_nuCodigoUnificado int, 
+Observacao varchar(3), 
+TipoBaixa varchar(3), 
+BAIT_cdCodigo int, 
+BAI_idBaixa bigint, 
+IDCampoGolfe bigint, 
+DataHoraCriacao timestamp
+);
+create table dbo.CampoGolfeDIDI
+(
+Prop_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+DataCalculo timestamp, 
+DataVencimento timestamp, 
+DataPagamento timestamp, 
+MesReferencia int, 
+AnoReferencia int, 
+DataBaixa date, 
+ValorEmitido Numeric(8,2), 
+CorrecaoMonetaria Numeric(8,2), 
+Juros Numeric(8,2), 
+Multa Numeric(8,2), 
+Permanencia Numeric(8,2), 
+ValorAtualizado Numeric(8,2), 
+ValorRecebido Numeric(8,2), 
+TIP_nuTipoCobranca int, 
+PROP_nuCodigoUnificado int, 
+Observacao varchar(3), 
+TipoBaixa varchar(3), 
+BAIT_cdCodigo int, 
+BAI_idBaixa bigint, 
+IDCampoGolfe bigint, 
+DataHoraCriacao timestamp
+);
+create table dbo.CampoGolfeLOG
+(
+Motivo varchar(30), 
+Acao varchar(2), 
+Computador varchar(12), 
+DataHora timestamp, 
+UsuarioRede varchar(15), 
+Obs varchar(30), 
+Prop_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+DataCalculo timestamp, 
+DataVencimento timestamp, 
+DataPagamento timestamp, 
+MesReferencia int, 
+AnoReferencia int, 
+DataBaixa date, 
+ValorEmitido Numeric(8,2), 
+CorrecaoMonetaria Numeric(8,2), 
+Juros Numeric(8,2), 
+Multa Numeric(8,2), 
+Permanencia Numeric(8,2), 
+ValorAtualizado Numeric(8,2), 
+ValorRecebido Numeric(8,2), 
+TIP_nuTipoCobranca int, 
+PROP_nuCodigoUnificado int, 
+Observacao varchar(3), 
+TipoBaixa varchar(3), 
+BAIT_cdCodigo int, 
+BAI_idBaixa bigint, 
+IDCampoGolfe bigint, 
+DataHoraCriacao timestamp
+);
+create table dbo.CampoGolfeManutencaoAreaVerdeMatriz
+(
+prop_nucodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+DataInicialCobranca timestamp, 
+Valor Numeric(8,2), 
+PROP_nuCodigoUnificado int
+);
+create table dbo.CampoGolfeManutencaoAreaVerdeMatrizDataBaseReativacaoCobranca
+(
+DataInicialCobranca timestamp, 
+MOD_cdModulo int
+);
+create table dbo.CampoGolfeORI
+(
+Prop_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+DataCalculo timestamp, 
+DataVencimento timestamp, 
+DataPagamento timestamp, 
+MesReferencia int, 
+AnoReferencia int, 
+DataBaixa date, 
+ValorEmitido Numeric(8,2), 
+CorrecaoMonetaria Numeric(8,2), 
+Juros Numeric(8,2), 
+Multa Numeric(8,2), 
+Permanencia Numeric(8,2), 
+ValorAtualizado Numeric(8,2), 
+ValorRecebido Numeric(8,2), 
+TIP_nuTipoCobranca int, 
+PROP_nuCodigoUnificado int, 
+Observacao varchar(3), 
+TipoBaixa varchar(3), 
+BAIT_cdCodigo int, 
+BAI_idBaixa bigint, 
+IDCampoGolfe 
+SERIAL, 
+DataHoraCriacao timestamp
+);
+create table dbo.CamposFiltroTemp
+(
+Campo varchar(8), 
+Codigo int, 
+CampoValor varchar(35), 
+Us varchar(20)
+);
+create table dbo.CB1510
+(
+Retorno text
+);
+create table dbo.cbb
+(
+conteudo text
+);
+create table dbo.CertidaoNegativa
+(
+PROP_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+PROP_dcLote varchar(3), 
+PROP_dlNome varchar(70), 
+Mes varchar(12), 
+Ano int, 
+COL_dlNomeColaborador varchar(70), 
+CNPJ varchar(50), 
+Endereco varchar(70), 
+Telefone varchar(50), 
+CEP varchar(20), 
+Cidade varchar(15), 
+DataAbreviada varchar(50), 
+Data timestamp, 
+IdControle SERIAL
+);
+create table dbo.ChamadoOutrasOcorrenciasProprietario
+(
+origem varchar(12), 
+Protocolo int, 
+mod int, 
+QUA varchar(2), 
+LOT varchar(3), 
+DataOcorrencia timestamp, 
+descricao text, 
+codprop int
+);
+create table dbo.CHEQ_Cheques
+(
+PROP_nuCodigo varchar(4), 
+MOD_cdModulo varchar(2), 
+QUA_cdQuadra varchar(2), 
+PROP_dcLote varchar(3), 
+CHEQ_dtVencimento timestamp, 
+CHEQ_dtPagamento timestamp, 
+CHEQ_dtBaixa timestamp, 
+CHEQ_vlCheque Numeric(8,2), 
+CHEQ_dcBanco varchar(5), 
+CHEQ_dcCheque varchar(10), 
+CHEQ_nuRecibo int, 
+CHEQ_dcAgencia varchar(7), 
+CHEQ_dcContaCorrente varchar(10), 
+sequencia bigint, 
+BAI_idBaixa bigint, 
+DataHoraCadastro timestamp
+);
+create table dbo.CO
+(
+PROP_nuCodigoUnificado int
+);
+create table dbo.COB_Cobranca
+(
+Prop_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+COB_nuFusao int, 
+COB_dcFlag varchar(1), 
+COB_dtCalculo timestamp, 
+COB_dtVencimento timestamp, 
+COB_dtPagamento timestamp, 
+COB_dtBaixa date, 
+COB_nuMesReferencia int, 
+COB_nuAnoReferencia int, 
+COB_vlValorEmitido Numeric(8,2), 
+COB_vlSaldo Numeric(8,2), 
+COB_vlCorrecaoMonetaria Numeric(8,2), 
+COB_vlJuros Numeric(8,2), 
+COB_vlMulta Numeric(8,2), 
+COB_vlPermanencia Numeric(8,2), 
+COB_vlAtualizado Numeric(8,2), 
+COB_vlValorRecebido Numeric(8,2), 
+TIPO_cdTipoObra varchar(2), 
+TIP_nuTipoCobranca int, 
+COB_dlObservacao varchar(3), 
+COB_dtRecalculo timestamp, 
+PreDatado varchar(1), 
+ValorRecibo Numeric(8,2), 
+PROP_nuCodigoUnificado int, 
+COB_dcTipoBaixa varchar(3), 
+BAIT_cdCodigo int, 
+BAI_idBaixa bigint, 
+COB_idCobranca SERIAL, 
+DataHoraCriacao timestamp
+);
+create table dbo.COB_CobrancaLOG
+(
+Motivo varchar(30), 
+Acao varchar(2), 
+Computador varchar(12), 
+DataHora timestamp, 
+UsuarioRede varchar(15), 
+Obs varchar(30), 
+Prop_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+COB_nuFusao int, 
+COB_dcFlag varchar(1), 
+COB_dtCalculo timestamp, 
+COB_dtVencimento timestamp, 
+COB_dtPagamento timestamp, 
+COB_dtBaixa date, 
+COB_nuMesReferencia int, 
+COB_nuAnoReferencia int, 
+COB_vlValorEmitido Numeric(8,2), 
+COB_vlSaldo Numeric(8,2), 
+COB_vlCorrecaoMonetaria Numeric(8,2), 
+COB_vlJuros Numeric(8,2), 
+COB_vlMulta Numeric(8,2), 
+COB_vlPermanencia Numeric(8,2), 
+COB_vlAtualizado Numeric(8,2), 
+COB_vlValorRecebido Numeric(8,2), 
+TIPO_cdTipoObra varchar(2), 
+TIP_nuTipoCobranca int, 
+COB_dlObservacao varchar(3), 
+COB_dtRecalculo timestamp, 
+PreDatado varchar(1), 
+ValorRecibo Numeric(8,2), 
+PROP_nuCodigoUnificado int, 
+COB_dcTipoBaixa varchar(3), 
+BAIT_cdCodigo int, 
+BAI_idBaixa bigint, 
+COB_idCobranca bigint, 
+DataHoraCriacao timestamp
+);
+create table dbo.COB_Cobrancas
+(
+Prop_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+COB_nuFusao int, 
+COB_dcFlag varchar(1), 
+COB_dtCalculo timestamp, 
+COB_dtVencimento timestamp, 
+COB_dtPagamento timestamp, 
+COB_dtBaixa date, 
+COB_nuMesReferencia int, 
+COB_nuAnoReferencia int, 
+COB_vlValorEmitido Numeric(8,2), 
+COB_vlSaldo Numeric(8,2), 
+COB_vlCorrecaoMonetaria Numeric(8,2), 
+COB_vlJuros Numeric(8,2), 
+COB_vlMulta Numeric(8,2), 
+COB_vlPermanencia Numeric(8,2), 
+COB_vlAtualizado Numeric(8,2), 
+COB_vlValorRecebido Numeric(8,2), 
+TIPO_cdTipoObra varchar(2), 
+TIP_nuTipoCobranca int, 
+COB_dlObservacao varchar(3), 
+COB_dtRecalculo timestamp, 
+PreDatado varchar(1), 
+ValorRecibo Numeric(8,2), 
+PROP_nuCodigoUnificado int, 
+COB_dcTipoBaixa varchar(3), 
+BAIT_cdCodigo int, 
+BAI_idBaixa bigint, 
+COB_idCobranca SERIAL, 
+DataHoraCriacao timestamp
+);
+create table dbo.COB_CobrancaSIM
+(
+Prop_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+COB_nuFusao int, 
+COB_dcFlag varchar(1), 
+COB_dtCalculo timestamp, 
+COB_dtVencimento timestamp, 
+COB_dtPagamento timestamp, 
+COB_dtBaixa date, 
+COB_nuMesReferencia int, 
+COB_nuAnoReferencia int, 
+COB_vlValorEmitido Numeric(8,2), 
+COB_vlSaldo Numeric(8,2), 
+COB_vlCorrecaoMonetaria Numeric(8,2), 
+COB_vlJuros Numeric(8,2), 
+COB_vlMulta Numeric(8,2), 
+COB_vlPermanencia Numeric(8,2), 
+COB_vlAtualizado Numeric(8,2), 
+COB_vlValorRecebido Numeric(8,2), 
+TIPO_cdTipoObra varchar(2), 
+TIP_nuTipoCobranca int, 
+COB_dlObservacao varchar(3), 
+COB_dtRecalculo timestamp, 
+PreDatado varchar(1), 
+ValorRecibo Numeric(8,2), 
+PROP_nuCodigoUnificado int, 
+COB_dcTipoBaixa varchar(3), 
+BAIT_cdCodigo int, 
+BAI_idBaixa bigint, 
+COB_idCobranca SERIAL, 
+DataHoraCriacao timestamp
+);
+create table dbo.COB_CobrancaSim_SelecaoTipoObra
+(
+tipo_cdTipoObra varchar(2)
+);
+create table dbo.CobrancaRecursosHidricos
+(
+Prop_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+PROP_nuCodigoUnificado int, 
+DataCalculo timestamp, 
+DataVencimento timestamp, 
+DataPagamento timestamp, 
+MesReferencia int, 
+AnoReferencia int, 
+DataBaixa date, 
+ValorEmitido Numeric(8,2), 
+CorrecaoMonetaria Numeric(8,2), 
+Juros Numeric(8,2), 
+Multa Numeric(8,2), 
+Permanencia Numeric(8,2), 
+ValorAtualizado Numeric(8,2), 
+ValorRecebido Numeric(8,2), 
+TIP_nuTipoCobranca int, 
+Observacao varchar(3), 
+TipoBaixa varchar(3), 
+BAIT_cdCodigo int, 
+BAI_idBaixa bigint, 
+RH_idRecursosHidricos SERIAL, 
+DataHoraCriacao timestamp
+);
+create table dbo.ColetaOcorrencia
+(
+CodColeta int, 
+CodOcor varchar(2), 
+DataRef date
+);
+create table dbo.CON_Condominios
+(
+Prop_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+CON_dlNomeCondominio varchar(50), 
+CON_dlEnderecoCondominio varchar(50), 
+CON_dlBairroCondominio varchar(25), 
+CON_dlCidadeCondominio varchar(20), 
+CON_dcEstadoCondominio varchar(2), 
+CON_dcCepCondominio varchar(8), 
+CON_dcTelefoneResCondominio varchar(13), 
+CON_dcTelefoneComCondominio varchar(13), 
+CON_dcTelefoneCelCondominio varchar(13), 
+CON_dlEnderecoEletronicoCondominio varchar(50), 
+CON_dlComplementoEnderecoCondominio varchar(25), 
+TIPO_cdTipoUnidade int, 
+PAI_cdPais int
+);
+create table dbo.CON_Condominos
+(
+Prop_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+CON_cdCondomino varchar(10), 
+CON_dlNomeCondomino varchar(50), 
+CON_dlEnderecoCondomino varchar(50), 
+CON_dlBairroCondomino varchar(25), 
+CON_dlCidadeCondomino varchar(20), 
+CON_dcEstadoCondomino varchar(2), 
+CON_dcCepCondomino varchar(8), 
+PAI_cdPais int, 
+CON_dcTelefoneResCondomino varchar(13), 
+CON_dcTelefoneComCondomino varchar(13), 
+CON_dcTelefoneCelCondomino varchar(13), 
+CON_dlEnderecoEletronicoCondomino varchar(50), 
+CON_dlComplementoEnderecoCondomino varchar(25), 
+CON_dlTelefoneRiviera varchar(16), 
+CON_dtCadastro timestamp, 
+CON_dcCPF varchar(11), 
+CON_dcCGC varchar(14), 
+CON_dcRG varchar(9), 
+CON_dlEnderecoEletronicoAddCondomino varchar(100), 
+ID SERIAL
+);
+create table dbo.CON_CondominosHist
+(
+Prop_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+CON_cdCondomino varchar(10), 
+CON_dlNomeCondomino varchar(50), 
+CON_dlEnderecoCondomino varchar(50), 
+CON_dlBairroCondomino varchar(25), 
+CON_dlCidadeCondomino varchar(20), 
+CON_dcEstadoCondomino varchar(2), 
+CON_dcCepCondomino varchar(8), 
+PAI_cdPais int, 
+CON_dcTelefoneResCondomino varchar(13), 
+CON_dcTelefoneComCondomino varchar(13), 
+CON_dcTelefoneCelCondomino varchar(13), 
+CON_dlEnderecoEletronicoCondomino varchar(50), 
+CON_dlComplementoEnderecoCondomino varchar(25), 
+CON_dlTelefoneRiviera varchar(16), 
+CON_dtCadastro timestamp, 
+CON_dcCPF varchar(11), 
+CON_dcCGC varchar(14), 
+CON_dcRG varchar(9), 
+CON_dlEnderecoEletronicoAddCondomino varchar(100), 
+ID bigint, 
+datahora timestamp, 
+Stat varchar(1)
+);
+create table dbo.CON_CondominosN
+(
+Prop_nuCodigo
+ int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+CON_cdCondomino varchar(10), 
+CON_dlNomeCondomino varchar(50), 
+CON_dlEnderecoCondomino varchar(50), 
+CON_dlBairroCondomino varchar(25), 
+CON_dlCidadeCondomino varchar(20), 
+CON_dcEstadoCondomino varchar(2), 
+CON_dcCepCondomino varchar(8), 
+PAI_cdPais int, 
+CON_dcTelefoneResCondomino varchar(13), 
+CON_dcTelefoneComCondomino varchar(13), 
+CON_dcTelefoneCelCondomino varchar(13), 
+CON_dlEnderecoEletronicoCondomino varchar(50), 
+CON_dlComplementoEnderecoCondomino varchar(25), 
+CON_dlTelefoneRiviera varchar(16), 
+CON_dtCadastro timestamp, 
+CON_dcCPF varchar(11), 
+CON_dcCGC varchar(14), 
+CON_dcRG varchar(9), 
+CON_dlEnderecoEletronicoAddCondomino varchar(100)
+);
+create table dbo.CON_CondSam
+(
+CON_dlNomeCondomino varchar(50), 
+CON_dlEnderecoCondomino varchar(50), 
+CON_dlBairroCondomino varchar(25), 
+CON_dlCidadeCondomino varchar(20), 
+CON_dcEstadoCondomino varchar(2), 
+CON_dcCepCondomino varchar(8), 
+PROP_nuCodigo varchar(4)
+);
+create table dbo.CONS_CONSUMO
+(
+Prop_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+CONS_nuConsumo int, 
+CONS_dtReferencia varchar(10)
+);
+create table dbo.CONS_CONSUMOAGUA
+(
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+CONS_dtReferencia timestamp, 
+CONS_vlConsumo1 int, 
+CONS_vlConsumo2 int, 
+CONS_vlConsumo3 int, 
+CONS_vlConsumo4 int, 
+CONS_vlConsumo5 int, 
+CONS_vlConsumo6 int, 
+CONS_vlConsumo7 int, 
+CONS_vlConsumo8 int, 
+CONS_vlConsumo9 int, 
+CONS_vlConsumo10 int, 
+CONS_vlConsumo11 int, 
+CONS_vlConsumo12 int
+);
+create table dbo.cons_consumoaguageral
+(
+IdConsumo SERIAL, 
+Prop_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+CONS_dtReferencia timestamp, 
+CONS_nuLeituraAnterior int, 
+CONS_nuLeituraAtual int, 
+CONS_nuConsumoReal int, 
+CONS_nuRota int, 
+OCOR_cdOcorrencia1 varchar(2), 
+OCOR_cdOcorrencia2 varchar(2), 
+OCOR_cdOcorrencia3 varchar(2), 
+OCOR_cdOcorrencia4 varchar(2), 
+OCOR_cdOcorrencia5 varchar(2), 
+OCOR_cdOcorrencia6 varchar(2), 
+OCOR_cdOcorrencia7 varchar(2), 
+OCOR_cdOcorrencia8 varchar(2), 
+OCOR_cdOcorrencia9 varchar(2), 
+OCOR_cdOcorrencia10 varchar(2), 
+OCOR_cdOcorrencia11 varchar(2), 
+OCOR_cdOcorrencia12 varchar(2), 
+MOD_cdModuloRelat int, 
+QUA_cdQuadraRelat varchar(2), 
+PROP_dcLoteRelat varchar(3), 
+CONS_dtImportacao timestamp, 
+COL_cdColaborador int, 
+foto BYTEA, 
+Sequencia int, 
+Latitude varchar(30), 
+Longitude varchar(30), 
+Prop_nuCodigoUnificado int
+);
+create table dbo.CONS_ConsumoAguaGeralLOG
+(
+Motivo varchar(30), 
+Acao varchar(2), 
+Computador varchar(10), 
+DataHora timestamp, 
+UsuarioRede varchar(15), 
+Obs varchar(30), 
+IdConsumo SERIAL, 
+Prop_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+CONS_dtReferencia timestamp, 
+CONS_nuLeituraAnterior int, 
+CONS_nuLeituraAtual int, 
+CONS_nuConsumoReal int, 
+CONS_nuRota int, 
+OCOR_cdOcorrencia1 varchar(2), 
+OCOR_cdOcorrencia2 varchar(2), 
+OCOR_cdOcorrencia3 varchar(2), 
+OCOR_cdOcorrencia4 varchar(2), 
+OCOR_cdOcorrencia5 varchar(2), 
+OCOR_cdOcorrencia6 varchar(2), 
+OCOR_cdOcorrencia7 varchar(2), 
+OCOR_cdOcorrencia8 varchar(2), 
+OCOR_cdOcorrencia9 varchar(2), 
+OCOR_cdOcorrencia10 varchar(2), 
+OCOR_cdOcorrencia11 varchar(2), 
+OCOR_cdOcorrencia12 varchar(2), 
+MOD_cdModuloRelat int, 
+QUA_cdQuadraRelat varchar(2), 
+PROP_dcLoteRelat varchar(3), 
+CONS_dtImportacao timestamp, 
+COL_cdColaborador int, 
+foto BYTEA, 
+Sequencia int, 
+Latitude varchar(30), 
+Longitude varchar(30), 
+Prop_nuCodigoUnificado int
+);
+create table dbo.CONS_ConsumoParametros
+(
+PROP_nuCodigo int, 
+PROP_nuCodigoUnificado int, 
+CONS_dtReferenciaInicial date
+);
+create table dbo.Conselheiros
+(
+SequenciaRemetente int, 
+NomeRemetente varchar(100), 
+EnderecoRemetente varchar(90), 
+BairroRemetente varchar(50), 
+CidadeRemetente varchar(40), 
+EstadoRemetente varchar(2), 
+CepRemetente varchar(10), 
+Funcao varchar(30)
+);
+create table dbo.consumo
+(
+Prop_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+CONS_dtReferencia timestamp, 
+CONS_nuLeituraAnterior int, 
+CONS_nuLeituraAtual int, 
+CONS_nuConsumoReal int, 
+CONS_nuRota int, 
+OCOR_cdOcorrencia1 varchar(2), 
+OCOR_cdOcorrencia2 varchar(2), 
+OCOR_cdOcorrencia3 varchar(2), 
+OCOR_cdOcorrencia4 varchar(2), 
+OCOR_cdOcorrencia5 varchar(2), 
+OCOR_cdOcorrencia6 varchar(2), 
+OCOR_cdOcorrencia7 varchar(2), 
+OCOR_cdOcorrencia8 varchar(2), 
+OCOR_cdOcorrencia9 varchar(2), 
+OCOR_cdOcorrencia10 varchar(2), 
+OCOR_cdOcorrencia11 varchar(2), 
+OCOR_cdOcorrencia12 varchar(2), 
+MOD_cdModuloRelat int, 
+QUA_cdQuadraRelat varchar(2), 
+PROP_dcLoteRelat varchar(3), 
+CONS_dtImportacao timestamp, 
+COL_cdColaborador int
+);
+create table dbo.Contl
+(
+ID int, 
+nome varchar(70), 
+JUL2018 int, 
+JUL2019 int
+);
+create table dbo.ControleAbrigoHidrometroIrregular
+(
+PROP_nuCodigo int, 
+CONS_dtReferencia timestamp, 
+Carta1EnviadoEm timestamp, 
+COL_cdColaboradorCarta1 bigint, 
+Carta2EnviadoEm timestamp, 
+COL_cdColaboradorCarta2 bigint, 
+Email1EnviadoEm timestamp, 
+COL_cdColaboradorEmail1 bigint
+);
+create table dbo.ControleFA
+(
+NumeroFA numeric
+);
+create table dbo.ctemp
+(
+v Numeric(8,2)
+);
+create table dbo.d
+(
+CodProp bigint, 
+v int
+);
+create table dbo.DAD_DadosBancarios
+(
+Prop_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+DAD_dcAgencia varchar(6), 
+DAD_dcVerificadorAgencia varchar(1), 
+DAD_dcContaCorrente varchar(8), 
+DAD_dcVerificadorConta varchar(1), 
+DAD_dcPessoaFisica varchar(1), 
+DAD_dcRazaoConta varchar(4), 
+IdCadBoleto int
+);
+create table dbo.Debitos
+(
+PROP_nuCodigo int, 
+MOD_cdMOdulo int, 
+QUA_cdQuadra varchar(2), 
+PROP_dcLote varchar(3), 
+PROP_dlNome varchar(60), 
+DataAtualizacao timestamp, 
+DescricaoCobranca text, 
+TipoCobranca text, 
+DataVencimento timestamp, 
+ValorEmitido Numeric(18,3), 
+CorrecaoMonetaria Numeric(18,3), 
+Multa Numeric(18,3), 
+Juros Numeric(18,3), 
+Permanencia Numeric(18,3), 
+ValorAtual Numeric(18,3), 
+TotalCM Numeric(18,3), 
+TotalAgua Numeric(18,3), 
+TotalTXCaptacao Numeric(18,3), 
+TotalManAreaVerde Numeric(18,3), 
+TotalCorrMonetaria Numeric(18,3
+), 
+TotalMulta Numeric(18,3), 
+TotalJuros Numeric(18,3), 
+TotalPermanencia Numeric(18,3), 
+TotalPortal Numeric(18,3), 
+TotalGeral Numeric(18,3), 
+DataOperacao timestamp, 
+COL_cdColaborador int, 
+IdControle bigint, 
+Selecao varchar(1), 
+TotalTaxas Numeric(18,3)
+);
+create table dbo.DEBV
+(
+M float, 
+Q varchar(255), 
+L float, 
+CODRET float, 
+LINE float
+);
+create table dbo.dede
+(
+ValorPago Numeric(18,2), 
+nome varchar(70), 
+vALORbOLETO Numeric(8,2)
+);
+create table dbo.DEQUIDE
+(
+Selecao varchar(1), 
+codigo int, 
+nome varchar(50), 
+endereco varchar(50), 
+bairro varchar(25), 
+cidade varchar(20), 
+uf varchar(2), 
+cep varchar(8), 
+Ano varchar(10), 
+modulo int, 
+quadra varchar(2), 
+lote varchar(3), 
+CompetenciaJAN varchar(25), 
+CompetenciaFEV varchar(27), 
+CompetenciaMAR varchar(23), 
+CompetenciaABR varchar(23), 
+CompetenciaMAI varchar(22), 
+CompetenciaJUN varchar(23), 
+CompetenciaJUL varchar(23), 
+CompetenciaAGO varchar(24), 
+CompetenciaSET varchar(26), 
+CompetenciaOUT varchar(25), 
+CompetenciaNOV varchar(26), 
+CompetenciaDEZ varchar(26), 
+SituacaoJAN varchar(60), 
+SituacaoFEV varchar(60), 
+SituacaoMAR varchar(60), 
+SituacaoABR varchar(60), 
+SituacaoMAI varchar(60), 
+SituacaoJUN varchar(60), 
+SituacaoJUL varchar(60), 
+SituacaoAGO varchar(60), 
+SituacaoSET varchar(60), 
+SituacaoOUT varchar(60), 
+SituacaoNOV varchar(60), 
+SituacaoDEZ varchar(60), 
+DATAGERACAO timestamp, 
+DataEnvioCorreio timestamp
+);
+create table dbo.DEQUIDEIMPRESSAO
+(
+codigo int, 
+COL_cdColaborador bigint, 
+Quantidade int, 
+DataUltimaImpressao timestamp
+);
+create table dbo.DESC_Desconto
+(
+MOD_cdModulo int, 
+TIPO_cdTipoObra varchar(2), 
+DESC_nuDesconto int, 
+PROP_nuCodigo int
+);
+create table dbo.Destinatario
+(
+SequenciaRemetente int, 
+NomeRemetente varchar(50), 
+EnderecoRemetente varchar(90), 
+BairroRemetente varchar(50), 
+CidadeRemetente varchar(40), 
+EstadoRemetente varchar(2), 
+CepRemetente varchar(10)
+);
+create table dbo.Destinatario_email
+(
+Teste01 varchar(80), 
+teste02 varchar(80), 
+teste03 varchar(80), 
+teste04 varchar(80), 
+procuradoria varchar(80), 
+receita varchar(80), 
+gerente varchar(80), 
+dcr varchar(80)
+);
+create table dbo.dev_devedores
+(
+PROP_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+PROP_dcLote varchar(3), 
+PROP_dlNome varchar(50), 
+PROP_dlEndereco varchar(50), 
+PROP_dlBairro varchar(25), 
+PROP_dlCidade varchar(20), 
+PROP_dcEstado varchar(2), 
+PROP_dcCep varchar(8), 
+DEV_dtProcessamento timestamp
+);
+create table dbo.devedores
+(
+PROP_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+PROP_dcLote varchar(3), 
+PROP_dlNome varchar(50), 
+PROP_dlEndereco varchar(50), 
+PROP_dlBairro varchar(25), 
+PROP_dlCidade varchar(20), 
+PROP_dcEstado varchar(2), 
+PROP_dcCep varchar(8), 
+DEV_dtProcessamento timestamp
+);
+create table dbo.Devedores_TEMPCintiCINTIA
+(
+TIPO_CDTIPOOBRA varchar(2), 
+titulo varchar(87), 
+Referencia varchar(10), 
+TotalDevido Numeric(8,2), 
+PROP_DLNOME varchar(70), 
+PROP_NUCODIGO int, 
+MOD_CDMODULO int, 
+QUA_CDQUADRA varchar(2), 
+PROP_DCLOTE varchar(3)
+);
+create table dbo.Devedores_TEMPLucyaLUCYAN
+(
+TIPO_CDTIPOOBRA varchar(2), 
+titulo varchar(87), 
+Referencia varchar(10), 
+TotalDevido Numeric(8,2), 
+PROP_DLNOME varchar(70), 
+PROP_NUCODIGO int, 
+MOD_CDMODULO int, 
+QUA_CDQUADRA varchar(2), 
+PROP_DCLOTE varchar(3)
+);
+create table dbo.Devedores_TEMPpralvPralvi
+(
+TIPO_CDTIPOOBRA varchar(2), 
+titulo varchar(75), 
+Referencia varchar(10), 
+TotalDevido Numeric(8,2), 
+PROP_DLNOME varchar(70), 
+PROP_NUCODIGO int, 
+MOD_CDMODULO int, 
+QUA_CDQUADRA varchar(2), 
+PROP_DCLOTE varchar(3)
+);
+create table dbo.Eti_EtiquetasJornal
+(
+ETI_cdNaoProprietario int, 
+ETI_dlNome varchar(50), 
+ETI_dlEndereco varchar(50), 
+ETI_dlBairro varchar(25), 
+ETI_dlCidade varchar(20), 
+ETI_dcEstado varchar(2), 
+ETI_dcCep varchar(8), 
+PAI_cdPais int, 
+ETI_dcTelefoneResidencial varchar(16), 
+ETI_dcTelefoneComercial varchar(16), 
+ETI_dcTelefoneCelular varchar(16), 
+ETI_dcTelefoneRiviera varchar(16), 
+ETI_dlEnderecoEletronico varchar(50), 
+ETI_dtCadastro timestamp, 
+ETI_dcTelefoneRes varchar(13), 
+PROP_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+PROP_dcLote varchar(3), 
+CON_cdCondomino varchar(6), 
+ETI_dcIndicacao varchar(2)
+);
+create table dbo.ETI_NaoProprietarios
+(
+ETI_cdNaoProprietario int, 
+ETI_dlNome varchar(50), 
+ETI_dlEndereco varchar(90), 
+ETI_dlBairro varchar(50), 
+ETI_dlCidade varchar(40), 
+ETI_dcEstado varchar(2), 
+ETI_dcCep varchar(10), 
+PAI_cdPais int, 
+ETI_dcTelefoneResidencial varchar(20), 
+ETI_dcTelefoneComercial varchar(20), 
+ETI_dcTelefoneCelular varchar(20), 
+ETI_dcTelefoneRiviera varchar(20), 
+ETI_dlEnderecoEletronico varchar(50), 
+ETI_dtCadastro timestamp, 
+ETI_dcTelefoneRes varchar(20), 
+PROP_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+PROP_dcLote varchar(3), 
+CON_cdCondomino varchar(10), 
+ETI_dcIndicacao varchar(2), 
+Observacao varchar(2), 
+ETI_dcEletronico varchar(1)
+);
+create table dbo.EtiquetasCond
+(
+Prop_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+CON_dlNomeCondomino varchar(50), 
+CON_dlEnderecoCondomino varchar(50), 
+CON_dlBairroCondomino varchar(25), 
+CON_dlCidadeCondomino varchar(20), 
+CON_dcEstadoCondomino varchar(2), 
+CON_dcCepCondomino varchar(8), 
+CON_dcCodigo int, 
+PAI_cdPais int, 
+CON_dcTelefoneResCondomino varchar(13), 
+CON_dcTelefoneComCondomino varchar(13), 
+CON_dcTelefoneCelCondomino varchar(13), 
+CON_dlEnderecoEletronicoCondomino varchar(50), 
+CON_dcEnviar varchar(1)
+);
+create table dbo.EtiquetasFaixa
+(
+FAIXA1 numeric, 
+FAIXA2 numeric, 
+FAIXA3 numeric, 
+FAIXA4 numeric, 
+FAIXA5 numeric, 
+FAIXA6 numeric, 
+Tipo varchar(30)
+);
+create table dbo.EtiquetasProp
+(
+PROP_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+Prop_dlNome varchar(50), 
+Prop_dlEndereco varchar(50), 
+Prop_dlBairro varchar(25), 
+Prop_dlCidade varchar(20), 
+Prop_dcEstado varchar(2), 
+Prop_dcCep varchar(8), 
+PAI_cdPais int, 
+Prop_dlNomeCarta varchar(50), 
+Prop_dlEnderecoCarta varchar(50), 
+Prop_dlBairroCarta varchar(25), 
+Prop_dlCidadeCarta varchar(20), 
+Prop_dcEstadoCarta varchar(2), 
+Prop_dcCepCarta varchar(8), 
+PAI_cdPaisCarta int, 
+Prop_dcTelefoneRes varchar(13), 
+Prop_dcTelefoneCom varchar(13), 
+Prop_dcTelefoneCelular varchar(13), 
+Prop_dcCpf varchar(11), 
+Prop_dcCgC varchar(14), 
+Prop_dcRG varchar(9), 
+Prop_dtNascimento varchar(10), 
+Prop_dlContato varchar(50), 
+Prop_dlEnderecoEletronico varchar(50), 
+Prop_dcTelefoneResCarta varchar(13), 
+Prop_dcTelefoneComCarta varchar(13), 
+Prop_dcTelefoneCelularCarta varchar(13), 
+Prop_dlEnderecoEletronicoCarta varchar(50), 
+Prop_dcEnviar varchar(1)
+);
+create table dbo.fa_fichaatendimento
+(
+PROP_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+PROP_dcLote varchar(3), 
+FA_nuFichaAtendimento int, 
+FA_dtInicio timestamp, 
+FA_dtFinal timestamp, 
+TAXA_cdTaxa numeric, 
+TAXA_dcSigla varchar(2), 
+FA_dlObservacao varchar(1000), 
+USU_nuRegistro int, 
+FA_dcProcesso varchar(10), 
+FA_dcBanco varchar(5), 
+FA_dcAgencia varchar(5), 
+FA_dcCheque varchar(6), 
+FA_dcContaCorrente varchar(10), 
+FA_vlValor Numeric(8,2), 
+FA_nuRecibo int, 
+FA_stStatus varchar(1), 
+COL_cdColaboradorCriacao bigint, 
+COL_cdColaboradorUltimaAlteracao bigint, 
+DataAtualizacao timestamp, 
+NomeExecutor varchar(90), 
+HidrometroInstalado varchar(15), 
+HidrometroSubstituto varchar(15), 
+LeituraInicial varchar(10), 
+LeituraFinal varchar(10), 
+DataServico varchar(10), 
+Deletado Boolean Default false
+);
+create table dbo.FA_FichaAtendimentoContador
+(
+FA_nuFichaAtendimento int
+);
+create table dbo.FA_FichaAtendimentoDetalhe
+(
+FA_nuFichaAtendimento int, 
+TAXA_cdTaxa numeric, 
+Deletado Boolean Default false
+);
+create table dbo.FA_ImpressaoLacracao
+(
+FA_nuFichaAtendimento int, 
+DataHoraSolicitacao timestamp, 
+COL_cdColaborador bigint
+);
+create table dbo.FOTOSPROP
+(
+PROP_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(3), 
+PROP_dcLote varchar(3), 
+FotoInfo text, 
+FotoCasa BYTEA, 
+Data timestamp
+);
+create table dbo.HID_Hidrometro
+(
+HID_cdHidrometro varchar(2), 
+HID_dcHidrometro varchar(15), 
+HID_nuValorMinimo int
+);
+create table dbo.HyppoMail
+(
+COL_cdColaborador bigint
+);
+create table dbo.HyppoMailConfig
+(
+mail varchar(30), 
+senha varchar(20), 
+smtp varchar(40), 
+DataLeituraProxima varchar(10), 
+DataLeituraAnterior varchar(10), 
+bcc varchar(75), 
+userSec varchar(33), 
+passSec varchar(33), 
+smtpSec varchar(33), 
+pdfSenhaOpcao Boolean, 
+htmlmailmodel text, 
+htmlmail text, 
+charhtmlreplace varchar(3), 
+MailHostFiles varchar(15), 
+MailIdProp varchar(15), 
+MailVencimento varchar(15), 
+MailHostFilesValue varchar(250), 
+MailCodigoBarras varchar(180), 
+MailValorTotal varchar(20), 
+MailHostFilesValueHomolog varchar(300), 
+MailHostFilesValueDef varchar(1000), 
+MailHostFilesValueImg varchar(1000), 
+Ver int, 
+Filtro int
+);
+create table dbo.HyppoMaildata
+(
+Mail varchar(120), 
+PROP_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+Prop_dlNome varchar(70), 
+IDSelecao int
+);
+create table dbo.HyppoMailDataADD
+(
+Mail varchar(120), 
+PROP_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+Prop_dlNome varchar(70)
+);
+create table dbo.HyppoMailDataBL
+(
+Mail varchar(120), 
+PROP_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+Prop_dlNome varchar(70)
+);
+create table dbo.HyppoMailDataDetail
+(
+IDHyppoMailDataTitle bigint, 
+Mail varchar(120), 
+DataHoraEnvio timestamp, 
+Terminal varchar(120), 
+Usuario varchar(120), 
+COL_cdColaborador bigint, 
+StatusCode Boolean, 
+StatusDesc varchar(5120), 
+AnexoEnviadoWeb varchar(5120), 
+Homologacao int, 
+IgnorarEnvioEnviarNovamente int, 
+Filtro int, 
+VersaoSys int, 
+referencia timestamp
+);
+create table dbo.HyppoMailDataFilter
+(
+Mail varchar(120), 
+PROP_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+Prop_dlNome varchar(70)
+);
+create table dbo.HyppoMailDataGeralTemp
+(
+Mail varchar(120), 
+PROP_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+Prop_dlNome varchar(70), 
+Usuario varchar(45)
+);
+create table dbo.HyppoMailDataHomolo
+(
+Mail varchar(120), 
+PROP_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar
+(3), 
+Prop_dlNome varchar(70), 
+IDSelecao int
+);
+create table dbo.HyppoMailDataHomoloADD
+(
+Mail varchar(120), 
+PROP_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+Prop_dlNome varchar(70)
+);
+create table dbo.HyppoMailDataHomoloBase
+(
+Mail varchar(120), 
+PROP_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+Prop_dlNome varchar(70)
+);
+create table dbo.HyppoMailDataHomoloBL
+(
+Mail varchar(120), 
+PROP_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+Prop_dlNome varchar(70)
+);
+create table dbo.HyppoMailDataHomoloFilter
+(
+Mail varchar(120), 
+PROP_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+Prop_dlNome varchar(70)
+);
+create table dbo.HyppoMailDataTitle
+(
+ID SERIAL, 
+Assunto varchar(220), 
+Corpo varchar(5120), 
+CaminhoAnexo varchar(5120), 
+DataHoraArquivo timestamp, 
+Homologacao int, 
+Saldo int
+);
+create table dbo.HyppoMailFrom
+(
+mail varchar(40), 
+test Boolean Default false, 
+referencia timestamp, 
+padrao int, 
+padraoEnvioTeste int, 
+ordem int
+);
+create table dbo.HyppoMailTitlePreview
+(
+titulo varchar(300), 
+titulo_linha_valor int, 
+titulo_coluna_valor int, 
+msgprincipal varchar(800), 
+msgprincipal_linha_valor int, 
+msgprincipal_coluna_valor int, 
+anexohyppo_linha_valor int, 
+anexohyppo_coluna_valor int, 
+anexohyppostatus_linha_valor int, 
+anexohyppostatus_coluna_valor int, 
+anexohyppostatus varchar(300), 
+anexoinfo text, 
+anexoinfoweb text, 
+anexoinfo_linha_valor int, 
+anexoinfo_coluna_valor int, 
+anexoinfostatus_linha_valor int, 
+anexoinfostatus_coluna_valor int, 
+anexoinfostatus varchar(300), 
+anexosel varchar(300), 
+anexosel_linha_valor int, 
+anexosel_coluna_valor int, 
+listaxls varchar(300), 
+listaxls_linha_valor int, 
+listaxls_coluna_valor int, 
+listaxlsstatus_linha_valor int, 
+listaxlsstatus_coluna_valor int, 
+listaxlsstatus varchar(300), 
+locallista varchar(300), 
+locallista_linha_valor int, 
+locallista_coluna_valor int, 
+totalprinc int, 
+totalprinc_linha_valor int, 
+totalprinc_coluna_valor int, 
+fail int, 
+fail_linha_valor int, 
+fail_coluna_valor int, 
+ok int, 
+ok_linha_valor int, 
+ok_coluna_valor int, 
+totalresult int, 
+totalresult_linha_valor int, 
+totalresult_coluna_valor int, 
+ultimoacesso timestamp, 
+Homolog int, 
+MailHostFilesValueHomolog varchar(300)
+);
+create table dbo.IGP_IGPM
+(
+IGP_dtIGPM timestamp, 
+IGP_vlIGPM numeric
+);
+create table dbo.IMO_IMOVEL
+(
+Prop_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+TIPO_cdTipoObra varchar(2), 
+ZON_cdZoneamento varchar(2), 
+HID_cdHidrometro varchar(2), 
+PRIVA_cdAreaPrivativa varchar(3), 
+hid_nuHidrometro varchar(12), 
+IMO_dtLigacaoAgua timestamp, 
+IMO_dtLigacaoEsgoto timestamp, 
+IMO_dtCobrancaAgua timestamp, 
+IMO_dtCobrancaEsgoto timestamp, 
+IMO_dtAlteracao timestamp, 
+IMO_dtContrato timestamp, 
+IMO_dtInicialCM timestamp, 
+IMO_nuEconomias int, 
+IMO_nuUnidades smallint, 
+IMO_nuPavimentos smallint, 
+imo_nuTaxaOcupacao Numeric(4,2), 
+IMO_nuAreaExclusiva varchar(9), 
+IMO_nuAreaConstruida varchar(9), 
+imo_nucoeficiente varchar(6), 
+IMO_dcTipoImovel varchar(2), 
+MOD_cdModuloRelat int, 
+QUA_cdQuadraRelat varchar(2), 
+PROP_dcLoteRelat varchar(3), 
+IMO_dtContratoNovo timestamp, 
+IMO_nuFusao int, 
+IMO_dcFlag varchar(1), 
+CoeficienteImovel Numeric(18,5)
+);
+create table dbo.IMO_IMOVEL_LOG
+(
+PROP_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+PROP_dcLote varchar(3), 
+Observacao varchar(6900)
+);
+create table dbo.IMO_IMOVEL_M16_tmpAPAG
+(
+Prop_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+TIPO_cdTipoObra varchar(2), 
+ZON_cdZoneamento varchar(2), 
+HID_cdHidrometro varchar(2), 
+PRIVA_cdAreaPrivativa varchar(3), 
+hid_nuHidrometro varchar(12), 
+IMO_dtLigacaoAgua timestamp, 
+IMO_dtLigacaoEsgoto timestamp, 
+IMO_dtCobrancaAgua timestamp, 
+IMO_dtCobrancaEsgoto timestamp, 
+IMO_dtAlteracao timestamp, 
+IMO_dtContrato timestamp, 
+IMO_dtInicialCM timestamp, 
+IMO_nuEconomias int, 
+IMO_nuUnidades smallint, 
+IMO_nuPavimentos smallint, 
+imo_nuTaxaOcupacao Numeric(4,2), 
+IMO_nuAreaExclusiva varchar(9), 
+IMO_nuAreaConstruida varchar(9), 
+imo_nucoeficiente varchar(6), 
+IMO_dcTipoImovel varchar(2), 
+MOD_cdModuloRelat int, 
+QUA_cdQuadraRelat varchar(2), 
+PROP_dcLoteRelat varchar(3), 
+IMO_dtContratoNovo timestamp, 
+IMO_nuFusao int, 
+IMO_dcFlag varchar(1), 
+CoeficienteImovel Numeric(18,5)
+);
+
+
+CREATE TABLE nucleo.imo_imovelanexos (
+	id int8 NOT NULL,
+	prop_nucodigo int4 NOT NULL,
+	anexo bytea NOT NULL,
+	obs varchar(50) NULL,
+	nomearquivo varchar NOT NULL,
+	caminhoarquivo varchar NOT NULL,
+	datahoraarquivo timestamp NULL,
+	datahoracadastro timestamp NULL,
+	ordem int4 NULL,
+	removido bit(1) NULL
+);
+
+
+create table dbo.IMO_IMOVELANEXOSTMP
+(
+Referencia timestamp, 
+anexo text
+);
+create table dbo.IMO_IMOVELAnexosTMP2
+(
+ID SERIAL, 
+Prop_nucodigo int, 
+Anexo text, 
+Obs varchar(50), 
+NomeArquivo text, 
+CaminhoArquivo text, 
+DataHoraArquivo timestamp, 
+DataHoraCadastro timestamp, 
+Ordem int, 
+Removido Boolean
+);
+create table dbo.IMO_IMOVELLOG
+(
+Motivo varchar(30), 
+Acao varchar(2), 
+Computador varchar(12), 
+DataHora timestamp, 
+UsuarioRede varchar(15), 
+Obs varchar(30), 
+Prop_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+TIPO_cdTipoObra varchar(2), 
+ZON_cdZoneamento varchar(2), 
+HID_cdHidrometro varchar(2), 
+PRIVA_cdAreaPrivativa varchar(3), 
+hid_nuHidrometro varchar(12), 
+IMO_dtLigacaoAgua timestamp, 
+IMO_dtLigacaoEsgoto timestamp, 
+IMO_dtCobrancaAgua timestamp, 
+IMO_dtCobrancaEsgoto timestamp, 
+IMO_dtAlteracao timestamp, 
+IMO_dtContrato timestamp, 
+IMO_dtInicialCM timestamp, 
+IMO_nuEconomias int, 
+IMO_nuUnidades smallint, 
+IMO_nuPavimentos smallint, 
+imo_nuTaxaOcupacao Numeric(4,2), 
+IMO_nuAreaExclusiva varchar(9), 
+IMO_nuAreaConstruida varchar(9), 
+imo_nucoeficiente varchar(6), 
+IMO_dcTipoImovel varchar(2), 
+MOD_cdModuloRelat int, 
+QUA_cdQuadraRelat varchar(2), 
+PROP_dcLoteRelat varchar(3), 
+IMO_dtContratoNovo timestamp, 
+IMO_nuFusao int, 
+IMO_dcFlag varchar(1), 
+CoeficienteImovel Numeric(18,5)
+);
+create table dbo.IMO_ImovelStatusFinanceiro
+(
+ID SERIAL, 
+Descricao varchar(100)
+)
+;
+create table dbo.IMO_ImovelStatusFinanceiroAcao
+(
+ID SERIAL, 
+Descricao varchar(100), 
+IDDescAcao int, 
+DescricaoAcao varchar(60)
+);
+create table dbo.IMO_ImovelStatusFinanceiroDetalhe
+(
+PROP_nuCodigo int, 
+ID_IMO_ImovelStatusFinanceiro int, 
+DataVencimento date, 
+TIP_nuTipoCobranca int, 
+IDCob bigint, 
+DataRelatImovStFin date
+);
+create table dbo.IMO_ImovelStatusFinanceiroDetalhe03MAR21
+(
+PROP_nuCodigo int, 
+ID_IMO_ImovelStatusFinanceiro int, 
+DataVencimento date, 
+TIP_nuTipoCobranca int, 
+IDCob bigint, 
+DataRelatImovStFin date
+);
+create table dbo.IMO_ImovelStatusFinanceiroDetalhe2
+(
+PROP_nuCodigo int, 
+ID_IMO_ImovelStatusFinanceiro int, 
+DataVencimento date, 
+TIP_nuTipoCobranca int, 
+IDCob bigint, 
+DataRelatImovStFin date
+);
+create table dbo.IMO_ImovelStatusFinanceiroDetalheABR21
+(
+PROP_nuCodigo int, 
+ID_IMO_ImovelStatusFinanceiro int, 
+DataVencimento date, 
+TIP_nuTipoCobranca int, 
+IDCob bigint, 
+DataRelatImovStFin date
+);
+create table dbo.IMO_ImovelStatusFinanceirodetalheBKP
+(
+PROP_nuCodigo int, 
+ID_IMO_ImovelStatusFinanceiro int, 
+DataVencimento date, 
+TIP_nuTipoCobranca int, 
+IDCob bigint
+);
+create table dbo.ImpressaoRecibo
+(
+PROP_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+PROP_dcLote varchar(3), 
+PROP_dlNome varchar(50), 
+DataAbreviada varchar(30), 
+NumeroRecibo int, 
+ValorRecibo Numeric(8,2), 
+ValorExtenso text, 
+TipoCobranca text, 
+Vencimento timestamp, 
+Referencia varchar(7), 
+ValorAtualizado Numeric(8,2), 
+TipoPagamento text, 
+Valor Numeric(8,2), 
+Banco varchar(5), 
+Agencia varchar(7), 
+ContaCorrente varchar(10), 
+ChequeNumero varchar(10), 
+ChequeVencimento timestamp, 
+ChequeInformacao varchar(86), 
+ChequeValor Numeric(8,2), 
+COL_dlNomeColaborador varchar(70), 
+CNPJ varchar(50), 
+Endereco varchar(70), 
+Telefone varchar(50), 
+CEP varchar(20), 
+Cidade varchar(15), 
+Observacao text, 
+DataOperacao timestamp, 
+COL_cdColaborador int, 
+Selecao varchar(1)
+);
+create table dbo.ImpressoraCobranca
+(
+COL_cdColaborador bigint, 
+ImpressoraNome varchar(50)
+);
+create table dbo.ind_indexador
+(
+IND_dtIndexador timestamp, 
+IND_vlIndexador Numeric(14,5), 
+IND_dtVencimento timestamp
+);
+create table dbo.indexador
+(
+IND_dtIndexador timestamp, 
+IND_vlIndexador Numeric(14,5), 
+IND_dtVencimento timestamp
+);
+create table dbo.INFOCALC_InformacaoCalculo
+(
+MOD_cdModulo int, 
+ZON_cdZoneamento varchar(2), 
+IMO_nuCoeficiente varchar(6), 
+IMO_nuPavimentos smallint, 
+IMO_nuTaxaOcupacao Numeric(4,2), 
+TIPO_cdTipoObra varchar(2)
+);
+create table dbo.INFOHID_InformacoesHidrometro
+(
+Prop_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+HID_cdHidrometro varchar(2), 
+HID_nuHidrometro varchar(12), 
+INFOHID_ValorMaximoHidrometro int, 
+INFOHID_nuEconomias int, 
+INFOHID_cdRoteiro varchar(1), 
+INFOHID_cdSequencia Numeric(18,1), 
+INFOHID_dtLigacao timestamp, 
+INFOHID_dtSubstituicao timestamp, 
+MOD_cdModuloRelat int, 
+QUA_cdQuadraRelat varchar(2), 
+PROP_dcLoteRelat varchar(3), 
+COL_cdcolaborador int, 
+Prop_nuCodigoUnificado int
+);
+create table dbo.INFOHID_InformacoesHidrometroLOG
+(
+Motivo varchar(30), 
+Acao varchar(2), 
+Computador varchar(12), 
+DataHora timestamp, 
+UsuarioRede varchar(15), 
+Obs varchar(30), 
+Prop_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+HID_cdHidrometro varchar(2), 
+HID_nuHidrometro varchar(12), 
+INFOHID_ValorMaximoHidrometro int, 
+INFOHID_nuEconomias int, 
+INFOHID_cdRoteiro varchar(1), 
+INFOHID_cdSequencia Numeric(18,1), 
+INFOHID_dtLigacao timestamp, 
+INFOHID_dtSubstituicao timestamp, 
+MOD_cdModuloRelat int, 
+QUA_cdQuadraRelat varchar(2), 
+PROP_dcLoteRelat varchar(3), 
+COL_cdcolaborador int, 
+Prop_nuCodigoUnificado int
+);
+create table dbo.Integracao
+(
+PROP_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+PROP_dcLote varchar(3), 
+DescricaoCobranca varchar(20), 
+DataVencimento timestamp, 
+DataPagamento timestamp, 
+DataBaixa timestamp, 
+MesReferencia int, 
+AnoReferencia int, 
+ValorEmitido Numeric(8,2), 
+Saldo Numeric(8,2), 
+CorrecaoMonetaria Numeric(8,2), 
+Juros Numeric(8,2), 
+Multa Numeric(8,2), 
+Permanencia
+ Numeric(8,2), 
+TipoPagamento int, 
+TIP_nuTipoCobranca int, 
+Banco varchar(5), 
+Agencia varchar(7), 
+ContaCorrente varchar(10), 
+NumeroCheque int, 
+NumeroRecibo int, 
+Observacao varchar(20)
+);
+create table dbo.JATAIS
+(
+SequenciaRemetente int, 
+NomeRemetente varchar(100), 
+EnderecoRemetente varchar(90), 
+BairroRemetente varchar(50), 
+CidadeRemetente varchar(40), 
+EstadoRemetente varchar(2), 
+CepRemetente varchar(10), 
+Funcao varchar(30)
+);
+create table dbo.LaboratorioTabelaCadastroETA
+(
+Categorias varchar(50), 
+LigacoesExistentes bigint, 
+EconomiasExistentes bigint, 
+ComHidrometro bigint, 
+DataHoraAtualizacao timestamp
+);
+create table dbo.Log
+(
+IdLog SERIAL, 
+UserName varchar(50), 
+DataLog timestamp, 
+Rotina varchar(50)
+);
+create table dbo.LogRetorno
+(
+IdRetorno int, 
+Texto varchar(400)
+);
+create table dbo.LoteDevTEMPCelofPralvi
+(
+Codigo int, 
+Mod int, 
+Qua varchar(2), 
+Lote varchar(3), 
+Referencia timestamp, 
+VLRAGUA Numeric(38,2), 
+CONTRIBUICAO Numeric(38,2), 
+PORTAL Numeric(38,2), 
+CORRECAO Numeric(18,2), 
+MULTAS Numeric(18,2), 
+JUROS Numeric(18,2), 
+PERM Numeric(18,2), 
+TXCAPTACAO Numeric(38,2), 
+TOTAL Numeric(18,2), 
+MANAVERDE Numeric(38,2), 
+MJCMANAV Numeric(18,2), 
+Status int, 
+StatusDescricao varchar(100)
+);
+create table dbo.LoteDevTEMPCintiCINTIA
+(
+Codigo int, 
+Mod int, 
+Qua varchar(2), 
+Lote varchar(3), 
+Referencia timestamp, 
+VLRAGUA Numeric(38,2), 
+CONTRIBUICAO Numeric(38,2), 
+PORTAL Numeric(38,2), 
+CORRECAO Numeric(18,2), 
+MULTAS Numeric(18,2), 
+JUROS Numeric(18,2), 
+PERM Numeric(18,2), 
+TXCAPTACAO Numeric(38,2), 
+TOTAL Numeric(18,2), 
+MANAVERDE Numeric(38,2), 
+MJCMANAV Numeric(18,2), 
+Status int, 
+StatusDescricao varchar(100)
+);
+create table dbo.LoteDevTEMPfelixLUISA
+(
+Codigo int, 
+Mod int, 
+Qua varchar(2), 
+Lote varchar(3), 
+Referencia timestamp, 
+VLRAGUA Numeric(38,2), 
+CONTRIBUICAO Numeric(38,2), 
+PORTAL Numeric(38,2), 
+CORRECAO Numeric(18,2), 
+MULTAS Numeric(18,2), 
+JUROS Numeric(18,2), 
+PERM Numeric(18,2), 
+TXCAPTACAO Numeric(38,2), 
+TOTAL Numeric(18,2), 
+MANAVERDE Numeric(38,2), 
+MJCMANAV Numeric(18,2), 
+Status int, 
+StatusDescricao varchar(100)
+);
+create table dbo.LoteDevTEMPPatriPATRIC
+(
+Codigo int, 
+Mod int, 
+Qua varchar(2), 
+Lote varchar(3), 
+Referencia timestamp, 
+VLRAGUA Numeric(38,2), 
+CONTRIBUICAO Numeric(38,2), 
+PORTAL Numeric(38,2), 
+CORRECAO Numeric(18,2), 
+MULTAS Numeric(18,2), 
+JUROS Numeric(18,2), 
+PERM Numeric(18,2), 
+TXCAPTACAO Numeric(38,2), 
+TOTAL Numeric(18,2), 
+MANAVERDE Numeric(38,2), 
+MJCMANAV Numeric(18,2), 
+Status int, 
+StatusDescricao varchar(100)
+);
+create table dbo.LoteDevTEMPpralvPralvi
+(
+Codigo int, 
+Mod int, 
+Qua varchar(2), 
+Lote varchar(3), 
+Referencia timestamp, 
+VLRAGUA Numeric(38,2), 
+CONTRIBUICAO Numeric(38,2), 
+PORTAL Numeric(38,2), 
+CORRECAO Numeric(18,2), 
+MULTAS Numeric(18,2), 
+JUROS Numeric(18,2), 
+PERM Numeric(18,2), 
+TXCAPTACAO Numeric(38,2), 
+TOTAL Numeric(18,2), 
+MANAVERDE Numeric(38,2), 
+MJCMANAV Numeric(18,2), 
+Status int, 
+StatusDescricao varchar(100)
+);
+create table dbo.LoteDevTEMPwebcox
+(
+Codigo int, 
+Mod int, 
+Qua varchar(2), 
+Lote varchar(3), 
+Referencia timestamp, 
+VLRAGUA Numeric(38,2), 
+CONTRIBUICAO Numeric(38,2), 
+PORTAL Numeric(38,2), 
+CORRECAO Numeric(18,2), 
+MULTAS Numeric(18,2), 
+JUROS Numeric(18,2), 
+PERM Numeric(18,2), 
+TXCAPTACAO Numeric(38,2), 
+TOTAL Numeric(18,2), 
+MANAVERDE Numeric(38,2), 
+MJCMANAV Numeric(18,2), 
+Status int, 
+StatusDescricao varchar(100)
+);
+create table dbo.LotesEspeciaisHistoricoAlteracoes
+(
+Prop_nuCodigo int, 
+Nome varchar(30), 
+DataHora timestamp, 
+Conteudo varchar(100), 
+De varchar(30), 
+Para varchar(30)
+);
+create table dbo.LotesLiberadosPrefeituraImplantados
+(
+PROP_nuCodigo int
+);
+create table dbo.MensagemInterna
+(
+Mensagem text, 
+dataconversa timestamp
+);
+create table dbo.MenuAcessoSistema
+(
+COL_cdColaborador bigint, 
+datahora timestamp, 
+MenuNome varchar(350)
+);
+create table dbo.MOD_MODULO
+(
+Mod_cdModulo int, 
+Mod_dcModulo varchar(40), 
+Mod_dlLocalizacao varchar(15)
+);
+create table dbo.MOE_MOedas
+(
+MOE_dtMoeda timestamp, 
+MOE_vlMoeda numeric
+);
+create table dbo.OBS_Observacao
+(
+PROP_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+PROP_dcLote varchar(3), 
+OBS_dtObservacao timestamp, 
+OBS_dlObservacao text
+);
+create table dbo.OCOR_Ocorrencia
+(
+OCOR_nuOcorrencia int, 
+OCOR_cdOcorrencia varchar(2), 
+OCOR_dcOcorrencia varchar(25)
+);
+create table dbo.PadraoAbrigoAgua
+(
+PadraoAbrigoID SERIAL, 
+ImagemPadraoAbrigo BYTEA, 
+descricao varchar(50)
+);
+create table dbo.PAI_PAIS
+(
+PAI_cdPais int, 
+PAI_dlPais varchar(30)
+);
+create table dbo.PAR_Parametros
+(
+PAR_nuContaCorrente varchar(7), 
+PAR_dvContaCorrente varchar(1), 
+PAR_nuCarteira varchar(2), 
+PAR_nuBanco varchar(3), 
+PAR_nuMoeda varchar(1), 
+PAR_nuAgencia varchar(9), 
+PAR_dvAgencia varchar(1), 
+PAR_dcEspecie varchar(2), 
+PAR_dcEspecieDoc varchar(2), 
+PAR_dcAceite varchar(1), 
+PAR_dtFatorVencimento timestamp, 
+PAR_nuNumero varchar(2), 
+PAR_nuIdentReg smallint, 
+PAR_nuIdentArq smallint, 
+PAR_dcRemessa varchar(7), 
+PAR_nuCodServico smallint, 
+PAR_dcServico varchar(8), 
+PAR_dcCodEmpresa int, 
+PAR_dcIdentSistema varchar(2), 
+PAR_dlRazaoSocial varchar(50), 
+PAR_dcNomeBanco varchar(8), 
+PAR_nuSequencia int, 
+PAR_nuRazao int, 
+PAR_dlCNPJ varchar(18), 
+PAR_dlInstrucoes1 varchar(25), 
+PAR_dlEnderecoCedente varchar(75), 
+PAR_dcCepCedente varchar(9)
+);
+create table dbo.paragua_parametrosagua
+(
+HID_cdHidrometro varchar(2), 
+PARAGUA_vlValorInicial int, 
+PARAGUA_vlValorFinal int, 
+PARAGUA_vlValor numeric, 
+PARAGUA_dtDataInicial timestamp
+);
+create table dbo.paragua_parametrosaguaSIM
+(
+HID_cdHidrometro varchar(2), 
+PARAGUA_vlValorInicial int, 
+PARAGUA_vlValorFinal int, 
+PARAGUA_vlValor numeric, 
+PARAGUA_dtDataInicial timestamp
+);
+create table dbo.ParametroRelatorioContabil
+(
+Usuario varchar(29), 
+EnderecoRede varchar(306)
+);
+create table dbo.Parametros
+(
+CaminhoArquivoBancoRetRem varchar(680), 
+CNPJEmpresa varchar(30), 
+EnderecoEmpresa text, 
+TelefonesEmpresa text, 
+CepEmpresa varchar(20), 
+EmailEmpresa varchar(50), 
+CaminhoArquivoRemessaDA text, 
+DiaVencimentoBase int, 
+NumeroMesEmissaoQuitacaoAnualDebitos int, 
+DiaLimitePagamentoBase int, 
+DataEnvioBoletoCorreio date, 
+CentavosToleranciaBaixa Numeric(8,2), 
+DiasSemTaxaPerm int
+);
+create table dbo.parametrosaguacopia
+(
+HID_cdHidrometro varchar(2), 
+PARAGUA_vlValorInicial int, 
+PARAGUA_vlValorFinal int, 
+PARAGUA_vlValor numeric, 
+PARAGUA_dtDataInicial timestamp
+);
+create table dbo.PARBOL_ParametrosBoleto
+(
+Prop_nuCodigo varchar(4), 
+MOD_cdModulo varchar(2), 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+BOL_dlNossoNumero varchar(17), 
+BOL_vlDocumento Numeric(8,2), 
+PAR_nuContaCorrente varchar(7), 
+PAR_nuAgencia varchar(4), 
+PAR_dcEspecie varchar(2), 
+PAR_dcAceite varchar(1), 
+PAR_nuMoeda varchar(1), 
+PAR_nuNumero varchar(2), 
+PARBOL_dtProcessamento timestamp, 
+PARBOL_dlLinhaDigitavel varchar(54), 
+PARBOL_dlCodigoBarras varchar(24)
+);
+create table dbo.PARCON_ParametrosConsumo
+(
+TIPO_cdTipoObra varchar(2), 
+PARCON_nuParametroConsumo numeric
+);
+create table dbo.PARCON_ParametrosConsumoAguaColetor
+(
+TIPO_cdTipoObra varchar(2), 
+PARCON_nuParametroConsumo numeric, 
+Mes int, 
+PARCON_dcTipoTemporada varchar(2), 
+PARCON_dlTipoTemporada varchar(30)
+);
+create table dbo.PavimentacaoPesquisa
+(
+PROP_nuCodigo int, 
+Proprietario Boolean, 
+Caseiro Boolean, 
+Locatario Boolean, 
+Outros Boolean, 
+Observacao varchar(70), 
+COL_cdColaborador bigint, 
+Estacao varchar(40), 
+DataLigacao timestamp
+);
+create table dbo.pesq
+(
+COL_cdColaborador bigint, 
+Conteudo varchar(400), 
+NomeArquivo varchar(20), 
+CaminhoArquivo varchar(290), 
+Tipo varchar(1), 
+DataHoraSistema timestamp, 
+NossoNumero varchar(12), 
+CodigoBoleto bigint, 
+Ordem SERIAL, 
+CodProp bigint
+);
+create table dbo.POR_Portal
+(
+Prop_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+POR_dtCalculo timestamp, 
+POR_dtVencimento timestamp, 
+POR_dtPagamento timestamp, 
+POR_nuMesReferencia int, 
+POR_nuAnoReferencia int, 
+POR_dtBaixa date, 
+POR_vlValorEmitido Numeric(8,2), 
+POR_vlCorrecaoMonetaria Numeric(8,2), 
+POR_vlJuros Numeric(8,2), 
+POR_vlMulta Numeric(8,2), 
+POR_vlPermanencia
+ Numeric(8,2), 
+POR_vlAtualizado Numeric(8,2), 
+POR_vlValorRecebido Numeric(8,2), 
+TIP_nuTipoCobranca int, 
+POR_dlObservacao varchar(3), 
+POR_dcTipoBaixa varchar(3), 
+BAIT_cdCodigo int, 
+POR_idPortal SERIAL, 
+BAI_idBaixa bigint, 
+DataHoraCriacao timestamp
+);
+create table dbo.PRIVA_PRIVATIVAS
+(
+PRIVA_cdAreaPrivativa varchar(3), 
+PRIVA_dcAreaPrivativa varchar(25)
+);
+create table dbo.PROP_Proprietarios
+(
+PROP_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+Prop_dlNome varchar(70), 
+Prop_dlEndereco varchar(50), 
+Prop_dlBairro varchar(25), 
+Prop_dlCidade varchar(20), 
+Prop_dcEstado varchar(2), 
+Prop_dcCep varchar(8), 
+PAI_cdPais int, 
+Prop_dlNomeCarta varchar(50), 
+Prop_dlEnderecoCarta varchar(50), 
+Prop_dlBairroCarta varchar(25), 
+Prop_dlCidadeCarta varchar(20), 
+Prop_dcEstadoCarta varchar(2), 
+Prop_dcCepCarta varchar(8), 
+PAI_cdPaisCarta int, 
+Prop_dcCpfCarta varchar(11), 
+Prop_dcCgcCarta varchar(14), 
+Prop_dcTelefoneRes varchar(16), 
+Prop_dcTelefoneCom varchar(16), 
+Prop_dcTelefoneCelular varchar(16), 
+Prop_dcTelefoneRiviera varchar(16), 
+Prop_dcCpf varchar(11), 
+Prop_dcCgC varchar(14), 
+Prop_dcRG varchar(9), 
+Prop_dtNascimento varchar(10), 
+Prop_dlContato varchar(50), 
+Prop_dlEnderecoEletronico varchar(50), 
+Prop_dcTelefoneResCarta varchar(16), 
+Prop_dcTelefoneComCarta varchar(16), 
+Prop_dcTelefoneCelularCarta varchar(16), 
+Prop_dcTelefoneRivieraCarta varchar(16), 
+Prop_dlEnderecoEletronicoCarta varchar(50), 
+Prop_stEnviaHipo varchar(1), 
+MOD_cdModuloRelat int, 
+QUA_cdQuadraRelat varchar(2), 
+PROP_dcLoteRelat varchar(3), 
+Prop_dlEnderecoRiviera varchar(50), 
+Prop_dlNomeJornal varchar(50), 
+Prop_dlEnderecoJornal varchar(50), 
+Prop_dlBairroJornal varchar(25), 
+Prop_dlCidadeJornal varchar(20), 
+Prop_dcUfJornal varchar(2), 
+Prop_dcCepJornal varchar(8), 
+Prop_nuCodigoUnificado int, 
+PROP_dlNomeZelador varchar(40), 
+PROP_stRelRiviera varchar(1), 
+PROP_Imagem varchar(10), 
+PROP_dlEmailBoleto varchar(50), 
+PROS_cdStatus int, 
+PROP_dtAlteracao timestamp, 
+PROP_nuDiaVencimentoBoleto int, 
+Prop_dcCepRiviera varchar(8), 
+IdCadBoleto int, 
+CM int, 
+AE int, 
+NaoBoleto int
+);
+create table dbo.PROP_ProprietariosCAP
+(
+PROP_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+Prop_dlNome varchar(70), 
+Prop_dlEndereco varchar(50), 
+Prop_dlBairro varchar(25), 
+Prop_dlCidade varchar(20), 
+Prop_dcEstado varchar(2), 
+Prop_dcCep varchar(8), 
+PAI_cdPais int, 
+Prop_dlNomeCarta varchar(50), 
+Prop_dlEnderecoCarta varchar(50), 
+Prop_dlBairroCarta varchar(25), 
+Prop_dlCidadeCarta varchar(20), 
+Prop_dcEstadoCarta varchar(2), 
+Prop_dcCepCarta varchar(8), 
+PAI_cdPaisCarta int, 
+Prop_dcCpfCarta varchar(11), 
+Prop_dcCgcCarta varchar(14), 
+Prop_dcTelefoneRes varchar(16), 
+Prop_dcTelefoneCom varchar(16), 
+Prop_dcTelefoneCelular varchar(16), 
+Prop_dcTelefoneRiviera varchar(16), 
+Prop_dcCpf varchar(11), 
+Prop_dcCgC varchar(14), 
+Prop_dcRG varchar(9), 
+Prop_dtNascimento varchar(10), 
+Prop_dlContato varchar(50), 
+Prop_dlEnderecoEletronico varchar(50), 
+Prop_dcTelefoneResCarta varchar(16), 
+Prop_dcTelefoneComCarta varchar(16), 
+Prop_dcTelefoneCelularCarta varchar(16), 
+Prop_dcTelefoneRivieraCarta varchar(16), 
+Prop_dlEnderecoEletronicoCarta varchar(50), 
+Prop_stEnviaHipo varchar(1), 
+MOD_cdModuloRelat int, 
+QUA_cdQuadraRelat varchar(2), 
+PROP_dcLoteRelat varchar(3), 
+Prop_dlEnderecoRiviera varchar(50), 
+Prop_dlNomeJornal varchar(50), 
+Prop_dlEnderecoJornal varchar(50), 
+Prop_dlBairroJornal varchar(25), 
+Prop_dlCidadeJornal varchar(20), 
+Prop_dcUfJornal varchar(2), 
+Prop_dcCepJornal varchar(8), 
+Prop_nuCodigoUnificado int, 
+PROP_dlNomeZelador varchar(40), 
+PROP_stRelRiviera varchar(1), 
+PROP_Imagem varchar(10), 
+PROP_dlEmailBoleto varchar(50), 
+PROS_cdStatus int, 
+PROP_dtAlteracao timestamp, 
+PROP_nuDiaVencimentoBoleto int, 
+Prop_dcCepRiviera varchar(8), 
+IdCadBoleto int, 
+CM int, 
+AE int, 
+NaoBoleto int, 
+CHA_cdCodigoChamado int
+);
+create table dbo.PROP_ProprietariosLOG
+(
+Motivo varchar(30), 
+Acao varchar(2), 
+Computador varchar(12), 
+DataHora timestamp, 
+UsuarioRede varchar(15), 
+Obs varchar(30), 
+PROP_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+Prop_dlNome varchar(70), 
+Prop_dlEndereco varchar(50), 
+Prop_dlBairro varchar(25), 
+Prop_dlCidade varchar(20), 
+Prop_dcEstado varchar(2), 
+Prop_dcCep varchar(8), 
+PAI_cdPais int, 
+Prop_dlNomeCarta varchar(50), 
+Prop_dlEnderecoCarta varchar(50), 
+Prop_dlBairroCarta varchar(25), 
+Prop_dlCidadeCarta varchar(20), 
+Prop_dcEstadoCarta varchar(2), 
+Prop_dcCepCarta varchar(8), 
+PAI_cdPaisCarta int, 
+Prop_dcCpfCarta varchar(11), 
+Prop_dcCgcCarta varchar(14), 
+Prop_dcTelefoneRes varchar(16), 
+Prop_dcTelefoneCom varchar(16), 
+Prop_dcTelefoneCelular varchar(16), 
+Prop_dcTelefoneRiviera varchar(16), 
+Prop_dcCpf varchar(11), 
+Prop_dcCgC varchar(14), 
+Prop_dcRG varchar(9), 
+Prop_dtNascimento varchar(10), 
+Prop_dlContato varchar(50), 
+Prop_dlEnderecoEletronico varchar(50), 
+Prop_dcTelefoneResCarta varchar(16), 
+Prop_dcTelefoneComCarta varchar(16), 
+Prop_dcTelefoneCelularCarta varchar(16), 
+Prop_dcTelefoneRivieraCarta varchar(16), 
+Prop_dlEnderecoEletronicoCarta varchar(50), 
+Prop_stEnviaHipo varchar(1), 
+MOD_cdModuloRelat int, 
+QUA_cdQuadraRelat varchar(2), 
+PROP_dcLoteRelat varchar(3), 
+Prop_dlEnderecoRiviera varchar(50), 
+Prop_dlNomeJornal varchar(50), 
+Prop_dlEnderecoJornal varchar(50), 
+Prop_dlBairroJornal varchar(25), 
+Prop_dlCidadeJornal varchar(20), 
+Prop_dcUfJornal varchar(2), 
+Prop_dcCepJornal varchar(8), 
+Prop_nuCodigoUnificado int, 
+PROP_dlNomeZelador varchar(40), 
+PROP_stRelRiviera varchar(1), 
+PROP_Imagem varchar(10), 
+PROP_dlEmailBoleto varchar(50), 
+PROS_cdStatus int, 
+PROP_dtAlteracao timestamp, 
+PROP_nuDiaVencimentoBoleto int, 
+Prop_dcCepRiviera varchar(8)
+);
+create table dbo.PROP_PROPRIETARIOSMAILALTERACOES
+(
+Email varchar(80), 
+DatahoraAlteracao timestamp, 
+prop_nucodigo int, 
+col_cdcolaborador bigint
+);
+create table dbo.PROPRIETARIOCONTATO
+(
+PROP_nuCodigo int, 
+COL_cdColaborador int, 
+PROC_dcDependente Boolean, 
+CNT_cdContatoTipo int
+);
+create table dbo.proprietarios
+(
+PROP_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+Prop_dlNome varchar(50), 
+Prop_dlEndereco varchar(50), 
+Prop_dlBairro varchar(25), 
+Prop_dlCidade varchar(20), 
+Prop_dcEstado varchar(2), 
+Prop_dcCep varchar(8), 
+PAI_cdPais int, 
+Prop_dlNomeCarta varchar(50), 
+Prop_dlEnderecoCarta varchar(50), 
+Prop_dlBairroCarta varchar(25), 
+Prop_dlCidadeCarta varchar(20), 
+Prop_dcEstadoCarta varchar(2), 
+Prop_dcCepCarta varchar(8), 
+PAI_cdPaisCarta int, 
+Prop_dcTelefoneRes varchar(16), 
+Prop_dcTelefoneCom varchar(16), 
+Prop_dcTelefoneCelular varchar(16), 
+Prop_dcTelefoneRiviera varchar(16), 
+Prop_dcCpf varchar(11), 
+Prop_dcCgC varchar(14), 
+Prop_dcRG varchar(9), 
+Prop_dtNascimento varchar(10), 
+Prop_dlContato varchar(50), 
+Prop_dlEnderecoEletronico varchar(50), 
+Prop_dcTelefoneResCarta varchar(16), 
+Prop_dcTelefoneComCarta varchar(16), 
+Prop_dcTelefoneCelularCarta varchar(16), 
+Prop_dcTelefoneRivieraCarta varchar(16), 
+Prop_dlEnderecoEletronicoCarta varchar(50), 
+Prop_stEnviaHipo varchar(1), 
+MOD_cdModuloRelat int, 
+QUA_cdQuadraRelat varchar(2), 
+PROP_dcLoteRelat varchar(3), 
+Prop_dlEnderecoRiviera varchar(50), 
+Prop_dlNomeJornal varchar(50), 
+Prop_dlEnderecoJornal varchar(50), 
+Prop_dlBairroJornal varchar(25), 
+Prop_dlCidadeJornal varchar(20), 
+Prop_dcUfJornal varchar(2), 
+Prop_dcCepJornal varchar(8), 
+Prop_nuCodigoUnificado int
+);
+create table dbo.ProprietarioStatus
+(
+PROS_cdStatus SERIAL, 
+PROS_dlDescricao varchar(39)
+);
+create table dbo.PROPSRECEITA
+(
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+PROP_dcLote varchar(3), 
+PROP_dlNome varchar(70), 
+PROP_dlNomeCarta varchar(70), 
+CPF varchar(14), 
+CPFCarta varchar(14), 
+CNPJ varchar(19), 
+CNPJCarta varchar(19), 
+DataLigacao timestamp
+);
+create table dbo.PROPT
+(
+mod_cdmodulo int, 
+qua_cdquadra varchar(2), 
+prop_dclote varchar(3), 
+prop_nucodigo int, 
+tipo_cdtipoObra varchar(2), 
+nome varchar(70), 
+endereco varchar(50), 
+bairro varchar(25), 
+cidade varchar(20), 
+uf varchar(2), 
+cep varchar(8), 
+tipo_dltipoobra varchar(25)
+);
+create table dbo.PROPTIPO_ProprietarioxTipoObra
+(
+PROP_nuCodigo int, 
+PROPTIPO_dtProprietarioTipoObra timestamp, 
+TIPO_cdTipoObra varchar(2)
+);
+create table dbo.PropUpTemp_Abri2017_0196
+(
+PROP_nuCodigo int
+);
+create table dbo.PropUpTemp_Abri2017_1075
+(
+PROP_nuCodigo int
+);
+create table dbo.PropUpTemp_Abri2017_2095
+(
+PROP_nuCodigo int
+);
+create table dbo.QUA_Quadra
+(
+Mod_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+QUA_dlLocalizacao varchar(65)
+);
+create table dbo.Recebe
+(
+PROP_nuCodigo int, 
+DataVencimento timestamp, 
+DataPagamento timestamp, 
+Valor Numeric(8,2)
+);
+create table dbo.REG_RegAgua
+(
+REG_nupH numeric, 
+REG_nuCorAparente numeric, 
+REG_nuTrubidez numeric, 
+REG_nuCRL numeric, 
+REG_nuFerroTotal numeric, 
+REG_nuAluminio numeric, 
+REG_nuCloretos numeric, 
+REG_nuDureza numeric, 
+REG_Fluretos numeric, 
+REG_dtPeriodoInicial timestamp, 
+REG_dtPeriodoFinal timestamp, 
+REG_nuPHAnalise int, 
+REG_nuCorAnalise int, 
+REG_nuTurbidezAnalise int, 
+REG_nuCRLAnalise int, 
+REG_nuFerroAnalise int, 
+REG_nuALUAnalise int, 
+REG_nuClorAnalise int, 
+REG_nuDurezaAnalise int, 
+REG_nuFluorAnalise int, 
+REG_nuColiAnalise int, 
+REG_nuEColiAnalise int, 
+REG_nuBacHAnalise int, 
+REG_dcColiformes varchar(15), 
+REG_dcEcoli varchar(15), 
+REG_dcBacHeter varchar(15)
+);
+create table dbo.RegistrosNaoIdentificados
+(
+PROP_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(3), 
+PROP_dcLote varchar(3), 
+Data timestamp, 
+DataMovimentacao timestamp, 
+Valor Numeric(8,2), 
+DataBaixa timestamp
+);
+create table dbo.RelatDevedores
+(
+Mod_cdModulo int, 
+Qua_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+Prop_nuCodigo int, 
+DataVencimentoBoleto timestamp, 
+Valor Numeric(8,2)
+);
+create table dbo.RemessaMensalNaoEnviar
+(
+PROP_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+DataVencimentoCobranca date
+);
+create table dbo.RemessaMensalNaoEnviarTMP
+(
+PROP_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+DataVencimentoCobranca date
+);
+create table dbo.Remetente
+(
+SequenciaRemetente int, 
+NomeRemetente varchar(100), 
+EnderecoRemetente varchar(90), 
+BairroRemetente varchar(50), 
+CidadeRemetente varchar(40), 
+EstadoRemetente varchar(2), 
+CepRemetente varchar(10), 
+Funcao varchar(30)
+);
+create table dbo.RH
+(
+Prop_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+PROP_nuCodigoUnificado int, 
+DataCalculo timestamp, 
+DataVencimento timestamp, 
+DataPagamento timestamp, 
+MesReferencia int, 
+AnoReferencia int, 
+DataBaixa date, 
+ValorEmitido Numeric(8,2), 
+CorrecaoMonetaria Numeric(8,2), 
+Juros Numeric(8,2), 
+Multa Numeric(8,2), 
+Permanencia Numeric(8,2), 
+ValorAtualizado Numeric(8,2), 
+ValorRecebido Numeric(8,2), 
+TIP_nuTipoCobranca int, 
+Observacao varchar(3), 
+TipoBaixa varchar(3), 
+BAIT_cdCodigo int, 
+BAI_idBaixa bigint, 
+RH_idRecursosHidricos SERIAL
+);
+create table dbo.RivieraInformaConfig
+(
+titulo varchar(300), 
+titulo_linha_valor int, 
+titulo_coluna_valor int, 
+msgprincipal varchar(800), 
+msgprincipal_linha_valor int, 
+msgprincipal_coluna_valor int, 
+anexohyppo varchar(300), 
+anexohyppo_linha_valor int, 
+anexohyppo_coluna_valor int, 
+anexohyppostatus_linha_valor int, 
+anexohyppostatus_coluna_valor int, 
+anexohyppostatus varchar(300), 
+anexoinfo varchar(300), 
+anexoinfo_linha_valor int, 
+anexoinfo_coluna_valor int, 
+anexoinfostatus_linha_valor int, 
+anexoinfostatus_coluna_valor int, 
+anexoinfostatus varchar(300), 
+anexosel varchar(300), 
+anexosel_linha_valor int, 
+anexosel_coluna_valor int, 
+listaxls varchar(300), 
+listaxls_linha_valor int, 
+listaxls_coluna_valor int, 
+listaxlsstatus_linha_valor int, 
+listaxlsstatus_coluna_valor int, 
+listaxlsstatus varchar(300), 
+locallista varchar(300), 
+locallista_linha_valor int, 
+locallista_coluna_valor int, 
+totalprinc int, 
+totalprinc_linha_valor int, 
+totalprinc_coluna_valor int, 
+fail int, 
+fail_linha_valor int, 
+fail_coluna_valor int, 
+ok int, 
+ok_linha_valor int, 
+ok_coluna_valor int, 
+totalresult int, 
+totalresult_linha_valor int, 
+totalresult_coluna_valor int, 
+ultimoacesso timestamp
+);
+create table dbo.roteiro
+(
+Rot_Sequencia int, 
+Rot_DataGeracao timestamp
+);
+create table dbo.RoteiroLeituristas
+(
+col_cdcolaborador int, 
+Ativo int, 
+datahora timestamp, 
+COL_cdColaboradorSub bigint, 
+Stat varchar(3)
+);
+create table dbo.RoteiroParametro
+(
+CaminhoArquivoTXT varchar(400)
+);
+create table dbo.roteirosequencia
+(
+PROP_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+PROP_dcLote varchar(3), 
+ROT_nuSequencia int, 
+COL_cdColaborador int, 
+ROT_dtDataAlteracao timestamp, 
+ROT_dtDataReferencia timestamp, 
+ROT_nuRoteiro int, 
+TIPO_cdTipoObra varchar(2)
+);
+create table dbo.RoteiroSequenciaLeituristas
+(
+Sequencia int, 
+RotaNumero int, 
+col_cdcolaborador int
+);
+create table dbo.RoteiroSequenciaLog
+(
+Descr text, 
+TipoAlt varchar(10), 
+Estacao varchar(20), 
+DAtaHoraAlt timestamp, 
+Usuario varchar(20), 
+OBS text, 
+PROP_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+PROP_dcLote varchar(3), 
+ROT_nuSequencia int, 
+COL_cdColaborador int, 
+ROT_dtDataAlteracao timestamp, 
+ROT_dtDataReferencia timestamp, 
+ROT_nuRoteiro int, 
+TIPO_cdTipoObra varchar(2)
+);
+create table dbo.RotinaMensalPassos
+(
+ID_Num SERIAL, 
+Quantidade Numeric(18,2), 
+Processo varchar(1200), 
+Sigla varchar(10), 
+DataVencimento date, 
+Estacao varchar(100), 
+Usuario varchar(30), 
+CodigoFuncionario bigint, 
+DataHoraProcessamento timestamp, 
+DataHoraFixaProc timestamp
+);
+create table dbo.SimulaCobranca
+(
+Prop_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+COB_nuFusao int, 
+COB_dcFlag varchar(1), 
+COB_dtCalculo timestamp, 
+COB_dtVencimento timestamp, 
+COB_dtPagamento timestamp, 
+COB_dtBaixa timestamp, 
+COB_nuMesReferencia int, 
+COB_nuAnoReferencia int, 
+COB_vlValorEmitido Numeric(8,2), 
+COB_vlSaldo Numeric(8,2), 
+COB_vlCorrecaoMonetaria Numeric(8,2), 
+COB_vlJuros Numeric(8,2), 
+COB_vlMulta Numeric(8,2), 
+COB_vlPermanencia Numeric(8,2), 
+COB_vlAtualizado Numeric(8,2), 
+COB_vlValorRecebido Numeric(8,2), 
+TIPO_cdTipoObra varchar(2), 
+TIP_nuTipoCobranca int, 
+COB_dlObservacao text, 
+COB_dtRecalculo 
+timestamp, 
+PreDatado varchar(1), 
+ValorRecibo Numeric(8,2)
+);
+create table dbo.SISAFACONTROL
+(
+COL_cdColaborador bigint, 
+Admin Boolean, 
+Ope Boolean, 
+Aut Boolean
+);
+create table dbo.SIT_Situacao
+(
+SIT_cdSituacao int, 
+SIT_dlSituacao varchar(20)
+);
+create table dbo.STA_StatusProprietario
+(
+PROP_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+PROP_dcLote varchar(3), 
+SIT_cdSituacao int
+);
+create table dbo.StatusFinanceiroTempSUPORTETI2011191535323522111915063606
+(
+TIP_dlTipoCobranca varchar(35), 
+prop_nucodigo int, 
+mod_cdmodulo int, 
+qua_cdquadra varchar(2), 
+prop_dclote varchar(3), 
+Prop_dlNome varchar(70), 
+cob_dtvencimento timestamp, 
+cob_dtbaixa date, 
+COB_dtPagamento timestamp, 
+COB_vlValorEmitido Numeric(8,2), 
+COB_vlCorrecaoMonetaria numeric, 
+COB_vlJuros numeric, 
+COB_vlMulta numeric, 
+COB_vlPermanencia numeric, 
+id_IMO_ImovelStatusFinanceiro int
+);
+create table dbo.sysdiagrams
+(
+name varchar(128), 
+principal_id int, 
+diagram_id SERIAL, 
+version int, 
+definition text
+);
+create table dbo.tad_taxasdescontos
+(
+Prop_nuCodigo int, 
+MOD_cdModulo int, 
+QUA_cdQuadra varchar(2), 
+Prop_dcLote varchar(3), 
+TAD_nuMesReferencia int, 
+TAD_nuAnoReferencia int, 
+TAD_dtVencimento timestamp, 
+TAD_dtPagamento timestamp, 
+TAD_dtBaixa date, 
+TAD_vlTaxa Numeric(8,2), 
+TAD_dlDescricaoTaxa text, 
+TAD_vlDesconto Numeric(8,2), 
+TAD_dlDescricaoDesconto text, 
+TAD_dcTipo int, 
+TAD_dcPagarEmJuizo Boolean Default false, 
+TAD_dlObservacao varchar(3), 
+Prop_nuCodigoUnificado int, 
+TAD_dcTipoBaixa varchar(3), 
+BAIT_cdCodigo int, 
+BAI_idBaixa bigint, 
+TAD_idTaxaDesconto SERIAL, 
+DataHoraCriacao timestamp
+);
+create table dbo.TAXA_Taxas
+(
+TAXA_cdTaxa numeric, 
+TAXA_dlTaxaDescricao varchar(50), 
+TAXA_nuTaxaValor Numeric(8,2), 
+TAXA_dcSigla varchar(2), 
+TAXA_dcTipoBaixa varchar(2)
+);
+create table dbo.TaxaDescontoGeradoPorBaixa
+(
+tad_idTaxaDesconto bigint, 
+BAI_idBaixa bigint
+);
+create table dbo.tempD
+(
+PROP_nuCodigoUnificado int
+);
+create table dbo.TIP_TipoCobranca
+(
+TIP_nuTipoCobranca int, 
+TIP_dcSigla varchar(2)
+, 
+TIP_dlTipoCobranca varchar(35)
+);
+create table dbo.TIPO_TipoObra
+(
+TIPO_cdTipoObra varchar(2), 
+TIPO_dlTipoObra varchar(25)
+);
+create table dbo.TIPO_TipoUnidade
+(
+TIPO_cdTipoUnidade int, 
+TIPO_dcTipoUnidade varchar(15)
+);
+create table dbo.TipoPagamento
+(
+Codigo int, 
+Descricao varchar(20)
+);
+create table dbo.TRAN_Transacao
+(
+FUN_cdCodigoFuncionario int, 
+TRAN_dlTransacao varchar(20), 
+TRAN_dtTransacao timestamp
+);
+create table dbo.UFE_Ufesp
+(
+UFE_dtUFesp timestamp, 
+UFE_mnUfesp Numeric(8,2)
+);
+create table dbo.USU_Usuarios
+(
+USU_nuRegistro int, 
+USU_dcLogin varchar(30), 
+USU_dlNome varchar(60), 
+USU_dcSenha varchar(10)
+);
+create table dbo.USU_UsuariosPermissoes
+(
+id SERIAL, 
+Descricao varchar(60)
+);
+create table dbo.USU_UsuariosPermissoesDetalhe
+(
+USU_UsuariosPermissoes_id int, 
+COL_cdColaborador bigint
+);
+create table dbo.UsuariosRelatoriosContabeis
+(
+COL_cdColaborador bigint
+);
+create table dbo.VAL_ValorFixo
+(
+VAL_dtValorFixo timestamp, 
+VAL_vlValorFixo Numeric(5,4), 
+CON_vlContribuicaoMinima Numeric(6,2), 
+VAL_dtVencimento timestamp
+);
+create table dbo.ValorAnualRecursosHidricos
+(
+Data timestamp, 
+Valor Numeric(8,2)
+);
+create table dbo.ZON_Zoneamento
+(
+ZON_cdZoneamento varchar(2), 
+ZON_dlZoneamento varchar(35)
+);
+

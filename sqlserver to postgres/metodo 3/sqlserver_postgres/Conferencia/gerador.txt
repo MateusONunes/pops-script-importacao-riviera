@@ -1,0 +1,45 @@
+//*** 01 - Sql executado no Sql Server que vai gerar os  "#######Select Counts#########"
+
+
+use nucleo  
+
+--!!!!!! Navegar o dbeaver até o final do grid!!!!!
+ 
+SELECT 
+--       tabela,
+--       qtderegistros,
+--       linha,
+       CASE WHEN LINHA = 1 THEN '' ELSE 'UNION ALL ' END + 
+       sql
+  FROM (
+		SELECT tabela,
+		       qtderegistros,
+		       ROW_NUMBER() over(order by tabela ) linha,
+		       'SELECT ''' + tabela + ''' tabela, ' + trim(str(qtderegistros)) + ' qtdeSqlServer, (select count(0) FROM dbo.' + TABELA + ') qtdePostgres' sql
+		  FROM ( 
+				SELECT OBJECT_NAME(OBJECT_ID) tabela, st.row_count qtderegistros
+				  FROM sys.dm_db_partition_stats st
+				 WHERE index_id < 2
+		    	) t,
+		       sys.tables tb
+		 where t.tabela = tb.name
+        ) T
+		    	
+------------------------------------------------------------------------------------------------------------------------------------------------		    	
+//*** 01 - Sql a ser executado no postgres para verificar as quantidades de registros com erro.
+		    	
+
+select t.tabela,
+       t.qtdeSqlServer,
+       T.qtdePostgres,
+       t.dif
+  from (
+		select t.tabela,
+		       T.qtdeSqlServer,
+		       T.qtdePostgres,
+		       T.qtdeSqlServer - T.qtdePostgres dif
+		  from (
+		        ///// *** INSERIR "#######Select Counts#########" AQUI
+	 		) t
+		) t
+  where dif <> 0		
