@@ -1,0 +1,7 @@
+cd /home/mateus/OdooDev/odoo
+source bin/activate
+
+./odoo-bin --c ./odoo-conf/riviera.conf
+
+
+

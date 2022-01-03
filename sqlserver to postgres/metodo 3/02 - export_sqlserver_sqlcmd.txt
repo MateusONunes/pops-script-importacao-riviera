@@ -1,0 +1,11 @@
+02 - Gerar os insert com o dbeaver
+     - anter a opção "nome do schema nas tabelas"
+     
+   --Eliminar as seguintes tabelas :
+     - IMO_IMOVELAnexosTMP2 => (Já tem a tabela IMO_IMOVELAnexos)
+     -HyppoMailDataDetail', 'COB_Cobranca', 'BOLETODETALHE', 'StatusFinanceiroTempSUPORTETI2011191535323522111915063606' => por enquanto eliminar
+
+03 - após gerar os arquivos, executar o comando abaixo para susbistituir dentro do script gerado "nucleo.dbo" por "dbo"
+     sed -i 's/nucleo.dbo/dbo/' *.*
+     
+     
