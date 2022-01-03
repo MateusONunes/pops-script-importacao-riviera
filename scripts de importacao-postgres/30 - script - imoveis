@@ -185,4 +185,3 @@ select true active,
  where p.pops_statusimp = 'OK'
 --   and p.prop_dlnome like '%MYAMOTO%'
 
-
