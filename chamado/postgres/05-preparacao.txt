@@ -12,4 +12,3 @@ DELETE FROM public.helpdesk_ticket_channel htc WHERE ID = 5;
 
 INSERT INTO public.helpdesk_ticket_channel (id,"name",active,company_id,create_uid,create_date,write_uid,write_date)
 VALUES (5, 'Presencial', true, 1, 1, current_timestamp, 1, current_timestamp);
-
