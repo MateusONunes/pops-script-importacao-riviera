@@ -1,0 +1,28 @@
+truncate table property_ga_tax;
+
+select setval('property_ga_tax_id_seq', (select max(id) + 1 from property_ga_tax), true);
+
+insert into property_ga_tax(id,land_id,"date",tax_index,last_tax,current_tax,create_uid,create_date,write_uid,write_date)
+select nextval('property_ga_tax_id_seq') id,
+       bd.prop_nucodigo land_id,
+       cast(bd.cob_dtvencimento as date) "date",
+       null tax_index,
+       null last_tax,
+       bd.valor::numeric current_tax,
+       1 create_uid,
+       current_timestamp  create_date,
+       1 write_uid,
+       current_timestamp write_date
+  from dbo2.boletodetalhe bd
+ where bd.descricao like '%Verde%'
+ group by bd.prop_nucodigo, cast(bd.cob_dtvencimento as date), bd.valor::numeric;
+ 
+update property_land p 
+  set is_not_tax_ga = (
+       select not exists (
+       select pgt.id
+         from property_ga_tax pgt
+        where TO_CHAR(pgt.date, 'yyyymm') = '202201'
+          and pgt.land_id = p.id));
+
+select setval('property_ga_tax_id_seq', (select max(id) + 1 from property_ga_tax), true);
