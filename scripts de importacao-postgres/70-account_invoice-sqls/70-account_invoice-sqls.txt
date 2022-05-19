@@ -1,0 +1,67 @@
+select b.anomes_vencimento::varchar,
+       sum(case when b.baixa_saldo_dtvencimento = 0 then 1 else 0 end) qtdesaldo0,
+       sum(case when b.baixa_saldo_dtvencimento = 0 then 0 else 1 end) qtdesaldodif0,
+       sum(case when b.baixa_saldo_mesvencimento = 0 then 1 else 0 end) qtdesaldoMes0,
+       sum(case when b.baixa_saldo_mesvencimento = 0 then 0 else 1 end) qtdesaldoMesdif0       
+  from dbo0424.boleto b
+ where 0 = 0 
+ group by 1
+ order by 1 desc
+
+
+
+
+------------------------------------------------------------------------------------------------
+--dbo0424.boleto VS account_invoice 2022/05
+
+select land_id,
+       valor_riv,
+       valor_odoo,
+       dif
+  from (
+select land_id,
+       coalesce(sum(valor_riv), 0) valor_riv,
+       coalesce(sum(valor_odoo), 0) valor_odoo,
+       coalesce(sum(valor_riv), 0) - coalesce(sum(valor_odoo), 0) dif
+  from (select vpl.id land_id,
+               bol.valortotal_num valor_riv,
+               0 valor_odoo
+          from (select bol1.*,
+                       1 id_
+                  from dbo0424.boleto bol1
+               ) bol 
+                 left join vw_property_land vpl on vpl.id = bol.prop_nucodigo
+          where bol.anomes_vencimento = 202205         
+        union all  
+        select ai.land_id land_id,
+               0 valor_riv,
+               ai.amount_total  valor_odoo
+          from account_invoice ai
+       ) t    
+ group by land_id
+ ) t 
+ where dif <> 0
+ order by dif desc
+ 
+------------------------------------------------------------------------------------------------
+ 
+ update account_invoice ai set date_due = '2022-05-10' where ai."comment" is null 
+ 
+------------------------------------------------------------------------------------------------
+
+--account_invoice com mais que 1 account no mês
+select ai.partner_id,
+       ai.land_id,
+       to_char(ai.date_due, 'yyyy/mm') anomes,
+       ai.state,
+       count(0) q
+  from account_invoice ai   
+ group by 1, 2, 3, 4
+ having count(0) > 1
+ order by 3 desc
+
+------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------
+

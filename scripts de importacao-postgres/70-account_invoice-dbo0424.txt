@@ -1,0 +1,279 @@
+
+
+CREATE TABLE dbo0424.account_invoice (
+ id serial4 NOT NULL,
+ message_main_attachment_id int4 NULL,
+ access_token varchar NULL,
+ "name" varchar NULL,
+ origin varchar NULL,
+ "type" varchar NULL,
+ refund_invoice_id int4 NULL,
+ "number" varchar NULL,
+ move_name varchar NULL,
+ reference varchar NULL,
+ "comment" text NULL,
+ state varchar NULL,
+ sent bool NULL,
+ date_invoice date NULL,
+ date_due date NULL,
+ partner_id int4 NULL,
+ vendor_bill_id int4 NULL,
+ payment_term_id int4 NULL,
+ "date" date NULL,
+ account_id int4 NULL,
+ move_id int4 NULL,
+ amount_untaxed numeric NULL,
+ amount_untaxed_signed numeric NULL,
+ amount_tax numeric NULL,
+ amount_total numeric NULL,
+ amount_total_signed numeric NULL,
+ amount_total_company_signed numeric NULL,
+ currency_id int4 NOT NULL,
+ journal_id int4 NOT NULL,
+ company_id int4 NOT NULL,
+ reconciled bool NULL,
+ partner_bank_id int4 NULL,
+ residual numeric NULL,
+ residual_signed numeric NULL,
+ residual_company_signed numeric NULL,
+ user_id int4 NULL,
+ fiscal_position_id int4 NULL,
+ commercial_partner_id int4 NULL,
+ cash_rounding_id int4 NULL,
+ incoterm_id int4 NULL,
+ source_email varchar NULL,
+ vendor_display_name varchar NULL,
+ create_uid int4 NULL,
+ create_date timestamp NULL,
+ write_uid int4 NULL,
+ write_date timestamp NULL,
+ land_id int4 NULL,
+ payment_mode_id int4 NULL,
+ reference_type varchar NOT NULL,
+ instructions text NULL,
+ file_boleto_pdf_id int4 NULL,
+ transmit_method_id int4 NULL,
+ transmit_method_code varchar NULL,
+ CONSTRAINT dbo0424account_invoice_number_uniq UNIQUE (number, company_id, journal_id, type),
+ CONSTRAINT dbo0424account_invoice_pkey PRIMARY KEY (id)
+);
+
+CREATE INDEX dbo0424account_invoice_date_due_index ON dbo0424.account_invoice USING btree (date_due);
+CREATE INDEX dbo0424account_invoice_date_due_index1 ON dbo0424.account_invoice USING btree (land_id);
+CREATE INDEX dbo0424account_invoice_date_invoice_index ON dbo0424.account_invoice USING btree (date_invoice);
+CREATE INDEX dbo0424account_invoice_message_main_attachment_id_index ON dbo0424.account_invoice USING btree (message_main_attachment_id);
+CREATE INDEX dbo0424account_invoice_move_id_index ON dbo0424.account_invoice USING btree (move_id);
+CREATE INDEX dbo0424account_invoice_name_index ON dbo0424.account_invoice USING btree (name);
+CREATE INDEX dbo0424account_invoice_state_index ON dbo0424.account_invoice USING btree (state);
+CREATE INDEX dbo0424account_invoice_type_index ON dbo0424.account_invoice USING btree (type);
+
+
+CREATE TABLE dbo0424.account_invoice_line (
+ id serial4 NOT NULL,
+ "name" text NOT NULL,
+ origin varchar NULL,
+ "sequence" int4 NULL,
+ invoice_id int4 NULL,
+ uom_id int4 NULL,
+ product_id int4 NULL,
+ account_id int4 NULL,
+ price_unit numeric NOT NULL,
+ price_subtotal numeric NULL,
+ price_total numeric NULL,
+ price_subtotal_signed numeric NULL,
+ quantity numeric NOT NULL,
+ discount numeric NULL,
+ account_analytic_id int4 NULL,
+ company_id int4 NULL,
+ partner_id int4 NULL,
+ currency_id int4 NULL,
+ is_rounding_line bool NULL,
+ display_type varchar NULL,
+ create_uid int4 NULL,
+ create_date timestamp NULL,
+ write_uid int4 NULL,
+ write_date timestamp NULL,
+ CONSTRAINT account_invoice_line_accountable_required_fields CHECK (((display_type IS NOT NULL) OR (account_id IS NOT NULL))),
+ CONSTRAINT account_invoice_line_non_accountable_fields_null CHECK (((display_type IS NULL) OR ((price_unit = (0)::numeric) AND (account_id IS NULL) AND (quantity = (0)::numeric)))),
+ CONSTRAINT account_invoice_line_pkey PRIMARY KEY (id)
+);
+
+CREATE INDEX dbo0424account_invoice_line_invoice_id_index ON dbo0424.account_invoice_line USING btree (invoice_id);
+CREATE INDEX dbo0424account_invoice_line_product_id_index ON dbo0424.account_invoice_line USING btree (product_id);
+CREATE INDEX dbo0424account_invoice_line_uom_id_index ON dbo0424.account_invoice_line USING btree (uom_id);
+
+
+
+
+--inserindo tabela account_invoice
+----------------------------------
+insert into dbo0424.account_invoice (id, create_uid, create_date, write_uid, write_date, message_main_attachment_id, access_token, "name", origin, "type", refund_invoice_id, "number", move_name, reference, "comment", state, sent, date_invoice, date_due, partner_id, vendor_bill_id, payment_term_id, "date", account_id, move_id, amount_untaxed, amount_untaxed_signed, amount_tax, amount_total, amount_total_signed, amount_total_company_signed, currency_id, journal_id, company_id, reconciled, partner_bank_id, residual, residual_signed, residual_company_signed, user_id, fiscal_position_id, commercial_partner_id, cash_rounding_id, incoterm_id, source_email, vendor_display_name, land_id, payment_mode_id, reference_type, instructions, file_boleto_pdf_id, transmit_method_id, transmit_method_code)
+select bol.id id,
+       1 create_uid,
+       current_timestamp  create_date,
+       1 write_uid,
+       current_timestamp write_date,
+       null message_main_attachment_id,
+       null access_token,
+       null "name",
+       to_char(bol.datavencimento, 'mm-yyyy') || '/' || vpl.module_code__block_code__lot_code2 origin,
+       'out_invoice' "type",
+       null refund_invoice_id,
+       'INV/' || to_char(bol.datavencimento, 'yyyy') || '/' || bol.id "number",
+       'INV/' || to_char(bol.datavencimento, 'yyyy') || '/' || bol.id move_name,
+       'INV/' || to_char(bol.datavencimento, 'yyyy') || '/' || bol.id reference,
+       'importação código: ' || bol.codigo  "comment",
+       case when bol.baixa_saldo_dtvencimento = 0 then 'paid' else 'open' end state,
+       false sent,
+       bol.dataprocessamento date_invoice,
+       bol.datavencimento date_due,
+       coalesce(vpl.owner_invoice_id, vpl.owner_id) partner_id,
+       null vendor_bill_id,
+       1 payment_term_id,
+       bol.dataprocessamento "date",
+       25 account_id,
+       null move_id,
+       bol.valortotal_num amount_untaxed,
+       bol.valortotal_num  amount_untaxed_signed,
+       0 amount_tax,
+       bol.valortotal_num amount_total,
+       bol.valortotal_num amount_total_signed,
+       bol.valortotal_num amount_total_company_signed,
+       6 currency_id,
+       1 journal_id,
+       1 company_id,
+       false reconciled,
+       null partner_bank_id,
+       0 residual,
+       bol.valortotal_num residual_signed,
+       coalesce(vpl.owner_invoice_id, vpl.owner_id) residual_company_signed,
+       1 user_id,
+       null fiscal_position_id,
+       coalesce(vpl.owner_invoice_id, vpl.owner_id) commercial_partner_id,
+       null cash_rounding_id,
+       null incoterm_id,
+       null source_email,
+       coalesce(vpl.owner_invoice_name, vpl.owner_name)  vendor_display_name,
+       vpl.id land_id,
+       1 payment_mode_id,
+       'none' reference_type,
+       null instructions,
+       null file_boleto_pdf_id,
+       null transmit_method_id,
+       null transmit_method_code
+  from dbo0424.boleto bol
+         left join vw_property_land vpl on vpl.id = bol.prop_nucodigo
+  where bol.anomes_vencimento = 202205;
+  
+commit;
+  
+
+--inserindo tabela account_invoice_line
+---------------------------------------
+  
+insert into dbo0424.account_invoice_line(id, create_uid, create_date, write_uid, write_date, "name", origin, "sequence", invoice_id, uom_id, product_id, account_id, price_unit, price_subtotal, price_total, price_subtotal_signed, quantity, discount, account_analytic_id, company_id, partner_id, currency_id, is_rounding_line, display_type)
+select row_number() over() id,
+       1 create_uid,
+       current_timestamp create_date,
+       1 write_uid,
+       current_timestamp write_date,
+       bod.descricao "name",
+       null origin,
+       row_number() over(partition by bod.codigo, bod.prop_nucodigo) "sequence",
+       bol.id invoice_id,
+       null uom_id,
+       bod.ordem_odoo product_id,
+       167 account_id,
+       bod.valor::numeric price_unit,
+       bod.valor::numeric price_subtotal,
+       bod.valor::numeric price_total,
+       bod.valor::numeric price_subtotal_signed,
+       1 quantity,
+       0 discount,
+       null account_analytic_id,
+       1 company_id,
+       aci.partner_id partner_id,
+       6 currency_id,
+       false is_rounding_line,
+       null display_type
+  from dbo0424.boleto bol 
+         inner join dbo0424.boletodetalhe bod 
+                on bod.codigo = bol.codigo 
+               and bod.prop_nucodigo = bol.prop_nucodigo
+         inner join dbo0424.account_invoice aci on aci.id = bol.id
+ where bol.anomes_vencimento = 202205;
+ 
+
+------------------------------------ 
+--vw_confimp_account_invoice_dbo0424
+------------------------------------ 
+
+create or replace view vw_confimp_account_invoice_dbo0424 as
+select partner_id,
+       land_id,
+       dbo_id,
+       odoo_id,
+       vpl.module_code__block_code__lot_code2 land,
+       res."name",
+       dbo_amount_total,
+       odoo_amount_total,
+       dif,
+       dbo_existe,
+       odoo_existe,
+       (select count(0)
+          from dbo0424.account_invoice_line ail
+         where ail.invoice_id = t2.dbo_id 
+       ) dbo_linesCount,
+       (select count(0)
+          from account_invoice_line ail
+         where ail.invoice_id = t2.odoo_id 
+       ) odo_linesCount
+  from (select t.partner_id,
+               t.land_id,
+               sum(t.dbo_id) dbo_id,
+               sum(t.odoo_id) odoo_id,
+               sum(t.dbo_amount_total) dbo_amount_total,
+               sum(t.odoo_amount_total) odoo_amount_total,
+               sum(t.dbo_amount_total - t.odoo_amount_total) dif,
+               sum(t.dbo_Existe) dbo_Existe,
+               sum(t.odoo_Existe) odoo_Existe               
+          from (select ai.partner_id,
+                       ai.land_id,
+                       ai.id dbo_id,
+                       0 odoo_id, 
+                       ai.amount_total dbo_amount_total,
+                       0 odoo_amount_total,
+                       1 dbo_Existe,
+                       0 odoo_Existe
+                  from dbo0424.account_invoice ai
+                union all
+                select ai.partner_id,
+                       ai.land_id,
+                       0 dbo_id,
+                       ai.id odoo_id,
+                       0  dbo_amount_total,
+                       ai.amount_total odoo_amount_total,
+                       0 dbo_Existe,
+                       1 odoo_Existe
+                  from account_invoice ai
+                 where ai.date_due >='2022-05-01'
+               ) t
+         group by t.partner_id, t.land_id
+       ) t2
+       inner join vw_property_land vpl on vpl.id = t2.land_id
+       inner join res_partner res on res.id = t2.partner_id;
+       
+       
+/*
+select dbo_id,
+       odoo_id,
+       partner_id,
+       land_id,
+       land,
+       "name",
+       dbo_amount_total,
+       odoo_amount_total,
+       dif
+  from vw_confimp_account_invoice_dbo0424
+  order by abs(dif) desc
+*/       

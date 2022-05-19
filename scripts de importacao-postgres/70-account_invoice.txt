@@ -1,0 +1,399 @@
+--Formatação das tabelas de origem
+
+/*
+
+CREATE OR REPLACE FUNCTION public.string_tonumeric(_str text)
+ RETURNS numeric
+ LANGUAGE plpgsql
+AS $function$
+begin
+  _str = replace(_str, ' ', '');
+  _str = replace(_str, '.', '');
+  _str = replace(_str, 'R', '');
+  _str = replace(_str, '$', '');
+  _str = replace(_str, ',', '.');
+ 
+  if (strpos(_str, '(') <> 0) and (strpos(_str, '(') <> 0) then
+    _str = replace(_str, '(', '');
+    _str = replace(_str, ')', '');
+    _str = '-' || _str;
+  end if;
+ 
+  --raise notice '%', _str;
+ 
+  return _str::numeric;
+END
+$function$
+;
+
+CREATE OR REPLACE FUNCTION public.anomes_text(anomes int)
+ RETURNS varchar(10)
+ LANGUAGE plpgsql
+ IMMUTABLE STRICT
+AS $function$
+declare ano int;
+declare mes int;
+declare AnoMesStr varchar(10);
+begin
+  ano = substring(anomes::varchar, 1, 4);
+  mes = substring(anomes::varchar, 5, 2);
+  
+  AnoMesStr = ('{JAN,FEV,MAR,ABR,MAI,JUN,JUL,AGO,SET,OUT,NOV,DEZ}'::VARCHAR[])[mes];
+ 
+  AnoMesStr = AnoMesStr || '/' || ano;
+  return AnoMesStr;
+END
+$function$
+;
+
+CREATE OR REPLACE FUNCTION public.anomes_inc(anomes int, inc int)
+RETURNS integer
+ LANGUAGE plpgsql
+ IMMUTABLE STRICT
+AS $function$
+declare anomesStr varchar(6);
+declare ano int;
+declare mes int;
+begin
+  ano = substring(anomes::varchar, 1, 4);
+  mes = substring(anomes::varchar, 5, 2);
+ 
+  mes = mes + inc;
+
+  if mes >= 12 then
+    mes = 1;
+    ano = ano + 1;
+  elseif mes <= 0 then
+    mes = 12;
+    ano = ano -1;
+  end if;
+ 
+  anomesStr = ano || lpad(mes::varchar, 2, '0');
+  
+  return anomesStr;
+END
+$function$
+;
+
+CREATE OR REPLACE FUNCTION strIn(_name varchar, mesProcurar varchar(4), MesNum_ int, out MesStr text, out PosMesStr int, out MesNum int) as $function$
+begin
+  PosMesStr = position(mesProcurar || '/' in _name);
+ 
+  if PosMesStr <> 0 then
+    MesStr = mesProcurar;
+    MesNum = MesNum_;
+  end if;
+END;
+$function$language plpgsql;
+ 
+
+CREATE OR REPLACE FUNCTION public.account_invoice_line_name_anomes(_name varchar)
+RETURNS integer
+ LANGUAGE plpgsql
+AS $function$
+declare MesStr varchar;
+declare PosMesStr int = 0;
+declare MesNum int;
+declare anoStr varchar(4);
+begin
+  _name = upper(_name);
+ 
+  if (PosMesStr = 0) then select * from strIn(_name, 'JAN',  1) into MesStr, PosMesStr, MesNum; end if; 
+  if (PosMesStr = 0) then select * from strIn(_name, 'FEV',  2) into MesStr, PosMesStr, MesNum; end if; 
+  if (PosMesStr = 0) then select * from strIn(_name, 'MAR',  3) into MesStr, PosMesStr, MesNum; end if; 
+  if (PosMesStr = 0) then select * from strIn(_name, 'ABR',  4) into MesStr, PosMesStr, MesNum; end if; 
+  if (PosMesStr = 0) then select * from strIn(_name, 'MAI',  5) into MesStr, PosMesStr, MesNum; end if; 
+  if (PosMesStr = 0) then select * from strIn(_name, 'JUN',  6) into MesStr, PosMesStr, MesNum; end if; 
+  if (PosMesStr = 0) then select * from strIn(_name, 'JUL',  7) into MesStr, PosMesStr, MesNum; end if; 
+  if (PosMesStr = 0) then select * from strIn(_name, 'AGO',  8) into MesStr, PosMesStr, MesNum; end if; 
+  if (PosMesStr = 0) then select * from strIn(_name, 'SET',  9) into MesStr, PosMesStr, MesNum; end if; 
+  if (PosMesStr = 0) then select * from strIn(_name, 'OUT', 10) into MesStr, PosMesStr, MesNum; end if; 
+  if (PosMesStr = 0) then select * from strIn(_name, 'NOV', 11) into MesStr, PosMesStr, MesNum; end if; 
+  if (PosMesStr = 0) then select * from strIn(_name, 'DEZ', 12) into MesStr, PosMesStr, MesNum; end if;
+ 
+  anoStr = Substring(_name, PosMesStr + 4, 4);
+ 
+  return (anoStr || lpad(MesNum::varchar, 2, '0'))::integer;
+END
+$function$
+;
+
+alter table dbo0424.boleto add if not exists valortotal_num numeric;
+update dbo0424.boleto set valortotal_num = public.string_tonumeric(valortotal);
+
+alter table dbo0424.bai_baixa add if not exists anomes_vencimento integer;
+update dbo0424.bai_baixa set anomes_vencimento = to_char(bai_dtvencimento , 'yyyymm')::integer;
+CREATE INDEX if not exists bai_baixa_anomes_vencimento_idx ON dbo0424.bai_baixa (anomes_vencimento);
+CREATE unique index if not exists bai_baixa_bai_idbaixa_idx ON dbo0424.bai_baixa(bai_idbaixa);
+CREATE INDEX if not exists bai_baixa_prop_nucodigo_idx ON dbo0424.bai_baixa(prop_nucodigo);
+
+
+alter table dbo0424.boleto add if not exists anomes_vencimento integer;
+update dbo0424.boleto set anomes_vencimento = to_char(datavencimento, 'yyyymm')::integer;
+CREATE index if not exists boleto_anomes_vencimento_idx ON dbo0424.boleto (anomes_vencimento);
+
+CREATE INDEX if not exists boleto_prop_nucodigo_idx ON dbo0424.boleto(prop_nucodigo);
+
+--nucodigo_anomes
+-----------------  
+alter table dbo0424.bai_baixa drop column if exists nucodigo_anomes;
+alter table dbo0424.boleto drop column if exists nucodigo_anomes;
+drop index if exists dbo0424.bai_baixa_nucodigo_anomes_idx;
+drop index if exists dbo0424.boleto_nucodigo_anomes_idx;
+
+
+alter table dbo0424.bai_baixa add if not exists nucodigo_anomes varchar(20);
+update dbo0424.bai_baixa set nucodigo_anomes = prop_nucodigo || '-' || anomes_vencimento;
+CREATE INDEX bai_baixa_nucodigo_anomes_idx ON dbo0424.bai_baixa(nucodigo_anomes);
+
+alter table dbo0424.boleto add if not exists nucodigo_anomes varchar(20);
+update dbo0424.boleto set nucodigo_anomes = prop_nucodigo || '-' || anomes_vencimento;
+commit;
+CREATE INDEX boleto_nucodigo_anomes_idx ON dbo0424.boleto(nucodigo_anomes);
+
+--nucodigo_anomes-fim
+-----------------  
+
+
+--nucodigo_dtvencimento
+-----------------------
+alter table dbo0424.bai_baixa drop column if exists nucodigo_dtvencimento;
+alter table dbo0424.boleto drop column if exists nucodigo_dtvencimento;
+drop index if exists bai_baixa_nucodigo_dtvencimento_idx;
+drop index if exists boleto_nucodigo_dtvencimento_idx;
+
+
+alter table dbo0424.bai_baixa add if not exists nucodigo_dtvencimento varchar(20);
+update dbo0424.bai_baixa set nucodigo_dtvencimento = prop_nucodigo || '-' || to_char(bai_dtvencimento, 'yyyy/mm/dd');
+commit;
+CREATE INDEX bai_baixa_nucodigo_dtvencimento_idx ON dbo0424.bai_baixa(nucodigo_dtvencimento);
+
+alter table dbo0424.boleto add if not exists nucodigo_dtvencimento varchar(20);
+update dbo0424.boleto set nucodigo_dtvencimento = prop_nucodigo || '-' || to_char(datavencimento, 'yyyy/mm/dd');
+commit;
+CREATE INDEX boleto_nucodigo_dtvencimento_idx ON dbo0424.boleto(nucodigo_dtvencimento);
+
+--nucodigo_dtvencimento-FIM
+-----------------------
+COMMIT
+
+
+--agrupar bai_baixa em boleto
+-----------------------------
+CREATE INDEX boleto_anomes_vencimento_idx ON dbo0424.boleto(anomes_vencimento);  
+
+alter table dbo0424.boleto drop column if exists baixa_valor_dtvencimento;
+alter table dbo0424.boleto drop column if exists baixa_saldo_dtvencimento;
+alter table dbo0424.boleto drop column if exists baixa_count_dtvencimento;
+alter table dbo0424.boleto drop column if exists baixa_list_dtvencimento;
+
+alter table dbo0424.boleto drop column if exists baixa_valor_mesvencimento;
+alter table dbo0424.boleto drop column if exists baixa_saldo_mesvencimento;
+alter table dbo0424.boleto drop column if exists baixa_count_mesvencimento;
+alter table dbo0424.boleto drop column if exists baixa_list_mesvencimento;
+
+alter table dbo0424.boleto add baixa_valor_dtvencimento numeric;
+alter table dbo0424.boleto add baixa_saldo_dtvencimento numeric;
+alter table dbo0424.boleto add baixa_count_dtvencimento integer;
+alter table dbo0424.boleto add baixa_list_dtvencimento varchar;
+
+alter table dbo0424.boleto add baixa_valor_mesvencimento numeric;
+alter table dbo0424.boleto add baixa_saldo_mesvencimento numeric;
+alter table dbo0424.boleto add baixa_count_mesvencimento integer;
+alter table dbo0424.boleto add baixa_list_mesvencimento varchar;
+
+update dbo0424.boleto bol set baixa_valor_dtvencimento = coalesce((select sum(bai.bai_vlrecebido) from dbo0424.bai_baixa bai where bai.nucodigo_dtvencimento = bol.nucodigo_dtvencimento)::numeric, 0);
+update dbo0424.boleto bol set baixa_saldo_dtvencimento = bol.valortotal_num - baixa_valor_dtvencimento;
+update dbo0424.boleto bol set baixa_count_dtvencimento = (select count(0) from dbo0424.bai_baixa bai where bai.nucodigo_dtvencimento = bol.nucodigo_dtvencimento);
+update dbo0424.boleto bol set baixa_list_dtvencimento = (select string_agg(bai_idbaixa::varchar, '-') from dbo0424.bai_baixa bai where bai.nucodigo_dtvencimento = bol.nucodigo_dtvencimento);
+
+update dbo0424.boleto bol set baixa_valor_mesvencimento = coalesce((select sum(bai.bai_vlrecebido) from dbo0424.bai_baixa bai where bai.nucodigo_anomes = bol.nucodigo_anomes)::numeric, 0);
+update dbo0424.boleto bol set baixa_saldo_mesvencimento = bol.valortotal_num - baixa_valor_mesvencimento;
+update dbo0424.boleto bol set baixa_count_mesvencimento = (select count(0) from dbo0424.bai_baixa bai where bai.nucodigo_anomes = bol.nucodigo_anomes);
+update dbo0424.boleto bol set baixa_list_mesvencimento = (select string_agg(bai_idbaixa::varchar, '-') from dbo0424.bai_baixa bai where bai.nucodigo_anomes = bol.nucodigo_anomes);
+
+--agrupar bai_baixa em boleto-FIM
+-----------------------------
+
+
+commit;
+drop index if exists dbo0424.boleto_idx;
+
+alter table dbo0424.boleto add if not exists id integer;
+commit;
+select setval('account_invoice_id_seq', (select max(id) + 1 from account_invoice), true);
+update dbo0424.boleto set id = nextval('account_invoice_id_seq');
+
+CREATE unique INDEX if not exists boleto_idx ON dbo0424.boleto(id);
+commit;
+
+
+
+
+--Validações na tabela product_template
+DO $$
+begin
+  if not exists (select 1 from product_template where name = 'Diferenças de pagamentos, Taxa ref. Religação de agua' and default_code = 'PROPDP') then
+    RAISE EXCEPTION '"PROPDP" não cadastrado em PRODUCT_TEMPLATE';
+  end if;
+  if not exists (select 1 from product_template where name = 'Multa, Juro e Correção monetária' and default_code = 'PROPMJ') then
+    RAISE EXCEPTION '"PROPMJ" não cadastrado em PRODUCT_TEMPLATE';
+  end if;
+  if not exists (select 1 from product_template where name = 'Taxa de permanência' and default_code = 'PROPTP') then
+    RAISE EXCEPTION '"PROPTP" não cadastrado em PRODUCT_TEMPLATE';
+  end if;
+END $$;
+
+alter table dbo0424.boletodetalhe add if not exists ordem_odoo integer;
+
+update dbo0424.boletodetalhe b
+   set ordem_odoo = case      
+                      when b.ordem = 1 then 1
+                      when b.ordem = 2 then 7
+                      when b.ordem = 3 then 9
+                      when b.ordem = 4 then 10
+                      when b.ordem = 5 then (select id from product_template pt where default_code = 'PROPDP')
+                      when b.ordem = 6 then (select id from product_template pt where default_code = 'PROPMJ')
+                      when b.ordem = 7 then (select id from product_template pt where default_code = 'PROPTP')
+                    end;
+                    
+--Validações na tabela product_template
+DO $$
+begin
+  if exists (select 1 from dbo0424.boletodetalhe where ordem_odoo is null limit 1) then
+    RAISE EXCEPTION 'Existem registros nulo em dbo0424.boletodetalhe.ordem_odoo';
+  end if;
+END $$;                    
+
+CREATE INDEX boletodetalhe_idx1 ON dbo0424.boletodetalhe USING btree (codigo, prop_nucodigo);
+
+alter table account_invoice_line add anomes_vencimento integer;
+
+--FIM PREPARAÇÃO
+*/
+
+
+--inserindo tabela account_invoice
+----------------------------------
+insert into account_invoice (id, create_uid, create_date, write_uid, write_date, message_main_attachment_id, access_token, "name", origin, "type", refund_invoice_id, "number", move_name, reference, "comment", state, sent, date_invoice, date_due, partner_id, vendor_bill_id, payment_term_id, "date", account_id, move_id, amount_untaxed, amount_untaxed_signed, amount_tax, amount_total, amount_total_signed, amount_total_company_signed, currency_id, journal_id, company_id, reconciled, partner_bank_id, residual, residual_signed, residual_company_signed, user_id, fiscal_position_id, commercial_partner_id, cash_rounding_id, incoterm_id, source_email, vendor_display_name, land_id, payment_mode_id, reference_type, instructions, file_boleto_pdf_id, transmit_method_id, transmit_method_code)
+select bol.id id,
+       1 create_uid,
+       current_timestamp  create_date,
+       1 write_uid,
+       current_timestamp write_date,
+       null message_main_attachment_id,
+       null access_token,
+       null "name",
+       'IMP-' || to_char(bol.datavencimento, 'mm-yyyy') || '/' || vpl.module_code__block_code__lot_code2 origin,
+       'out_invoice' "type",
+       null refund_invoice_id,
+       'INV/' || to_char(bol.datavencimento, 'yyyy') || '/' || bol.id "number",
+       'INV/' || to_char(bol.datavencimento, 'yyyy') || '/' || bol.id move_name,
+       'INV/' || to_char(bol.datavencimento, 'yyyy') || '/' || bol.id reference,
+       'importação código: ' || bol.codigo  "comment",
+       case when bol.baixa_saldo_dtvencimento = 0 then 'paid' else 'open' end state,
+       false sent,
+       bol.dataprocessamento date_invoice,
+       bol.datavencimento date_due,
+       coalesce(vpl.owner_invoice_id, vpl.owner_id) partner_id,
+       null vendor_bill_id,
+       1 payment_term_id,
+       bol.dataprocessamento "date",
+       25 account_id,
+       null move_id,
+       bol.valortotal_num amount_untaxed,
+       bol.valortotal_num  amount_untaxed_signed,
+       0 amount_tax,
+       bol.valortotal_num amount_total,
+       bol.valortotal_num amount_total_signed,
+       bol.valortotal_num amount_total_company_signed,
+       6 currency_id,
+       1 journal_id,
+       1 company_id,
+       false reconciled,
+       null partner_bank_id,
+       0 residual,
+       bol.valortotal_num residual_signed,
+       coalesce(vpl.owner_invoice_id, vpl.owner_id) residual_company_signed,
+       1 user_id,
+       null fiscal_position_id,
+       coalesce(vpl.owner_invoice_id, vpl.owner_id) commercial_partner_id,
+       null cash_rounding_id,
+       null incoterm_id,
+       null source_email,
+       coalesce(vpl.owner_invoice_name, vpl.owner_name)  vendor_display_name,
+       vpl.id land_id,
+       1 payment_mode_id,
+       'none' reference_type,
+       null instructions,
+       null file_boleto_pdf_id,
+       null transmit_method_id,
+       null transmit_method_code
+  from dbo0424.boleto bol
+         left join vw_property_land vpl on vpl.id = bol.prop_nucodigo
+  where bol.anomes_vencimento < 202205;
+  
+commit;
+  
+  
+select setval('account_invoice_id_seq', (select max(id) + 1 from account_invoice), true);
+
+
+--inserindo tabela account_invoice_line
+---------------------------------------
+  
+select setval('account_invoice_line_id_seq', (select max(id) + 1 from account_invoice), true);
+
+
+insert into account_invoice_line(id, create_uid, create_date, write_uid, write_date, "name", origin, "sequence", invoice_id, uom_id, product_id, account_id, price_unit, price_subtotal, price_total, price_subtotal_signed, quantity, discount, account_analytic_id, company_id, partner_id, currency_id, is_rounding_line, display_type)
+select nextval('account_invoice_line_id_seq') id,
+       1 create_uid,
+       current_timestamp create_date,
+       1 write_uid,
+       current_timestamp write_date,
+       bod.descricao "name",
+       null origin,
+       row_number() over(partition by bod.codigo, bod.prop_nucodigo) "sequence",
+       bol.id invoice_id,
+       null uom_id,
+       bod.ordem_odoo product_id,
+       167 account_id,
+       bod.valor::numeric price_unit,
+       bod.valor::numeric price_subtotal,
+       bod.valor::numeric price_total,
+       bod.valor::numeric price_subtotal_signed,
+       1 quantity,
+       0 discount,
+       null account_analytic_id,
+       1 company_id,
+       aci.partner_id partner_id,
+       6 currency_id,
+       false is_rounding_line,
+       null display_type
+  from dbo0424.boleto bol 
+         inner join dbo0424.boletodetalhe bod 
+                on bod.codigo = bol.codigo 
+               and bod.prop_nucodigo = bol.prop_nucodigo
+         inner join account_invoice aci on aci.id = bol.id;
+         
+         
+---------------------------------------------------------------------------------------
+Ajustar campo account_invoice_line.anomes_vencimento
+--100s
+update account_invoice_line ail
+   set anomes_vencimento = account_invoice_line_name_anomes("name")
+ where (select ai.date_due from account_invoice ai where ai.id = ail.invoice_id) < '2022-05-01'
+   and (select default_code from product_product pdt where pdt.id = ail.product_id) in ('PROPWC', 'PROPTAX');
+   
+--15s
+update account_invoice_line ail
+   set anomes_vencimento = case when ail.product_id in (7, 9) then anomes_inc(ail.anomes_vencimento, 1) else ail.anomes_vencimento end 
+ where anomes_vencimento is not null;   
+
+drop function strIn;
+drop function account_invoice_line_name_anomes;
+
+CREATE INDEX if not exists account_invoice_line_anomes_vencimento_idx ON account_invoice_line(anomes_vencimento);
+
+
+

@@ -1,0 +1,209 @@
+drop view if exists public.vw_confimp_account_invoice_dbo0424;
+
+drop table if exists limpoaviso.account_invoice_line;
+drop table if exists limpoaviso.account_invoice;
+
+CREATE TABLE limpoaviso.account_invoice (
+ id serial4 NOT NULL,
+ message_main_attachment_id int4 NULL,
+ access_token varchar NULL,
+ "name" varchar NULL,
+ origin varchar NULL,
+ "type" varchar NULL,
+ refund_invoice_id int4 NULL,
+ "number" varchar NULL,
+ move_name varchar NULL,
+ reference varchar NULL,
+ "comment" text NULL,
+ state varchar NULL,
+ sent bool NULL,
+ date_invoice date NULL,
+ date_due date NULL,
+ partner_id int4 NULL,
+ vendor_bill_id int4 NULL,
+ payment_term_id int4 NULL,
+ "date" date NULL,
+ account_id int4 NULL,
+ move_id int4 NULL,
+ amount_untaxed numeric NULL,
+ amount_untaxed_signed numeric NULL,
+ amount_tax numeric NULL,
+ amount_total numeric NULL,
+ amount_total_signed numeric NULL,
+ amount_total_company_signed numeric NULL,
+ currency_id int4 NOT NULL,
+ journal_id int4 NOT NULL,
+ company_id int4 NOT NULL,
+ reconciled bool NULL,
+ partner_bank_id int4 NULL,
+ residual numeric NULL,
+ residual_signed numeric NULL,
+ residual_company_signed numeric NULL,
+ user_id int4 NULL,
+ fiscal_position_id int4 NULL,
+ commercial_partner_id int4 NULL,
+ cash_rounding_id int4 NULL,
+ incoterm_id int4 NULL,
+ source_email varchar NULL,
+ vendor_display_name varchar NULL,
+ create_uid int4 NULL,
+ create_date timestamp NULL,
+ write_uid int4 NULL,
+ write_date timestamp NULL,
+ land_id int4 NULL,
+ payment_mode_id int4 NULL,
+ reference_type varchar NOT NULL,
+ instructions text NULL,
+ file_boleto_pdf_id int4 NULL,
+ transmit_method_id int4 NULL,
+ transmit_method_code varchar NULL,
+ CONSTRAINT limpoavisoaccount_invoice_number_uniq UNIQUE (number, company_id, journal_id, type),
+ CONSTRAINT limpoavisoaccount_invoice_pkey PRIMARY KEY (id)
+);
+
+CREATE INDEX limpoavisoaccount_invoice_date_due_index ON limpoaviso.account_invoice USING btree (date_due);
+CREATE INDEX limpoavisoaccount_invoice_date_due_index1 ON limpoaviso.account_invoice USING btree (land_id);
+CREATE INDEX limpoavisoaccount_invoice_date_invoice_index ON limpoaviso.account_invoice USING btree (date_invoice);
+CREATE INDEX limpoavisoaccount_invoice_message_main_attachment_id_index ON limpoaviso.account_invoice USING btree (message_main_attachment_id);
+CREATE INDEX limpoavisoaccount_invoice_move_id_index ON limpoaviso.account_invoice USING btree (move_id);
+CREATE INDEX limpoavisoaccount_invoice_name_index ON limpoaviso.account_invoice USING btree (name);
+CREATE INDEX limpoavisoaccount_invoice_state_index ON limpoaviso.account_invoice USING btree (state);
+CREATE INDEX limpoavisoaccount_invoice_type_index ON limpoaviso.account_invoice USING btree (type);
+
+
+CREATE TABLE limpoaviso.account_invoice_line (
+ id serial4 NOT NULL,
+ "name" text NOT NULL,
+ origin varchar NULL,
+ "sequence" int4 NULL,
+ invoice_id int4 NULL,
+ uom_id int4 NULL,
+ product_id int4 NULL,
+ account_id int4 NULL,
+ price_unit numeric NOT NULL,
+ price_subtotal numeric NULL,
+ price_total numeric NULL,
+ price_subtotal_signed numeric NULL,
+ quantity numeric NOT NULL,
+ discount numeric NULL,
+ account_analytic_id int4 NULL,
+ company_id int4 NULL,
+ partner_id int4 NULL,
+ currency_id int4 NULL,
+ is_rounding_line bool NULL,
+ display_type varchar NULL,
+ create_uid int4 NULL,
+ create_date timestamp NULL,
+ write_uid int4 NULL,
+ write_date timestamp NULL,
+ account_invoice_line_id_accumulated_ref int4 NULL,
+ anomes_vencimento int4 NULL,
+ CONSTRAINT account_invoice_line_accountable_required_fields CHECK (((display_type IS NOT NULL) OR (account_id IS NOT NULL))),
+ CONSTRAINT account_invoice_line_non_accountable_fields_null CHECK (((display_type IS NULL) OR ((price_unit = (0)::numeric) AND (account_id IS NULL) AND (quantity = (0)::numeric)))),
+ CONSTRAINT account_invoice_line_pkey PRIMARY KEY (id)
+);
+
+CREATE INDEX limpoavisoaccount_invoice_line_invoice_id_index ON limpoaviso.account_invoice_line USING btree (invoice_id);
+CREATE INDEX limpoavisoaccount_invoice_line_product_id_index ON limpoaviso.account_invoice_line USING btree (product_id);
+CREATE INDEX limpoavisoaccount_invoice_line_uom_id_index ON limpoaviso.account_invoice_line USING btree (uom_id);
+
+
+--inserindo tabela account_invoice
+----------------------------------
+insert into limpoaviso.account_invoice
+select aci.*
+  from account_invoice aci
+ where anomes(aci.date_due) = 202205;
+  
+commit;
+  
+
+--inserindo tabela account_invoice_line
+---------------------------------------
+  
+insert into limpoaviso.account_invoice_line
+select acl.*
+  from account_invoice aci inner join account_invoice_line acl on acl.invoice_id = aci.id
+ where anomes(aci.date_due) = 202205;
+ 
+     
+------
+-- view
+
+
+drop view if exists public.vw_confimp_account_invoice_dbo0424;
+
+CREATE OR REPLACE VIEW public.vw_confimp_account_invoice_dbo0424 AS 
+SELECT t2.partner_id,
+    t2.land_id,
+    t2.dbo_id,
+    t2.odoo_id,
+    vpl.module_code__block_code__lot_code2 AS land,
+    res.name,
+    t2.dbo_amount_total,
+    t2.odoo_amount_total,
+    t2.odoo_amount_total_limpoa,
+    t2.dif,
+    t2.dif_limpoa,
+    t2.dbo_existe,
+    t2.odoo_existe,
+    ( SELECT count(0) AS count
+           FROM dbo0424.account_invoice_line ail
+          WHERE ail.invoice_id = t2.dbo_id) AS dbo_linescount,
+    ( SELECT count(0) AS count
+           FROM account_invoice_line ail
+          WHERE ail.invoice_id = t2.odoo_id) AS odo_linescount
+   FROM ( SELECT t.partner_id,
+            t.land_id,
+            sum(t.dbo_id) AS dbo_id,
+            sum(t.odoo_id) AS odoo_id,
+            sum(t.dbo_amount_total) AS dbo_amount_total,
+            sum(t.odoo_amount_total) AS odoo_amount_total,
+            sum(odoo_amount_total_limpoa) odoo_amount_total_limpoa,
+            sum(t.dbo_amount_total - t.odoo_amount_total) AS dif,
+            sum(t.odoo_amount_total - t.odoo_amount_total_limpoa) AS dif_limpoa,
+            sum(t.dbo_existe) AS dbo_existe,
+            sum(t.odoo_existe) AS odoo_existe
+           FROM ( SELECT ai.partner_id,
+                    ai.land_id,
+                    ai.id AS dbo_id,
+                    0 AS odoo_id,
+                    ai.amount_total AS dbo_amount_total,
+                    0 AS odoo_amount_total,
+                    0 AS odoo_amount_total_limpoa,
+                    1 AS dbo_existe,
+                    0 AS odoo_existe
+                   FROM dbo0424.account_invoice ai
+                UNION ALL
+                 SELECT ai.partner_id,
+                    ai.land_id,
+                    0 AS dbo_id,
+                    ai.id AS odoo_id,
+                    0 AS dbo_amount_total,
+                    ai.amount_total AS odoo_amount_total,
+                    0 AS odoo_amount_total_limpoa,
+                    0 AS dbo_existe,
+                    1 AS odoo_existe
+                   FROM account_invoice ai
+                  WHERE ai.date_due >= '2022-05-01'::date
+                 union all  
+                SELECT ai.partner_id,
+                    ai.land_id,
+                    ai.id AS dbo_id,
+                    0 AS odoo_id,
+                    0 AS dbo_amount_total,
+                    0 AS odoo_amount_total,
+                    ai.amount_total AS odoo_amount_total_limpoa,
+                    1 AS dbo_existe,
+                    0 AS odoo_existe
+                   FROM limpoaviso.account_invoice ai
+                  
+                  ) t
+          GROUP BY t.partner_id, t.land_id) t2
+     JOIN vw_property_land vpl ON vpl.id = t2.land_id
+     JOIN res_partner res ON res.id = t2.partner_id;
+     
+    
+    
+    
+    
