@@ -26,48 +26,85 @@ END
 $function$
 ;
 
-CREATE OR REPLACE FUNCTION public.anomes_text(anomes int)
- RETURNS varchar(10)
+
+CREATE OR REPLACE FUNCTION public.anomes_text(anomes integer, anomesmode integer DEFAULT 1)
+ RETURNS character varying
  LANGUAGE plpgsql
  IMMUTABLE STRICT
 AS $function$
 declare ano int;
 declare mes int;
-declare AnoMesStr varchar(10);
+declare AnoMesStr varchar(20);
 begin
+  --versao:2022.05.23
   ano = substring(anomes::varchar, 1, 4);
   mes = substring(anomes::varchar, 5, 2);
   
-  AnoMesStr = ('{JAN,FEV,MAR,ABR,MAI,JUN,JUL,AGO,SET,OUT,NOV,DEZ}'::VARCHAR[])[mes];
+  if (anomesMode = 1) then
+    AnoMesStr = ('{Jan,Fev,Mar,Abr,Mai,Jun,Jul,Ago,Set,Out,Nov,Dez}'::VARCHAR[])[mes];
+  elseif (anomesMode in (2, 3)) then
+    AnoMesStr = ('{Janeiro,Fevereiro,Março,Abril,Maio,Junho,Julho,Agosto,Setembro,Outubro,Novembro,Dezembro}'::VARCHAR[])[mes];
+  end if;
  
-  AnoMesStr = AnoMesStr || '/' || ano;
+  if (anomesMode <> 3) then
+    AnoMesStr = AnoMesStr || '/' || ano;
+  end if;
+ 
   return AnoMesStr;
 END
 $function$
 ;
 
-CREATE OR REPLACE FUNCTION public.anomes_inc(anomes int, inc int)
-RETURNS integer
+
+CREATE OR REPLACE FUNCTION public.anomes_inc(anomes integer, incremento integer)
+ RETURNS integer
  LANGUAGE plpgsql
  IMMUTABLE STRICT
 AS $function$
 declare anomesStr varchar(6);
 declare ano int;
 declare mes int;
+declare inc int;
 begin
+ /*
+ Exemplos de uso:
+   anomes_inc(202201,  0) ==> 202201
+   anomes_inc(202201,  1) ==> 202202
+   anomes_inc(202201,  2) ==> 202203
+   anomes_inc(202201, 12) ==> 202301
+   anomes_inc(202201, -1) ==> 202112
+   anomes_inc(202201, -2) ==> 202111
+   anomes_inc(202201,-12) ==> 202101
+  
+ */
+  if incremento = 0 then
+    return anomes;  
+  elsif incremento > 0 then
+    inc = 1;
+  elseif incremento < 0 then
+    inc = -1;
+  end if; 
+ 
   ano = substring(anomes::varchar, 1, 4);
   mes = substring(anomes::varchar, 5, 2);
  
-  mes = mes + inc;
+  incremento = incremento * -1;
 
-  if mes >= 12 then
-    mes = 1;
-    ano = ano + 1;
-  elseif mes <= 0 then
-    mes = 12;
-    ano = ano -1;
-  end if;
- 
+  while (abs(incremento) <> 0)
+  loop   
+    mes = mes + inc;
+  
+    if mes > 12 then
+      mes = 1;
+      ano = ano + 1;
+    elseif mes <= 0 then
+      mes = 12;
+      ano = ano -1;
+    end if;
+   
+    incremento = incremento + inc;
+  end loop;
+
   anomesStr = ano || lpad(mes::varchar, 2, '0');
   
   return anomesStr;
@@ -77,6 +114,7 @@ $function$
 
 CREATE OR REPLACE FUNCTION strIn(_name varchar, mesProcurar varchar(4), MesNum_ int, out MesStr text, out PosMesStr int, out MesNum int) as $function$
 begin
+  /*Esta função é para uso exclusivo da função account_invoice_line_name_anomes*/
   PosMesStr = position(mesProcurar || '/' in _name);
  
   if PosMesStr <> 0 then
