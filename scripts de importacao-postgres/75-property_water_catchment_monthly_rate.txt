@@ -1,0 +1,27 @@
+insert into property_water_catchment_monthly_rate (year_month,index_coin,inpc,property_tax_monthly_index,property_tax_fixed_value,property_tax_minimal_contribution,rate_catchment) 
+select ym.yearmonth year_month,
+       m.moe_vlmoeda index_coin, --moeda
+       i.igp_vligpm inpc, --inpc
+       id.ind_vlindexador property_tax_monthly_index, --indexador mensal
+       vv.val_vlvalorfixo property_tax_fixed_value, -- valor fixo
+       vv.con_vlcontribuicaominima property_tax_minimal_contribution, --contribuição mínima
+       rc.rate_catchment
+  from vw_yearmonth_series_today ym
+         left join dbo0424.moe_moedas m on anomes(m.moe_dtmoeda) = ym.yearmonth 
+         left join dbo0424.igp_igpm i on anomes(i.igp_dtigpm ) = ym.yearmonth 
+         left join dbo0424.ind_indexador id on anomes(id.ind_dtvencimento) = ym.yearmonth 
+         left join dbo0424.val_valorfixo vv on anomes(vv.val_dtvencimento) = ym.yearmonth 
+         left join (select 202202 year_month, 15285.6299999999992 rate_catchment union all
+                    select 202204 year_month, 15285.6100000000006 rate_catchment union all
+                    select 202203 year_month, 15285.6100000000006 rate_catchment union all
+                    select 202205 year_month, 7972.61999999999989 rate_catchment union all
+                    select 202206 year_month, 7972.61999999999989 rate_catchment union all
+                    select 202207 year_month, 7972.52999999999975 rate_catchment union all
+                    select 202208 year_month, 7972.52999999999975 rate_catchment union all
+                    select 202209 year_month, 7972.52999999999975 rate_catchment union all
+                    select 202210 year_month, 7972.52999999999975 rate_catchment union all
+                    select 202211 year_month, 7972.52999999999975 rate_catchment
+                   ) rc on rc.year_month = ym.yearmonth 
+ where ym.yearmonth < 202212 --apartir desta data os dados são cadastrados no odoo
+   and ym.yearmonth >= 198301 --pasosou a exisdtir dados no index_coin
+  
