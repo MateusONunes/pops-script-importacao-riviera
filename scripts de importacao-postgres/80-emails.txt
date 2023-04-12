@@ -1,5 +1,5 @@
 --Script para comparar emais do sisa vs odoo
---versão 2023.12.04
+--versão 2023.12.04.1
 
 
 DROP TABLE if exists dev.emaillines;
@@ -131,7 +131,10 @@ update dev.emaillines e
 ------------------------------------
 -- Auxiliares/Análise
 ------------------------------------
-  
+/*
+
+--Sql para conferência dos proprietários que possuem apenas 1 email distinto de envio  
+-------------------------------------------------------------------------------------
 select * from (
 select e.respfatura_id,
        e.count_lands,
@@ -154,6 +157,33 @@ select e.respfatura_id,
    and el.res_partner_email_invoice <> '') t
 where t.res_partner_email_invoice <> t.odoo_emailboleto
 order by t.count_res_partner_email_invoice desc, t.respfatura_id, t.res_partner_email_invoice
+
+
+--Sql para conferência dos proprietários que possuem MAIS QUE 1 email distinto de envio
+---------------------------------------------------------------------------------------
+select respfatura_id,
+       nome_proprietario,
+       res_partner_email_invoice,
+       --count_res_partner_email_invoice,
+       distintos_res_partner_email_invoice,
+       propriedades
+ from (select e.respfatura_id,
+              rp."name" nome_proprietario,
+              el.res_partner_email_invoice,
+              e.count_res_partner_email_invoice,
+              string_agg(el.land, ',') propriedades,
+              count(0) distintos_res_partner_email_invoice
+         from dev.email e 
+         join dev.emaillines el on el.respfatura_id = e.respfatura_id
+         join res_partner rp on rp.id = e.respfatura_id
+        where 0 = 0 
+          and e.count_res_partner_email_invoice > 1
+          and el.res_partner_email_invoice <> ''
+       group by 1, 2, 3, 4
+       ) t
+order by t.count_res_partner_email_invoice desc, t.respfatura_id, t.distintos_res_partner_email_invoice desc, t.respfatura_id, t.res_partner_email_invoice
+
+*/
 
 /*
 --Limpeza dos dados
@@ -187,4 +217,3 @@ update res_partner r
   from res as t
  where r.id = t.id 
 */
-
