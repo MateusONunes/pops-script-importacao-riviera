@@ -1,0 +1,190 @@
+--Script para comparar emais do sisa vs odoo
+--versão 2023.12.04
+
+
+DROP TABLE if exists dev.emaillines;
+
+CREATE TABLE dev.emaillines (
+ land_id int4,
+ respfatura_id int4,
+ owner_id int4,
+ owner_invoice_id int4,
+ prop_nucodigo int4,
+ cpf_odoo varchar(30),
+ cpf_sisa varchar(30),
+ acuidados bool,
+ owner_invoice_name varchar(200),
+ land varchar(20),
+ prop_dlenderecoeletronico varchar(500),
+ prop_dlenderecoeletronicocarta varchar(500),
+ prop_dlemailboleto varchar(500),
+ res_partner_email varchar(500),
+ res_partner_email_invoice varchar(500),
+ land_email_invoice varchar(500)
+);
+
+COMMENT ON TABLE dev.emaillines IS 'Tabela criada para importação de emails task:175
+
+https://popsolutions.co/web#id=175&action=382&active_id=22&model=project.task&view_type=form&cids=1&menu_id=276';
+
+insert into dev.emaillines (land_id,respfatura_id,owner_id,owner_invoice_id,prop_nucodigo,cpf_odoo,cpf_sisa,prop_dlenderecoeletronico,prop_dlenderecoeletronicocarta,prop_dlemailboleto,acuidados,owner_invoice_name,land)
+select pl.id land_id,
+       coalesce(pl.owner_invoice_id, pl.owner_id) respfatura_id,
+       pl.owner_id,       
+       pl.owner_invoice_id, 
+       pp.prop_nucodigo,
+       regexp_replace(rp.cnpj_cpf, '[^0-9]', '', 'g') cpf_odoo,
+       coalesce(nullif(trim(pp.prop_dccpfcarta), ''), trim(pp.prop_dccgccarta)) cpf_sisa,
+       pp.Prop_dlEnderecoEletronico,
+       pp.Prop_dlEnderecoEletronicoCarta,
+       pp.prop_dlemailboleto,
+       pl.owner_invoice_id is not null acuidados,
+       rp."name" owner_invoice_name,
+       vpl.module_code__block_code__lot_code2 land
+  from property_land pl left join dbo0424.prop_proprietarios pp on pp.prop_nucodigo = coalesce(pl.sisa_id, pl.id)
+       join res_partner rp on rp.id = coalesce(pl.owner_invoice_id, pl.owner_id)
+       join vw_property_land vpl on vpl.id = pl.id
+ where exists       
+       (select 1
+          from public.account_invoice ai
+         where ai.land_id = pl.id
+           and ai.partner_id = coalesce(pl.owner_invoice_id, pl.owner_id)
+           and ai.date_due between '2023-03-01' and '2023-03-31'
+         limit 1
+       );
+       
+update dev.emaillines
+   set res_partner_email = case when acuidados then prop_dlenderecoeletronicocarta else prop_dlenderecoeletronico end,
+       res_partner_email_invoice = 
+       case when acuidados or trim(coalesce(prop_dlenderecoeletronicocarta, '')) <> '' then 
+         CONCAT_WS(',', nullif(trim(Prop_dlEnderecoEletronicoCarta), ''), 
+                        case when trim(prop_dlemailboleto) = ''
+                               or trim(prop_dlemailboleto) = trim(Prop_dlEnderecoEletronicoCarta)
+                             then null
+                             else trim(prop_dlemailboleto)
+                        end 
+         )       
+       else
+         CONCAT_WS(',', nullif(trim(prop_dlenderecoeletronico), ''), 
+                        case when trim(prop_dlemailboleto) = ''
+                               or trim(prop_dlemailboleto) = trim(prop_dlenderecoeletronico)
+                             then null
+                             else trim(prop_dlemailboleto)
+                        end 
+         )
+       end;
+       
+CREATE INDEX emaillines_respfatura_id_idx ON dev.emaillines (respfatura_id);
+              
+
+
+ 
+
+------------------------------------
+-- dev.email
+------------------------------------
+
+drop TABLE if exists dev.email;
+
+CREATE TABLE dev.email (
+ respfatura_id int4,
+ count_lands int4,
+ count_res_partner_email_invoice int4
+);
+
+insert into dev.email (respfatura_id, count_lands, count_res_partner_email_invoice)
+select e.respfatura_id,
+       (select count(0)
+          from dev.emaillines e2
+         where e2.respfatura_id = e.respfatura_id  
+       ) count_lands,
+       (select count(distinct e2.res_partner_email_invoice)
+          from dev.emaillines e2
+         where e2.respfatura_id = e.respfatura_id  
+       ) count_res_partner_email_invoice
+  from (select distinct respfatura_id from dev.emaillines) e
+  
+  
+--atualizar a ordem dos emails no campo res_partner_email_invoice. Por exemplo, se estiver "b@gmail.com,a@gmail.com" após este sql ficará "a@gmail.com,b@gmail.com"
+with emails as (
+select e.land_id,
+       e.respfatura_id,
+       e.prop_nucodigo,
+       e.res_partner_email_invoice,
+       (
+        select string_agg(distinct trim(t.res_partner_email_invoice), ',')
+          from (select unnest(string_to_array(e.res_partner_email_invoice, ',')) res_partner_email_invoice
+               ) t
+       ) res_partner_email_invoice_distinto
+  from dev.emaillines e
+ where coalesce(e.res_partner_email_invoice, '') <> ''
+ group by 1, 2, 3, 4
+-- limit 1
+ )
+update dev.emaillines e
+   set res_partner_email_invoice = em.res_partner_email_invoice_distinto
+  from emails em
+ where e.land_id = em.land_id
+   and e.respfatura_id = em.respfatura_id
+   and e.prop_nucodigo = em.prop_nucodigo  
+  
+------------------------------------
+-- Auxiliares/Análise
+------------------------------------
+  
+select * from (
+select e.respfatura_id,
+       e.count_lands,
+       e.count_res_partner_email_invoice,
+       el.res_partner_email_invoice,
+       case when pl.invoicesend_email is not null then pl.invoicesend_email
+            when rp.invoicesend_email is not null then rp.invoicesend_email
+            else rp.email
+       end odoo_emailboleto,
+       rp.invoicesend_email res_invoicesend_email,
+       pl.invoicesend_email land_invoicesend_email,
+       el.land,       
+       el.owner_invoice_name
+  from dev.email e 
+  join dev.emaillines el on el.respfatura_id = e.respfatura_id
+  join res_partner rp on rp.id = e.respfatura_id
+  join property_land pl on pl.id = el.land_id    
+ where 0 = 0 
+--   and e.count_res_partner_email_invoice = 1
+   and el.res_partner_email_invoice <> '') t
+where t.res_partner_email_invoice <> t.odoo_emailboleto
+order by t.count_res_partner_email_invoice desc, t.respfatura_id, t.res_partner_email_invoice
+
+/*
+--Limpeza dos dados
+
+drop table dev.emaillines;
+drop table dev.email;
+
+*/ 
+ 
+ /*
+ --sql para remover e-mais duplicados do campo res_partner.email
+with res as (
+select t.id,
+       t.email,
+       t.email_distinto
+  from (select rp.id,
+               rp.email,
+               (
+               select string_agg(distinct trim(email), ',')
+                 from (select unnest(string_to_array(rp.email, ',')) email
+                      ) t
+               ) email_distinto
+          from res_partner rp 
+         where 0 = 0 
+--           and rp.id = 16
+         group by 1, 2
+        ) t
+ where t.email <> t.email_distinto) 
+update res_partner r
+   set email = t.email_distinto
+  from res as t
+ where r.id = t.id 
+*/
+
