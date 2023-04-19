@@ -1,3 +1,10 @@
+reunião marcos
+
+-cadastro de clientes geral (Minter, brandmentios, etc)
+-Mysql to postgres - fdw
+
+
+
 --Script para comparar emais do sisa vs odoo
 --versão 2023.12.04.1
 
